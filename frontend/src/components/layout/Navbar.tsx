@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Search,
   Heart,
@@ -9,7 +8,6 @@ import {
 } from "lucide-react";
 
 import "./Navbar.css";
-
 export default function Navbar() {
   return (
     <nav className="nexus-navbar">
@@ -17,7 +15,11 @@ export default function Navbar() {
 
         {/* Brand */}
         <div className="navbar-brand">
-          <ImageIcon className="brand-icon" size={25} strokeWidth={1.5} />
+          <ImageIcon
+            className="brand-icon"
+            size={25}
+            strokeWidth={1.5}
+          />
           <span>Nexus Technologies</span>
         </div>
 
@@ -48,29 +50,35 @@ export default function Navbar() {
         <div className="navbar-actions">
 
           {/* Search */}
-          <button className="nav-icon-btn">
+          <button className="nav-icon-btn" aria-label="Search">
             <Search size={24} strokeWidth={1.8} />
           </button>
 
           {/* Wishlist */}
-          <button className="nav-icon-btn notification-icon">
+          <button
+            className="nav-icon-btn notification-icon"
+            aria-label="Wishlist"
+          >
             <Heart size={24} strokeWidth={1.8} />
             <span className="badge-count">2</span>
           </button>
 
           {/* Cart */}
-          <button className="nav-icon-btn notification-icon">
+          <button
+            className="nav-icon-btn notification-icon"
+            aria-label="Shopping Cart"
+          >
             <ShoppingBag size={23} strokeWidth={1.8} />
             <span className="badge-count">1</span>
           </button>
 
           {/* Notification */}
-          <button className="nav-icon-btn">
+          <button className="nav-icon-btn" aria-label="Notifications">
             <Bell size={24} strokeWidth={1.8} />
           </button>
 
           {/* Theme */}
-          <button className="theme-btn">
+          <button className="theme-btn" aria-label="Toggle theme">
             <Sun size={21} strokeWidth={1.8} />
           </button>
 
@@ -80,7 +88,7 @@ export default function Navbar() {
           </button>
 
           {/* User */}
-          <button className="user-btn">
+          <button className="user-btn" aria-label="User profile">
             U
           </button>
 
