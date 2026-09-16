@@ -4,7 +4,8 @@
   background: #ffffff;
   border-bottom: 1px solid #e8eef5;
   box-shadow: 0 2px 10px rgba(20, 60, 100, 0.04);
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 1000;
 }
 
@@ -24,15 +25,21 @@
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #102d4d;
   font-size: 21px;
   font-weight: 700;
   white-space: nowrap;
+  text-decoration: none;
+}
+
+.navbar-brand:hover {
+  color: #087df5;
 }
 
 .brand-icon {
-  color: #91abc5;
+  color: #087df5;
+  font-size: 24px;
   flex-shrink: 0;
 }
 
@@ -55,6 +62,7 @@
   font-size: 16px;
   font-weight: 500;
   text-decoration: none;
+  transition: color 0.15s ease;
 }
 
 .nav-link:hover {
@@ -75,18 +83,18 @@
   background: #087df5;
 }
 
-/* Right Side */
+/* Right Side Actions */
 
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 14px;
 }
 
 /* Icons */
 
 .nav-icon-btn {
-  width: 34px;
+  width: 36px;
   height: 40px;
   padding: 0;
   border: none;
@@ -97,14 +105,17 @@
   justify-content: center;
   cursor: pointer;
   position: relative;
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
 
 .nav-icon-btn:hover {
   color: #087df5;
 }
 
-.nav-icon-btn svg {
-  display: block;
+.nav-icon-btn i {
+  font-size: 20px;
+  line-height: 1;
 }
 
 /* Badge */
@@ -115,10 +126,10 @@
 
 .badge-count {
   position: absolute;
-  top: -4px;
+  top: -2px;
   right: -5px;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #087df5;
   color: white;
@@ -133,68 +144,87 @@
 /* Theme */
 
 .theme-btn {
-  width: 54px;
-  height: 42px;
+  width: 52px;
+  height: 40px;
   border: none;
-  border-radius: 22px;
+  border-radius: 20px;
   background: #e4f1ff;
   color: #183d62;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-left: 3px;
+  margin-left: 2px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .theme-btn:hover {
   background: #d6eaff;
+  color: #087df5;
 }
 
-/* View Products */
+.theme-btn i {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* View Products Button */
 
 .view-products-btn {
-  height: 42px;
+  height: 40px;
   padding: 0 20px;
   border: none;
   border-radius: 6px;
   background: #087df5;
   color: #ffffff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .view-products-btn:hover {
   background: #006ee0;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(8, 125, 245, 0.25);
 }
 
-/* User */
+/* User Profile */
 
 .user-btn {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 50%;
   background: #8799aa;
   color: #ffffff;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.user-btn:hover {
+  background: #6a7c8e;
 }
 
 /* Responsive */
 
 @media (max-width: 1200px) {
   .navbar-container {
-    padding: 0 25px;
+    padding: 0 24px;
   }
 
   .navbar-menu {
     margin-left: 30px;
-    gap: 25px;
+    gap: 24px;
   }
 
   .navbar-actions {
@@ -202,7 +232,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 992px) {
   .navbar-menu {
     display: none;
   }
@@ -218,10 +248,15 @@
   }
 
   .navbar-actions {
-    gap: 5px;
+    gap: 6px;
   }
 
   .theme-btn {
-    width: 44px;
+    width: 40px;
+  }
+
+  .view-products-btn {
+    padding: 0 12px;
+    font-size: 13px;
   }
 }

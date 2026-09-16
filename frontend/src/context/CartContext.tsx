@@ -1,24 +1,9 @@
 import { createContext, useState, type ReactNode } from "react";
-
-type CartProduct = {
-  id: number;
-  name: string;
-  category: string;
-  group: string;
-  price: number;
-  oldPrice?: number;
-  rating: number;
-  reviews: number;
-  icon: string;
-  specs: string;
-  stock: string;
-  badge: string;
-  requestOnly?: boolean;
-};
+import type { Product } from "../types/product";
 
 type CartContextType = {
-  cart: CartProduct[];
-  addToCart: (product: CartProduct) => void;
+  cart: Product[];
+  addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
 };
@@ -35,9 +20,9 @@ type CartProviderProps = {
 };
 
 export function CartProvider({ children }: CartProviderProps) {
-  const [cart, setCart] = useState<CartProduct[]>([]);
+  const [cart, setCart] = useState<Product[]>([]);
 
-  const addToCart = (product: CartProduct) => {
+  const addToCart = (product: Product) => {
     setCart((currentCart) => [...currentCart, product]);
   };
 

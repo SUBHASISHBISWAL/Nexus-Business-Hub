@@ -1,47 +1,50 @@
-import {
-  Search,
-  Heart,
-  ShoppingBag,
-  Bell,
-  Sun,
-  Image as ImageIcon,
-} from "lucide-react";
-
+import { useContext } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { CartContext } from "../../context/CartContext";
 import "./Navbar.css";
+
 export default function Navbar() {
+  const { cart } = useContext(CartContext);
+
   return (
     <nav className="nexus-navbar">
       <div className="navbar-container">
 
         {/* Brand */}
-        <div className="navbar-brand">
-          <ImageIcon
-            className="brand-icon"
-            size={25}
-            strokeWidth={1.5}
-          />
+        <Link to="/" className="navbar-brand">
+          <i className="bi bi-hdd-network brand-icon"></i>
           <span>Nexus Technologies</span>
-        </div>
+        </Link>
 
         {/* Navigation */}
         <div className="navbar-menu">
-          <a href="#" className="nav-link active">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
+          >
             Home
-          </a>
+          </NavLink>
 
-          <a href="#" className="nav-link">
+          <NavLink
+            to="/products"
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
+          >
             Products
-          </a>
+          </NavLink>
 
-          <a href="#" className="nav-link">
+          <a href="/#categories" className="nav-link">
             Categories
           </a>
 
-          <a href="#" className="nav-link">
+          <a href="/#trust" className="nav-link">
             About
           </a>
 
-          <a href="#" className="nav-link">
+          <a href="/#contact" className="nav-link">
             Support
           </a>
         </div>
@@ -50,45 +53,59 @@ export default function Navbar() {
         <div className="navbar-actions">
 
           {/* Search */}
-          <button className="nav-icon-btn" aria-label="Search">
-            <Search size={24} strokeWidth={1.8} />
-          </button>
+          <Link to="/products" className="nav-icon-btn" aria-label="Search catalog">
+            <i className="bi bi-search"></i>
+          </Link>
 
           {/* Wishlist */}
           <button
             className="nav-icon-btn notification-icon"
+            type="button"
             aria-label="Wishlist"
           >
-            <Heart size={24} strokeWidth={1.8} />
+            <i className="bi bi-heart"></i>
             <span className="badge-count">2</span>
           </button>
 
           {/* Cart */}
-          <button
+          <Link
+            to="/products"
             className="nav-icon-btn notification-icon"
             aria-label="Shopping Cart"
           >
-            <ShoppingBag size={23} strokeWidth={1.8} />
-            <span className="badge-count">1</span>
-          </button>
+            <i className="bi bi-bag"></i>
+            <span className="badge-count">{cart.length}</span>
+          </Link>
 
           {/* Notification */}
-          <button className="nav-icon-btn" aria-label="Notifications">
-            <Bell size={24} strokeWidth={1.8} />
+          <button
+            className="nav-icon-btn"
+            type="button"
+            aria-label="Notifications"
+          >
+            <i className="bi bi-bell"></i>
           </button>
 
           {/* Theme */}
-          <button className="theme-btn" aria-label="Toggle theme">
-            <Sun size={21} strokeWidth={1.8} />
+          <button
+            className="theme-btn"
+            type="button"
+            aria-label="Toggle theme"
+          >
+            <i className="bi bi-sun"></i>
           </button>
 
           {/* View Products */}
-          <button className="view-products-btn">
+          <Link to="/products" className="view-products-btn">
             View Products
-          </button>
+          </Link>
 
           {/* User */}
-          <button className="user-btn" aria-label="User profile">
+          <button
+            className="user-btn"
+            type="button"
+            aria-label="User profile"
+          >
             U
           </button>
 
