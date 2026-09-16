@@ -11,6 +11,16 @@ body,
   width: 100%;
 }
 
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
 body {
   font-family: Arial, sans-serif;
   background: #ffffff;
