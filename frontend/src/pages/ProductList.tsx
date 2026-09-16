@@ -262,7 +262,12 @@ function ProductList() {
   const { addToCart } = useContext(CartContext);
 
   const [search, setSearch] = useState<string>("");
-  const [category, setCategory] = useState<string>("All");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    []
+  );
+  const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
+  const [priceRange, setPriceRange] = useState<number>(412000);
+  const [minRating, setMinRating] = useState<number>(0);
   const [sort, setSort] = useState<string>("featured");
   const [notice, setNotice] = useState<string>("");
 
@@ -272,7 +277,10 @@ function ProductList() {
     return products
       .filter(
         (product) =>
-          (category === "All" || product.category === category) &&
+          (selectedCategories.length === 0 ||
+            selectedCategories.includes(product.category)) &&
+          product.price <= priceRange &&
+          product.rating >= minRating &&
           (!query ||
             [product.name, product.group, product.specs]
               .join(" ")
@@ -294,7 +302,7 @@ function ProductList() {
 
         return a.id - b.id;
       });
-  }, [category, search, sort]);
+  }, [selectedCategories, priceRange, minRating, search, sort]);
 
   const handleAddToCart = (product: Product) => {
     addToCart(product);
@@ -306,155 +314,249 @@ function ProductList() {
     }, 2600);
   };
 
+  const handleCategoryChange = (categoryName: string) => {
+    setSelectedCategories((previous) => {
+      if (previous.includes(categoryName)) {
+        return previous.filter((item) => item !== categoryName);
+      }
+
+      return [...previous, categoryName];
+    });
+  };
+
+  const resetFilters = () => {
+    setSearch("");
+    setSelectedCategories([]);
+    setPriceRange(412000);
+    setMinRating(0);
+  };
+
   return (
     <div className="nx-catalog-page">
       <section className="container nx-catalog-shell">
+        <div className="nx-catalog-content">
 
-        <div className="nx-catalog-tools">
-          <div
-            className="nx-filter-set"
-            role="group"
-            aria-label="Filter products by category"
-          >
-            {categoryLabels.map((label) => (
+          {/* LEFT FILTER SIDEBAR */}
+          <aside className="nx-filter-sidebar">
+            <h3>Filters</h3>
+
+            {/* CATEGORY */}
+            <div className="nx-filter-section">
               <button
                 type="button"
-                key={label}
-                className={category === label ? "active" : ""}
-                onClick={() => setCategory(label)}
+                className="nx-category-dropdown"
+                onClick={() =>
+                  setCategoryOpen((previous) => !previous)
+                }
               >
-                {label} (
-                {label === "All"
-                  ? products.length
-                  : products.filter(
-                      (item) => item.category === label
-                    ).length}
-                )
+                <span>Category</span>
+
+                <span
+                  className={`nx-chevron ${
+                    categoryOpen ? "open" : ""
+                  }`}
+                  aria-hidden="true"
+                />
               </button>
-            ))}
-          </div>
 
-          <div className="nx-tool-controls">
+              {categoryOpen && (
+                <div className="nx-category-options">
+                  {/* ALL */}
+                  <label className="nx-checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.length === 0}
+                      onChange={() => setSelectedCategories([])}
+                    />
 
-            <label className="nx-search">
-              <span className="material-symbols-outlined">
-                search
-              </span>
+                    <span>All</span>
+                    <small>{products.length}</small>
+                  </label>
+
+                  {/* CATEGORIES */}
+                  {categoryLabels
+                    .filter((label) => label !== "All")
+                    .map((label) => {
+                      const count = products.filter(
+                        (item) => item.category === label
+                      ).length;
+
+                      return (
+                        <label
+                          key={label}
+                          className="nx-checkbox-row"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedCategories.includes(label)}
+                            onChange={() =>
+                              handleCategoryChange(label)
+                            }
+                          />
+
+                          <span>{label}</span>
+                          <small>{count}</small>
+                        </label>
+                      );
+                    })}
+                </div>
+              )}
+            </div>
+
+            {/* PRICE RANGE */}
+            <div className="nx-filter-section">
+              <h4>Price Range</h4>
 
               <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search nodes, specs..."
-                aria-label="Search catalog"
+                type="range"
+                min="0"
+                max="412000"
+                step="1000"
+                value={priceRange}
+                onChange={(event) =>
+                  setPriceRange(Number(event.target.value))
+                }
+                className="nx-price-slider"
               />
-            </label>
 
-            <label className="nx-sort">
-              <span>SORT:</span>
+              <div className="nx-price-values">
+                <span>₹0</span>
+                <span>
+                  ₹{priceRange.toLocaleString("en-IN")}
+                </span>
+              </div>
+            </div>
 
-              <select
-                value={sort}
-                onChange={(event) => setSort(event.target.value)}
-              >
-                <option value="featured">
-                  Featured Architecture
-                </option>
+            {/* RATING */}
+            <div className="nx-filter-section">
+              <h4>Rating</h4>
 
-                <option value="price-low">
-                  Price: Low to High
-                </option>
+              {[4, 3, 2, 1].map((rating) => (
+                <label
+                  key={rating}
+                  className="nx-checkbox-row"
+                >
+                  <input
+                    type="checkbox"
+                    checked={minRating === rating}
+                    onChange={() =>
+                      setMinRating(
+                        minRating === rating ? 0 : rating
+                      )
+                    }
+                  />
 
-                <option value="price-high">
-                  Price: High to Low
-                </option>
+                  <span>{rating}.0 & above</span>
+                </label>
+              ))}
+            </div>
 
-                <option value="rating">
-                  Spec Rating (5.0 First)
-                </option>
-              </select>
-            </label>
-
-          </div>
-        </div>
-
-        {notice && (
-          <div className="nx-cart-notice" role="status">
-            <span className="material-symbols-outlined">
-              check_circle
-            </span>
-
-            {notice}
-          </div>
-        )}
-
-        <div className="nx-product-grid">
-          {visibleProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
-
-        {!visibleProducts.length && (
-          <div className="nx-empty-catalog">
-            <span className="material-symbols-outlined">
-              search_off
-            </span>
-
-            <h2>No matching nodes found</h2>
-
-            <p>
-              Try a different search phrase or reset the category
-              filter.
-            </p>
-
+            {/* RESET */}
             <button
               type="button"
-              onClick={() => {
-                setSearch("");
-                setCategory("All");
-              }}
+              className="nx-reset-filters"
+              onClick={resetFilters}
             >
-              Reset catalog
+              Reset Filters
             </button>
-          </div>
-        )}
+          </aside>
 
-        <div className="nx-catalog-summary">
-          <div className="nx-summary-icon">
-            <span className="material-symbols-outlined">
-              grid_view
-            </span>
-          </div>
+          {/* RIGHT PRODUCT AREA */}
+          <div className="nx-product-area">
 
-          <div>
-            <small>Catalog Telemetry Status</small>
+            {/* SEARCH + SORT */}
+            <div className="nx-catalog-tools">
+              <div className="nx-tool-controls">
+                <label className="nx-search">
+                  <span className="material-symbols-outlined">
+                    search
+                  </span>
 
-            <strong>
-              Displaying {visibleProducts.length} of {products.length}{" "}
-              Enterprise Products
-            </strong>
-          </div>
+                  <input
+                    value={search}
+                    onChange={(event) =>
+                      setSearch(event.target.value)
+                    }
+                    placeholder="Search nodes, specs..."
+                    aria-label="Search catalog"
+                  />
+                </label>
 
-          <div className="nx-summary-actions">
-            <button type="button">
-              <span className="material-symbols-outlined">
-                download
-              </span>
-              Export Manifest
-            </button>
+                <label className="nx-sort">
+                  <span>SORT:</span>
 
-            <button type="button" className="primary">
-              <span className="material-symbols-outlined">
-                terminal
-              </span>
-              CLI Provision Matrix
-            </button>
+                  <select
+                    value={sort}
+                    onChange={(event) =>
+                      setSort(event.target.value)
+                    }
+                  >
+                    <option value="featured">
+                      Featured Architecture
+                    </option>
+
+                    <option value="price-low">
+                      Price: Low to High
+                    </option>
+
+                    <option value="price-high">
+                      Price: High to Low
+                    </option>
+
+                    <option value="rating">
+                      Spec Rating (5.0 First)
+                    </option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            {/* CART NOTICE */}
+            {notice && (
+              <div className="nx-cart-notice" role="status">
+                <span className="material-symbols-outlined">
+                  check_circle
+                </span>
+
+                {notice}
+              </div>
+            )}
+
+            {/* PRODUCTS */}
+            <div className="nx-product-grid">
+              {visibleProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                />
+              ))}
+            </div>
+
+            {/* EMPTY STATE */}
+            {!visibleProducts.length && (
+              <div className="nx-empty-catalog">
+                <span className="material-symbols-outlined">
+                  search_off
+                </span>
+
+                <h2>No matching nodes found</h2>
+
+                <p>
+                  Try a different search phrase or adjust your
+                  filters.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                >
+                  Reset catalog
+                </button>
+              </div>
+            )}
           </div>
         </div>
-
       </section>
     </div>
   );

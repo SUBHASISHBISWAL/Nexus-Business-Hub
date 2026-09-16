@@ -1,8 +1,8 @@
+
 /* =========================================================
-   Nexus Business Hub — Product Catalog Styles
+   Nexus Business Hub — Product Catalog
    ========================================================= */
 
-/* Product page design tokens */
 .nx-catalog-page {
   --nx-ground: #fbfbfc;
   --nx-surface: #ffffff;
@@ -15,92 +15,15 @@
   --nx-hairline: #e2e8f0;
   --nx-hairline-strong: #cbd5e1;
   --nx-hairline-hover: #94a3b8;
-  --nx-shadow-1: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+  --nx-shadow-1: 0 1px 2px rgba(15, 23, 42, 0.03);
   --nx-shadow-2: 0 4px 12px -2px rgba(15, 23, 42, 0.05),
-    0 1px 3px 0 rgba(15, 23, 42, 0.04);
+    0 1px 3px rgba(15, 23, 42, 0.04);
   --nx-shadow-3: 0 20px 32px -8px rgba(15, 23, 42, 0.08),
     0 8px 16px -4px rgba(15, 23, 42, 0.04);
 
-  --nx-font-display: "Geist", system-ui, sans-serif;
-  --nx-font-body: "Inter", system-ui, sans-serif;
-  --nx-font-mono: "JetBrains Mono", ui-monospace, monospace;
-
   background: #f8faff;
-  font-family: var(--nx-font-body);
-}
-
-/* Product page */
-.nx-catalog-page {
+  font-family: "Inter", system-ui, sans-serif;
   min-height: 100vh;
-}
-
-.nx-command-bar {
-  background: #fff;
-  border-bottom: 1px solid var(--nx-hairline);
-}
-
-.nx-command-inner {
-  min-height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.nx-breadcrumb,
-.nx-telemetry,
-.nx-heading-kicker,
-.nx-index-metric small,
-.nx-node-meta,
-.nx-node-price span,
-.nx-catalog-summary small {
-  font-family: var(--nx-font-mono);
-  font-size: 0.64rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--nx-ink-muted);
-}
-
-.nx-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.nx-breadcrumb .material-symbols-outlined {
-  font-size: 16px;
-}
-
-.nx-breadcrumb b {
-  color: var(--nx-hairline-hover);
-  font-weight: 400;
-}
-
-.nx-breadcrumb strong,
-.nx-telemetry strong {
-  color: var(--nx-accent);
-}
-
-.nx-telemetry {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.nx-telemetry i,
-.nx-index-metric > i {
-  height: 18px;
-  width: 1px;
-  background: var(--nx-hairline);
-  margin: 0 0.35rem;
-}
-
-.nx-live-dot {
-  width: 7px;
-  height: 7px;
-  background: #10b981;
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px #d1fae5;
 }
 
 .nx-catalog-shell {
@@ -108,79 +31,219 @@
   padding-bottom: 3rem;
 }
 
-/* Heading */
-.nx-catalog-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--nx-hairline);
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+.nx-catalog-content {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
 }
 
-.nx-heading-kicker {
-  margin-bottom: 0.65rem;
+.nx-product-area {
+  min-width: 0;
 }
 
-.nx-heading-kicker span {
-  background: #dff2ff;
-  color: #075985;
-  font-weight: 700;
-  padding: 0.3rem 0.45rem;
-  margin-right: 0.6rem;
-  border-radius: 2px;
+/* =========================================================
+   FILTER SIDEBAR
+   ========================================================= */
+
+.nx-filter-sidebar {
+  width: 240px;
+  background: #ffffff;
+  border: 1px solid #dfe5ec;
+  border-radius: 12px;
+  padding: 20px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 20px;
 }
 
-.nx-catalog-heading h1 {
-  font-size: clamp(1.9rem, 3.2vw, 2.5rem);
-  margin: 0 0 0.6rem;
+.nx-filter-sidebar h3 {
+  margin: 0 0 20px;
   color: var(--nx-ink);
-  font-family: var(--nx-font-display);
+  font-size: 20px;
+  font-weight: 700;
 }
 
-.nx-catalog-heading h1 em {
-  color: var(--nx-accent);
-  font-style: normal;
+/* =========================================================
+   FILTER SECTION
+   ========================================================= */
+
+.nx-filter-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 14px;
 }
 
-.nx-catalog-heading p {
-  color: var(--nx-ink-muted);
-  max-width: 720px;
-  margin: 0;
-  line-height: 1.6;
+.nx-filter-section + .nx-filter-section {
+  margin-top: 8px;
 }
 
-/* Index metric */
-.nx-index-metric {
-  padding: 1rem 1.15rem;
-  background: #fff;
-  border: 1px solid var(--nx-hairline);
-  box-shadow: var(--nx-shadow-1);
+.nx-filter-section h4 {
+  margin: 18px 0 12px;
+  color: var(--nx-ink);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* =========================================================
+   CATEGORY DROPDOWN
+   ========================================================= */
+
+.nx-category-dropdown {
+  width: 100%;
+  height: 40px;
   display: flex;
-  gap: 0.7rem;
-  white-space: nowrap;
-  border-radius: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
 }
 
-.nx-index-metric div {
+.nx-category-dropdown:hover {
+  color: #2563eb;
+}
+
+/* CSS CHEVRON — NO MATERIAL ICON */
+
+.nx-chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  margin-right: 5px;
+  margin-top: -4px;
+  flex-shrink: 0;
+}
+
+.nx-chevron.open {
+  transform: rotate(225deg);
+  margin-top: 4px;
+}
+
+/* =========================================================
+   CATEGORY OPTIONS
+   ========================================================= */
+
+.nx-category-options {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 2px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #eef0f3;
 }
 
-.nx-index-metric strong {
-  color: var(--nx-ink);
-  font-family: var(--nx-font-display);
-  font-size: 0.95rem;
+/* =========================================================
+   CHECKBOX ROW
+   ========================================================= */
+
+.nx-checkbox-row {
+  width: 100%;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 6px;
+  box-sizing: border-box;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
 }
 
-.nx-accent-text {
-  color: var(--nx-accent) !important;
+.nx-checkbox-row:hover {
+  background: #f5f7fa;
 }
 
-/* Search + filters */
+.nx-checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
+
+.nx-checkbox-row span {
+  flex: 1;
+  line-height: 20px;
+}
+
+.nx-checkbox-row small {
+  min-width: 24px;
+  text-align: right;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.nx-checkbox-row:has(input:checked) {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* =========================================================
+   PRICE RANGE
+   ========================================================= */
+
+.nx-price-slider {
+  width: 100%;
+  margin: 8px 0;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
+
+.nx-price-values {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* =========================================================
+   RESET FILTERS
+   ========================================================= */
+
+.nx-reset-filters {
+  width: 100%;
+  margin-top: 20px;
+  padding: 9px 12px;
+  border: 1px solid #dbe2ea;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.nx-reset-filters:hover {
+  background: #f5f7fa;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+/* =========================================================
+   SEARCH + SORT
+   ========================================================= */
+
 .nx-catalog-tools {
-  margin: 1.5rem 0;
+  margin: 0 0 1.5rem;
   padding: 0.8rem;
   border: 1px solid var(--nx-hairline);
   background: #fff;
@@ -188,30 +251,8 @@
   box-shadow: var(--nx-shadow-1);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem;
-}
-
-.nx-filter-set {
-  display: flex;
-  gap: 0.35rem;
-  overflow-x: auto;
-}
-
-.nx-filter-set button {
-  flex: 0 0 auto;
-  border: 0;
-  background: var(--nx-recessed);
-  color: var(--nx-ink-secondary);
-  padding: 0.5rem 0.7rem;
-  border-radius: 3px;
-  font: 500 0.68rem var(--nx-font-mono);
-  cursor: pointer;
-}
-
-.nx-filter-set button.active {
-  background: var(--nx-ink);
-  color: #fff;
 }
 
 .nx-tool-controls {
@@ -219,6 +260,8 @@
   align-items: center;
   gap: 0.65rem;
 }
+
+/* SEARCH */
 
 .nx-search {
   display: flex;
@@ -234,13 +277,15 @@
 }
 
 .nx-search input {
-  width: 175px;
+  width: 220px;
   padding: 0.48rem 0.35rem;
   border: 0;
   outline: 0;
   background: transparent;
   font-size: 0.76rem;
 }
+
+/* SORT */
 
 .nx-sort {
   display: flex;
@@ -249,29 +294,36 @@
 }
 
 .nx-sort > span {
-  font: 0.62rem var(--nx-font-mono);
+  font: 0.62rem "JetBrains Mono", ui-monospace, monospace;
   color: var(--nx-ink-muted);
 }
 
 .nx-sort select {
-  max-width: 175px;
+  max-width: 190px;
   border: 1px solid var(--nx-hairline);
   border-radius: 3px;
   background: #fff;
   color: var(--nx-ink);
   padding: 0.48rem 0.5rem;
-  font: 0.68rem var(--nx-font-mono);
+  font: 0.68rem "JetBrains Mono", ui-monospace, monospace;
   outline: 0;
+  cursor: pointer;
 }
 
-/* Product grid */
+/* =========================================================
+   PRODUCT GRID
+   ========================================================= */
+
 .nx-product-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
-/* Product card */
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
+
 .nx-node-card {
   min-width: 0;
   display: flex;
@@ -290,7 +342,10 @@
   box-shadow: var(--nx-shadow-2);
 }
 
-/* Product visual */
+/* =========================================================
+   PRODUCT VISUAL
+   ========================================================= */
+
 .nx-node-visual {
   height: 156px;
   position: relative;
@@ -323,18 +378,50 @@
   background-size: 20px 20px;
 }
 
+/* =========================================================
+   PRODUCT IMAGE
+   ========================================================= */
+
+.nx-device-glyph {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.nx-device-glyph img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.nx-device-glyph .material-symbols-outlined {
+  font-size: 40px;
+}
+
+/* =========================================================
+   PRODUCT STATUS
+   ========================================================= */
+
 .nx-node-status {
   position: absolute;
   z-index: 1;
   top: 0.65rem;
   left: 0.65rem;
-  font: 600 0.57rem var(--nx-font-mono);
+  font: 600 0.57rem "JetBrains Mono", ui-monospace, monospace;
   color: #065f46;
   background: #ecfdf5;
   border: 1px solid #a7f3d0;
   padding: 0.26rem 0.4rem;
   border-radius: 2px;
 }
+
+/* =========================================================
+   SAVE BUTTON
+   ========================================================= */
 
 .nx-node-save {
   position: absolute;
@@ -360,47 +447,10 @@
   font-size: 17px;
 }
 
-/* Product Image - Full Visual Area */
-.nx-device-glyph {
-  width: 100%;
-  height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 0;
-}
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
 
-.nx-device-glyph img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-}
-
-.nx-device-glyph .material-symbols-outlined {
-  font-size: 40px;
-}
-
-.nx-device-lines {
-  position: absolute;
-  z-index: 1;
-  bottom: 11px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 4px;
-}
-
-.nx-device-lines i {
-  width: 22px;
-  height: 3px;
-  background: #7dd3fc;
-  border-radius: 3px;
-}
-
-/* Card content */
 .nx-node-body {
   padding: 0.9rem 0.95rem 0.7rem;
   flex: 1;
@@ -412,7 +462,9 @@
   justify-content: space-between;
   gap: 0.4rem;
   color: #0369a1;
-  font-size: 0.57rem;
+  font: 0.57rem "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .nx-node-meta b {
@@ -423,8 +475,6 @@
   color: var(--nx-ink);
   font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
   white-space: nowrap;
 }
 
@@ -444,7 +494,7 @@
   font-size: 0.98rem;
   line-height: 1.25;
   color: var(--nx-ink);
-  font-family: var(--nx-font-display);
+  font-family: "Geist", system-ui, sans-serif;
 }
 
 .nx-spec-line {
@@ -457,7 +507,7 @@
   color: var(--nx-ink-muted);
   border: 1px solid #e9eef5;
   border-radius: 3px;
-  font: 0.62rem/1.35 var(--nx-font-mono);
+  font: 0.62rem/1.35 "JetBrains Mono", ui-monospace, monospace;
   overflow: hidden;
 }
 
@@ -467,7 +517,10 @@
   flex: 0 0 auto;
 }
 
-/* Price */
+/* =========================================================
+   PRICE
+   ========================================================= */
+
 .nx-node-bottom {
   padding: 0 0.95rem 0.95rem;
 }
@@ -481,12 +534,12 @@
 }
 
 .nx-node-price strong {
-  font: 700 1.05rem var(--nx-font-display);
+  font: 700 1.05rem "Geist", system-ui, sans-serif;
   color: var(--nx-ink);
 }
 
 .nx-node-price del {
-  font: 0.62rem var(--nx-font-mono);
+  font: 0.62rem "JetBrains Mono", ui-monospace, monospace;
   color: var(--nx-ink-muted);
 }
 
@@ -496,11 +549,13 @@
   background: #ecfdf5;
   padding: 0.24rem 0.3rem;
   border-radius: 2px;
-  font-size: 0.52rem;
-  font-weight: 700;
+  font: 700 0.52rem "JetBrains Mono", ui-monospace, monospace;
 }
 
-/* Buttons */
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
 .nx-node-actions {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -516,7 +571,7 @@
   justify-content: center;
   gap: 0.25rem;
   border-radius: 3px;
-  font: 600 0.62rem var(--nx-font-mono);
+  font: 600 0.62rem "JetBrains Mono", ui-monospace, monospace;
   text-decoration: none;
 }
 
@@ -536,7 +591,10 @@
   background: #fff;
 }
 
-/* Cart notification */
+/* =========================================================
+   CART NOTICE
+   ========================================================= */
+
 .nx-cart-notice {
   position: fixed;
   z-index: 1100;
@@ -557,7 +615,10 @@
   color: #6ee7b7;
 }
 
-/* Empty catalog */
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
 .nx-empty-catalog {
   text-align: center;
   padding: 5rem 1rem;
@@ -573,6 +634,10 @@
   margin-top: 0.5rem;
 }
 
+.nx-empty-catalog p {
+  margin-bottom: 1rem;
+}
+
 .nx-empty-catalog button {
   border: 0;
   background: var(--nx-ink);
@@ -580,70 +645,13 @@
   border-radius: 3px;
   padding: 0.55rem 0.8rem;
   font-size: 0.8rem;
+  cursor: pointer;
 }
 
-/* Summary */
-.nx-catalog-summary {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: #fff;
-  border: 1px solid var(--nx-hairline);
-  border-radius: 8px;
-}
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
-.nx-summary-icon {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  color: var(--nx-accent);
-  background: var(--nx-recessed);
-  border-radius: 3px;
-}
-
-.nx-catalog-summary > div:nth-child(2) {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.nx-catalog-summary strong {
-  color: var(--nx-ink);
-  font: 600 0.83rem var(--nx-font-display);
-}
-
-.nx-summary-actions {
-  margin-left: auto;
-  display: flex;
-  gap: 0.45rem;
-}
-
-.nx-summary-actions button {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  border: 1px solid var(--nx-hairline-strong);
-  background: #fff;
-  color: var(--nx-ink);
-  padding: 0.5rem 0.65rem;
-  border-radius: 3px;
-  font: 0.62rem var(--nx-font-mono);
-}
-
-.nx-summary-actions button.primary {
-  background: var(--nx-accent);
-  border-color: var(--nx-accent);
-  color: #fff;
-}
-
-.nx-summary-actions .material-symbols-outlined {
-  font-size: 15px;
-}
-
-/* Responsive */
 @media (max-width: 1100px) {
   .nx-product-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -651,77 +659,33 @@
 
   .nx-catalog-tools {
     align-items: stretch;
-    flex-direction: column;
   }
 
   .nx-tool-controls {
-    justify-content: space-between;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 900px) {
+  .nx-catalog-content {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-filter-sidebar {
+    width: 100%;
+    position: static;
+  }
+
+  .nx-product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 768px) {
-  .nx-command-inner,
-  .nx-catalog-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .nx-command-inner {
-    justify-content: center;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .nx-telemetry {
-    display: none;
-  }
-
-  .nx-index-metric {
-    width: 100%;
-  }
-
   .nx-product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
-  }
-
-  .nx-node-visual {
-    height: 130px;
-  }
-
-  .nx-node-body,
-  .nx-node-bottom {
-    padding-left: 0.7rem;
-    padding-right: 0.7rem;
-  }
-
-  .nx-node-status {
-    font-size: 0.47rem;
-  }
-
-  .nx-catalog-summary {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .nx-summary-actions {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .nx-summary-actions button {
-    flex: 1;
-    justify-content: center;
-  }
-
-  .nx-search input {
-    width: 125px;
-  }
-}
-
-@media (max-width: 480px) {
-  .nx-product-grid {
-    grid-template-columns: 1fr;
   }
 
   .nx-tool-controls {
@@ -738,26 +702,27 @@
   }
 
   .nx-sort select {
-    max-width: 210px;
+    max-width: 220px;
+  }
+
+  .nx-node-body,
+  .nx-node-bottom {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-product-grid {
+    grid-template-columns: 1fr;
   }
 
   .nx-node-visual {
     height: 155px;
   }
-}
-/* Product Images */
-.nx-device-glyph {
-  width: 100%;
-  height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+
+  .nx-search input {
+    width: 100%;
+  }
 }
 
-.nx-device-glyph img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
