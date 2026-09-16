@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Product } from "../types/product";
 
@@ -7,26 +8,23 @@ type ProductCardProps = {
 };
 
 function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  const [liked, setLiked] = useState(false);
+
   return (
     <article className="nx-node-card">
       {/* Product Image */}
       <div className="nx-node-visual">
-        <div className="nx-node-status">
-          {product.stock === "Built-to-Order"
-            ? "Built-to-Order"
-            : product.stock === "In Stock"
-            ? "In Stock"
-            : `In Stock · ${product.stock}`}
-        </div>
-
         <button
-          className="nx-node-save"
+          className={`nx-node-save ${liked ? "liked" : ""}`}
           type="button"
-          aria-label={`Save ${product.name}`}
+          aria-label={
+            liked
+              ? `Remove ${product.name} from favorites`
+              : `Save ${product.name}`
+          }
+          onClick={() => setLiked((previous) => !previous)}
         >
-          <span className="material-symbols-outlined">
-            favorite
-          </span>
+          <span className="nx-heart-icon"></span>
         </button>
 
         <div className="nx-device-glyph">

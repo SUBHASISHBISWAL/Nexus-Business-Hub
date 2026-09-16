@@ -292,25 +292,6 @@ function ProductList() {
 
           {/* RIGHT PRODUCT AREA */}
           <div className="nx-product-area">
-
-            {/* SEARCH */}
-            <div className="nx-catalog-search">
-              <label className="nx-search">
-                <span className="material-symbols-outlined">
-                  search
-                </span>
-
-                <input
-                  value={search}
-                  onChange={(event) =>
-                    setSearch(event.target.value)
-                  }
-                  placeholder="Search nodes, specs..."
-                  aria-label="Search catalog"
-                />
-              </label>
-            </div>
-
             {/* CART NOTICE */}
             {notice && (
               <div

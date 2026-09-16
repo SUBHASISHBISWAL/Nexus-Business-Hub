@@ -1,5 +1,4 @@
-
-/* =========================================================
+ /* =========================================================
    Nexus Business Hub — Product Catalog
    ========================================================= */
 
@@ -16,9 +15,11 @@
   --nx-hairline-strong: #cbd5e1;
   --nx-hairline-hover: #94a3b8;
   --nx-shadow-1: 0 1px 2px rgba(15, 23, 42, 0.03);
-  --nx-shadow-2: 0 4px 12px -2px rgba(15, 23, 42, 0.05),
+  --nx-shadow-2:
+    0 4px 12px -2px rgba(15, 23, 42, 0.05),
     0 1px 3px rgba(15, 23, 42, 0.04);
-  --nx-shadow-3: 0 20px 32px -8px rgba(15, 23, 42, 0.08),
+  --nx-shadow-3:
+    0 20px 32px -8px rgba(15, 23, 42, 0.08),
     0 8px 16px -4px rgba(15, 23, 42, 0.04);
 
   background: #f8faff;
@@ -55,14 +56,14 @@
   background: #ffffff;
   border: 1px solid #dfe5ec;
   border-radius: 12px;
-  padding: 20px;
+  padding: 14px;
   box-sizing: border-box;
   position: sticky;
   top: 20px;
 }
 
 .nx-filter-sidebar h3 {
-  margin: 0 0 20px;
+  margin: 0 0 4px;
   color: var(--nx-ink);
   font-size: 20px;
   font-weight: 700;
@@ -74,7 +75,7 @@
 
 .nx-filter-section {
   border-top: 1px solid #e5e7eb;
-  padding-top: 14px;
+  padding-top: 5px;
 }
 
 .nx-filter-section + .nx-filter-section {
@@ -82,7 +83,7 @@
 }
 
 .nx-filter-section h4 {
-  margin: 18px 0 12px;
+  margin: 12px 0 8px;
   color: var(--nx-ink);
   font-size: 13px;
   font-weight: 700;
@@ -96,11 +97,12 @@
 
 .nx-category-dropdown {
   width: 100%;
-  height: 40px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 4px;
+  margin: 0;
   border: none;
   background: transparent;
   color: #111827;
@@ -141,9 +143,9 @@
 .nx-category-options {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-top: 6px;
-  padding-top: 8px;
+  gap: 1px;
+  margin-top: 2px;
+  padding-top: 4px;
   border-top: 1px solid #eef0f3;
 }
 
@@ -153,11 +155,11 @@
 
 .nx-checkbox-row {
   width: 100%;
-  min-height: 38px;
+  min-height: 26px;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 6px;
+  padding: 1px 0;
   box-sizing: border-box;
   border-radius: 7px;
   cursor: pointer;
@@ -180,7 +182,7 @@
 
 .nx-checkbox-row span {
   flex: 1;
-  line-height: 20px;
+  line-height: 18px;
 }
 
 .nx-checkbox-row small {
@@ -201,7 +203,7 @@
 
 .nx-price-slider {
   width: 100%;
-  margin: 8px 0;
+  margin: 7px 0;
   cursor: pointer;
   accent-color: #2563eb;
 }
@@ -212,6 +214,7 @@
   gap: 10px;
   font-size: 12px;
   color: #6b7280;
+  margin-top: 4px;
 }
 
 /* =========================================================
@@ -220,7 +223,7 @@
 
 .nx-reset-filters {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 18px;
   padding: 9px 12px;
   border: 1px solid #dbe2ea;
   border-radius: 7px;
@@ -402,22 +405,6 @@
   font-size: 40px;
 }
 
-/* =========================================================
-   PRODUCT STATUS
-   ========================================================= */
-
-.nx-node-status {
-  position: absolute;
-  z-index: 1;
-  top: 0.65rem;
-  left: 0.65rem;
-  font: 600 0.57rem "JetBrains Mono", ui-monospace, monospace;
-  color: #065f46;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  padding: 0.26rem 0.4rem;
-  border-radius: 2px;
-}
 
 /* =========================================================
    SAVE BUTTON
@@ -425,26 +412,49 @@
 
 .nx-node-save {
   position: absolute;
-  z-index: 2;
-  top: 0.55rem;
-  right: 0.55rem;
+  z-index: 5;
+  top: 10px;
+  right: 10px;
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   opacity: 0;
-  border: 1px solid var(--nx-hairline);
-  background: #fff;
-  width: 29px;
-  height: 29px;
-  border-radius: 3px;
-  color: var(--nx-ink-muted);
-  transition: 0.15s;
+  visibility: hidden;
+
+  border: none;
+  background: transparent;
+  border-radius: 0;
+
+  color: #64748b;
   cursor: pointer;
+
+  transition: opacity 0.2s ease,
+              visibility 0.2s ease,
+              transform 0.2s ease;
+
+  transform: translateY(-4px);
 }
 
 .nx-node-card:hover .nx-node-save {
   opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
-.nx-node-save .material-symbols-outlined {
-  font-size: 17px;
+.nx-node-save:hover {
+  color: #ef4444;
+}
+
+.nx-heart-icon {
+  font-size: 32px;
+  line-height: 1;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
 }
 
 /* =========================================================
@@ -726,3 +736,121 @@
   }
 }
 
+.nx-sort-filter {
+  padding-top: 10px;
+}
+
+.nx-sort-filter h4 {
+  margin: 0 0 7px;
+}
+
+.nx-sort-filter {
+  padding-top: 8px;
+}
+
+.nx-sort-dropdown {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nx-sort-dropdown:hover {
+  color: #2563eb;
+}
+
+.nx-sort-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 3px;
+  padding-top: 4px;
+  border-top: 1px solid #eef0f3;
+}
+
+.nx-sort-options button {
+  width: 100%;
+  padding: 7px 4px;
+  border: none;
+  background: transparent;
+  color: #374151;
+  font-size: 13px;
+  text-align: left;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.nx-sort-options button:hover {
+  background: #f5f7fa;
+  color: #2563eb;
+}
+
+.nx-catalog-search {
+  margin-bottom: 1.5rem;
+}
+
+.nx-catalog-search .nx-search {
+  width: 100%;
+  max-width: 420px;
+}
+
+.nx-heart-icon {
+  position: relative;
+  width: 12px;
+  height: 11px;
+  display: block;
+  transform: rotate(-45deg);
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.nx-heart-icon::before,
+.nx-heart-icon::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 11px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.nx-heart-icon::before {
+  top: -6px;
+  left: 0;
+}
+
+.nx-heart-icon::after {
+  top: 0;
+  left: 6px;
+}
+
+.nx-node-save {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+}
+
+.nx-node-save.liked {
+  opacity: 1;
+  visibility: visible;
+  color: #ef4444;
+}
+
+.nx-node-save:hover {
+  color: #ef4444;
+}
