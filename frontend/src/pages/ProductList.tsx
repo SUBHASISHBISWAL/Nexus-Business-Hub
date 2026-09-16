@@ -1,4 +1,3 @@
-
 import "./ProductList.css";
 import { useContext, useMemo, useState } from "react";
 import { CartContext } from "../context/CartContext";
@@ -262,10 +261,10 @@ function ProductList() {
   const { addToCart } = useContext(CartContext);
 
   const [search, setSearch] = useState<string>("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    []
-  );
+  const [selectedCategories, setSelectedCategories] =
+    useState<string[]>([]);
   const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
+  const [sortOpen, setSortOpen] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<number>(412000);
   const [minRating, setMinRating] = useState<number>(0);
   const [sort, setSort] = useState<string>("featured");
@@ -302,7 +301,13 @@ function ProductList() {
 
         return a.id - b.id;
       });
-  }, [selectedCategories, priceRange, minRating, search, sort]);
+  }, [
+    selectedCategories,
+    priceRange,
+    minRating,
+    search,
+    sort,
+  ]);
 
   const handleAddToCart = (product: Product) => {
     addToCart(product);
@@ -317,11 +322,18 @@ function ProductList() {
   const handleCategoryChange = (categoryName: string) => {
     setSelectedCategories((previous) => {
       if (previous.includes(categoryName)) {
-        return previous.filter((item) => item !== categoryName);
+        return previous.filter(
+          (item) => item !== categoryName
+        );
       }
 
       return [...previous, categoryName];
     });
+  };
+
+  const handleSortChange = (value: string) => {
+    setSort(value);
+    setSortOpen(false);
   };
 
   const resetFilters = () => {
@@ -329,6 +341,8 @@ function ProductList() {
     setSelectedCategories([]);
     setPriceRange(412000);
     setMinRating(0);
+    setSort("featured");
+    setSortOpen(false);
   };
 
   return (
@@ -346,7 +360,9 @@ function ProductList() {
                 type="button"
                 className="nx-category-dropdown"
                 onClick={() =>
-                  setCategoryOpen((previous) => !previous)
+                  setCategoryOpen(
+                    (previous) => !previous
+                  )
                 }
               >
                 <span>Category</span>
@@ -361,24 +377,27 @@ function ProductList() {
 
               {categoryOpen && (
                 <div className="nx-category-options">
-                  {/* ALL */}
                   <label className="nx-checkbox-row">
                     <input
                       type="checkbox"
-                      checked={selectedCategories.length === 0}
-                      onChange={() => setSelectedCategories([])}
+                      checked={
+                        selectedCategories.length === 0
+                      }
+                      onChange={() =>
+                        setSelectedCategories([])
+                      }
                     />
 
                     <span>All</span>
                     <small>{products.length}</small>
                   </label>
 
-                  {/* CATEGORIES */}
                   {categoryLabels
                     .filter((label) => label !== "All")
                     .map((label) => {
                       const count = products.filter(
-                        (item) => item.category === label
+                        (item) =>
+                          item.category === label
                       ).length;
 
                       return (
@@ -388,7 +407,9 @@ function ProductList() {
                         >
                           <input
                             type="checkbox"
-                            checked={selectedCategories.includes(label)}
+                            checked={selectedCategories.includes(
+                              label
+                            )}
                             onChange={() =>
                               handleCategoryChange(label)
                             }
@@ -414,17 +435,73 @@ function ProductList() {
                 step="1000"
                 value={priceRange}
                 onChange={(event) =>
-                  setPriceRange(Number(event.target.value))
+                  setPriceRange(
+                    Number(event.target.value)
+                  )
                 }
                 className="nx-price-slider"
               />
 
               <div className="nx-price-values">
                 <span>₹0</span>
+
                 <span>
                   ₹{priceRange.toLocaleString("en-IN")}
                 </span>
               </div>
+            </div>
+
+            {/* FEATURED ARCHITECTURE SORT */}
+            <div className="nx-filter-section nx-sort-filter">
+              <button
+                type="button"
+                className="nx-sort-dropdown"
+                onClick={() =>
+                  setSortOpen(
+                    (previous) => !previous
+                  )
+                }
+              >
+                <span>Featured Architecture</span>
+
+                <span
+                  className={`nx-chevron ${
+                    sortOpen ? "open" : ""
+                  }`}
+                  aria-hidden="true"
+                />
+              </button>
+
+              {sortOpen && (
+                <div className="nx-sort-options">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSortChange("price-high")
+                    }
+                  >
+                    Price: High to Low
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSortChange("price-low")
+                    }
+                  >
+                    Price: Low to High
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSortChange("rating")
+                    }
+                  >
+                    Spec Rating (4.0 & Above)
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* RATING */}
@@ -441,12 +518,16 @@ function ProductList() {
                     checked={minRating === rating}
                     onChange={() =>
                       setMinRating(
-                        minRating === rating ? 0 : rating
+                        minRating === rating
+                          ? 0
+                          : rating
                       )
                     }
                   />
 
-                  <span>{rating}.0 & above</span>
+                  <span>
+                    {rating}.0 & above
+                  </span>
                 </label>
               ))}
             </div>
@@ -464,56 +545,30 @@ function ProductList() {
           {/* RIGHT PRODUCT AREA */}
           <div className="nx-product-area">
 
-            {/* SEARCH + SORT */}
-            <div className="nx-catalog-tools">
-              <div className="nx-tool-controls">
-                <label className="nx-search">
-                  <span className="material-symbols-outlined">
-                    search
-                  </span>
+            {/* SEARCH */}
+            <div className="nx-catalog-search">
+              <label className="nx-search">
+                <span className="material-symbols-outlined">
+                  search
+                </span>
 
-                  <input
-                    value={search}
-                    onChange={(event) =>
-                      setSearch(event.target.value)
-                    }
-                    placeholder="Search nodes, specs..."
-                    aria-label="Search catalog"
-                  />
-                </label>
-
-                <label className="nx-sort">
-                  <span>SORT:</span>
-
-                  <select
-                    value={sort}
-                    onChange={(event) =>
-                      setSort(event.target.value)
-                    }
-                  >
-                    <option value="featured">
-                      Featured Architecture
-                    </option>
-
-                    <option value="price-low">
-                      Price: Low to High
-                    </option>
-
-                    <option value="price-high">
-                      Price: High to Low
-                    </option>
-
-                    <option value="rating">
-                      Spec Rating (5.0 First)
-                    </option>
-                  </select>
-                </label>
-              </div>
+                <input
+                  value={search}
+                  onChange={(event) =>
+                    setSearch(event.target.value)
+                  }
+                  placeholder="Search nodes, specs..."
+                  aria-label="Search catalog"
+                />
+              </label>
             </div>
 
             {/* CART NOTICE */}
             {notice && (
-              <div className="nx-cart-notice" role="status">
+              <div
+                className="nx-cart-notice"
+                role="status"
+              >
                 <span className="material-symbols-outlined">
                   check_circle
                 </span>
@@ -543,8 +598,8 @@ function ProductList() {
                 <h2>No matching nodes found</h2>
 
                 <p>
-                  Try a different search phrase or adjust your
-                  filters.
+                  Try a different search phrase or adjust
+                  your filters.
                 </p>
 
                 <button
@@ -563,4 +618,3 @@ function ProductList() {
 }
 
 export default ProductList;
-
