@@ -1,22 +1,5 @@
-
 import { Link } from "react-router-dom";
-
-type Product = {
-  id: number;
-  name: string;
-  category: string;
-  group: string;
-  price: number;
-  oldPrice?: number;
-  rating: number;
-  reviews: number;
-  icon: string;
-  image: string;
-  specs: string;
-  stock: string;
-  badge: string;
-  requestOnly?: boolean;
-};
+import type { Product } from "../types/product";
 
 type ProductCardProps = {
   product: Product;
@@ -31,6 +14,8 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
         <div className="nx-node-status">
           {product.stock === "Built-to-Order"
             ? "Built-to-Order"
+            : product.stock === "In Stock"
+            ? "In Stock"
             : `In Stock · ${product.stock}`}
         </div>
 
@@ -112,4 +97,3 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 }
 
 export default ProductCard;
-
