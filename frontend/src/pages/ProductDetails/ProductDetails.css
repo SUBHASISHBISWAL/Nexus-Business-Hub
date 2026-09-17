@@ -87,9 +87,10 @@
   width: 100%;
   min-height: 500px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  justify-content: flex-start;
+  overflow: visible;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   background: #ffffff;
@@ -488,4 +489,187 @@
     right: 12px;
     left: 12px;
   }
+}
+
+.nx-details-image-wrap {
+  position: relative;
+}
+
+.nx-image-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dbe2ea;
+  border-radius: 50%;
+  background: #ffffff;
+
+  color: #111827;
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.nx-image-arrow:hover {
+  background: #111827;
+  color: #ffffff;
+}
+
+.nx-image-arrow-left {
+  left: 12px;
+}
+
+.nx-image-arrow-right {
+  right: 12px;
+}
+
+.nx-image-dots {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;       /* main photo → dots gap reduced */
+  margin-bottom: 14px;   /* dots → thumbnails same */
+  flex-shrink: 0;
+}
+
+.nx-image-dot {
+  width: 8px;
+  height: 8px;
+
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+
+  background: #cbd5e1;
+  cursor: pointer;
+}
+
+.nx-image-dot.active {
+  width: 22px;
+  border-radius: 10px;
+  background: #111827;
+}
+
+/* =========================================================
+   PRODUCT IMAGE HOVER ZOOM
+   ========================================================= */
+
+.nx-image-zoom {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.nx-image-zoom .nx-details-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+  transform-origin: center center;
+}
+
+/*  simple zoom */
+.nx-image-zoom:hover .nx-details-image {
+  transform: scale(1.5);
+}
+.nx-image-zoom-area {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  cursor: crosshair;
+  flex-shrink: 0;
+}
+
+.nx-image-zoom-area .nx-details-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/*  magnifier */
+.nx-image-magnifier {
+  position: absolute;
+
+  width: 90px;
+  height: 90px;
+
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+
+  pointer-events: none;
+
+  background-repeat: no-repeat;
+  background-size: 300% 300%;
+
+  transform: translate(-50%, -50%);
+
+  z-index: 20;
+
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.nx-product-thumbnails {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 0;
+  margin-bottom: 16px;   /* gap in thumbnails  */
+  flex-shrink: 0;
+}
+
+
+.nx-product-thumbnail {
+  width: 68px;
+  height: 68px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid #dbe2ea;
+  border-radius: 7px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.nx-product-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.nx-product-thumbnail:hover {
+  border-color: #94a3b8;
+  transform: translateY(-2px);
+}
+
+.nx-product-thumbnail.active {
+  border: 2px solid #111827;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.nx-thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
