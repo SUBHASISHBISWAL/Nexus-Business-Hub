@@ -1,4 +1,8 @@
+<<<<<<< HEAD
  /* =========================================================
+=======
+/* =========================================================
+>>>>>>> a0d0811 (Update home page)
    Nexus Business Hub — Product Catalog
    ========================================================= */
 
@@ -14,10 +18,19 @@
   --nx-hairline: #e2e8f0;
   --nx-hairline-strong: #cbd5e1;
   --nx-hairline-hover: #94a3b8;
+
   --nx-shadow-1: 0 1px 2px rgba(15, 23, 42, 0.03);
+<<<<<<< HEAD
   --nx-shadow-2:
     0 4px 12px -2px rgba(15, 23, 42, 0.05),
     0 1px 3px rgba(15, 23, 42, 0.04);
+=======
+
+  --nx-shadow-2:
+    0 4px 12px -2px rgba(15, 23, 42, 0.05),
+    0 1px 3px rgba(15, 23, 42, 0.04);
+
+>>>>>>> a0d0811 (Update home page)
   --nx-shadow-3:
     0 20px 32px -8px rgba(15, 23, 42, 0.08),
     0 8px 16px -4px rgba(15, 23, 42, 0.04);
@@ -26,6 +39,10 @@
   font-family: "Inter", system-ui, sans-serif;
   min-height: 100vh;
 }
+
+/* =========================================================
+   CATALOG SHELL
+   ========================================================= */
 
 .nx-catalog-shell {
   padding-top: 2rem;
@@ -117,7 +134,9 @@
   color: #2563eb;
 }
 
-/* CSS CHEVRON — NO MATERIAL ICON */
+/* =========================================================
+   CSS CHEVRON
+   ========================================================= */
 
 .nx-chevron {
   width: 8px;
@@ -218,6 +237,63 @@
 }
 
 /* =========================================================
+   SORT FILTER
+   ========================================================= */
+
+.nx-sort-filter {
+  position: relative;
+}
+
+.nx-sort-dropdown {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nx-sort-dropdown:hover {
+  color: #2563eb;
+}
+
+.nx-sort-options {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 6px;
+  padding: 6px;
+  border: 1px solid var(--nx-hairline);
+  border-radius: 7px;
+  background: #ffffff;
+  box-shadow: var(--nx-shadow-2);
+}
+
+.nx-sort-options button {
+  width: 100%;
+  padding: 8px 9px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--nx-ink-secondary);
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.nx-sort-options button:hover {
+  background: #f5f7fa;
+  color: var(--nx-accent);
+}
+
+/* =========================================================
    RESET FILTERS
    ========================================================= */
 
@@ -239,78 +315,6 @@
   background: #f5f7fa;
   border-color: #2563eb;
   color: #2563eb;
-}
-
-/* =========================================================
-   SEARCH + SORT
-   ========================================================= */
-
-.nx-catalog-tools {
-  margin: 0 0 1.5rem;
-  padding: 0.8rem;
-  border: 1px solid var(--nx-hairline);
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: var(--nx-shadow-1);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-
-.nx-tool-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-/* SEARCH */
-
-.nx-search {
-  display: flex;
-  align-items: center;
-  background: var(--nx-recessed);
-  border-radius: 3px;
-  padding: 0 0.5rem;
-}
-
-.nx-search span {
-  color: var(--nx-ink-muted);
-  font-size: 18px;
-}
-
-.nx-search input {
-  width: 220px;
-  padding: 0.48rem 0.35rem;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  font-size: 0.76rem;
-}
-
-/* SORT */
-
-.nx-sort {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.nx-sort > span {
-  font: 0.62rem "JetBrains Mono", ui-monospace, monospace;
-  color: var(--nx-ink-muted);
-}
-
-.nx-sort select {
-  max-width: 190px;
-  border: 1px solid var(--nx-hairline);
-  border-radius: 3px;
-  background: #fff;
-  color: var(--nx-ink);
-  padding: 0.48rem 0.5rem;
-  font: 0.68rem "JetBrains Mono", ui-monospace, monospace;
-  outline: 0;
-  cursor: pointer;
 }
 
 /* =========================================================
@@ -353,6 +357,7 @@
   height: 156px;
   position: relative;
   overflow: hidden;
+
   background: linear-gradient(
     135deg,
     #e8f3fb,
@@ -365,6 +370,7 @@
   content: "";
   position: absolute;
   inset: 0;
+
   background:
     linear-gradient(
       90deg,
@@ -378,6 +384,7 @@
       rgba(2, 132, 199, 0.07) 50%,
       transparent 51%
     );
+
   background-size: 20px 20px;
 }
 
@@ -405,6 +412,28 @@
   font-size: 40px;
 }
 
+<<<<<<< HEAD
+=======
+/* =========================================================
+   PRODUCT STATUS
+   ========================================================= */
+
+.nx-node-status {
+  position: absolute;
+  z-index: 1;
+  top: 0.65rem;
+  left: 0.65rem;
+
+  font: 600 0.57rem "JetBrains Mono", ui-monospace, monospace;
+
+  color: #065f46;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+
+  padding: 0.26rem 0.4rem;
+  border-radius: 2px;
+}
+>>>>>>> a0d0811 (Update home page)
 
 /* =========================================================
    SAVE BUTTON
@@ -412,6 +441,7 @@
 
 .nx-node-save {
   position: absolute;
+<<<<<<< HEAD
   z-index: 5;
   top: 10px;
   right: 10px;
@@ -431,6 +461,24 @@
   border-radius: 0;
 
   color: #64748b;
+=======
+  z-index: 2;
+  top: 0.55rem;
+  right: 0.55rem;
+
+  opacity: 0;
+
+  border: 1px solid var(--nx-hairline);
+  background: #fff;
+
+  width: 29px;
+  height: 29px;
+
+  border-radius: 3px;
+  color: var(--nx-ink-muted);
+
+  transition: 0.15s;
+>>>>>>> a0d0811 (Update home page)
   cursor: pointer;
 
   transition: opacity 0.2s ease,
@@ -478,8 +526,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.4rem;
+
   color: #0369a1;
+
   font: 0.57rem "JetBrains Mono", ui-monospace, monospace;
+
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -487,6 +538,10 @@
 .nx-node-meta b {
   color: #7dd3fc;
 }
+
+/* =========================================================
+   RATING
+   ========================================================= */
 
 .nx-rating {
   color: var(--nx-ink);
@@ -506,25 +561,41 @@
   font-size: 0.57rem;
 }
 
+/* =========================================================
+   PRODUCT TITLE
+   ========================================================= */
+
 .nx-node-body h2 {
   margin: 0.55rem 0;
+
   font-size: 0.98rem;
   line-height: 1.25;
+
   color: var(--nx-ink);
+
   font-family: "Geist", system-ui, sans-serif;
 }
+
+/* =========================================================
+   SPECIFICATION
+   ========================================================= */
 
 .nx-spec-line {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+
   margin: 0;
   padding: 0.45rem;
+
   background: var(--nx-recessed);
   color: var(--nx-ink-muted);
+
   border: 1px solid #e9eef5;
   border-radius: 3px;
+
   font: 0.62rem/1.35 "JetBrains Mono", ui-monospace, monospace;
+
   overflow: hidden;
 }
 
@@ -544,7 +615,9 @@
 
 .nx-node-price {
   padding-top: 0.65rem;
+
   border-top: 1px solid var(--nx-hairline);
+
   display: flex;
   align-items: baseline;
   gap: 0.35rem;
@@ -562,10 +635,13 @@
 
 .nx-node-price span {
   margin-left: auto;
+
   color: #047857;
   background: #ecfdf5;
+
   padding: 0.24rem 0.3rem;
   border-radius: 2px;
+
   font: 700 0.52rem "JetBrains Mono", ui-monospace, monospace;
 }
 
@@ -576,6 +652,7 @@
 .nx-node-actions {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
+
   gap: 0.35rem;
   margin-top: 0.7rem;
 }
@@ -583,12 +660,16 @@
 .nx-node-actions button,
 .nx-node-actions a {
   min-height: 33px;
+
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
+
   border-radius: 3px;
+
   font: 600 0.62rem "JetBrains Mono", ui-monospace, monospace;
+
   text-decoration: none;
 }
 
@@ -596,6 +677,12 @@
   border: 1px solid var(--nx-ink);
   background: var(--nx-ink);
   color: #fff;
+
+  cursor: pointer;
+}
+
+.nx-add-button:hover {
+  background: #1e293b;
 }
 
 .nx-add-button span {
@@ -608,6 +695,11 @@
   background: #fff;
 }
 
+.nx-node-actions a:hover {
+  border-color: var(--nx-ink);
+  color: var(--nx-ink);
+}
+
 /* =========================================================
    CART NOTICE
    ========================================================= */
@@ -615,15 +707,21 @@
 .nx-cart-notice {
   position: fixed;
   z-index: 1100;
+
   right: 20px;
   bottom: 20px;
+
   display: flex;
   align-items: center;
   gap: 0.45rem;
+
   padding: 0.75rem 1rem;
+
   background: var(--nx-ink);
   color: #fff;
+
   font-size: 0.8rem;
+
   box-shadow: var(--nx-shadow-3);
   border-radius: 4px;
 }
@@ -638,7 +736,9 @@
 
 .nx-empty-catalog {
   text-align: center;
+
   padding: 5rem 1rem;
+
   color: var(--nx-ink-muted);
 }
 
@@ -657,12 +757,75 @@
 
 .nx-empty-catalog button {
   border: 0;
+
   background: var(--nx-ink);
   color: #fff;
+
   border-radius: 3px;
+
   padding: 0.55rem 0.8rem;
+
   font-size: 0.8rem;
+
   cursor: pointer;
+}
+
+.nx-empty-catalog button:hover {
+  background: var(--nx-accent);
+}
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.nx-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 0.45rem;
+
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.nx-pagination button {
+  min-width: 36px;
+  height: 36px;
+
+  padding: 0 0.7rem;
+
+  border: 1px solid var(--nx-hairline);
+  border-radius: 4px;
+
+  background: #fff;
+  color: var(--nx-ink);
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.nx-pagination button:hover:not(:disabled) {
+  border-color: var(--nx-accent);
+  color: var(--nx-accent);
+}
+
+.nx-pagination button.active {
+  background: var(--nx-ink);
+  border-color: var(--nx-ink);
+  color: #fff;
+}
+
+.nx-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 /* =========================================================
@@ -672,15 +835,6 @@
 @media (max-width: 1100px) {
   .nx-product-grid {
     grid-template-columns: repeat(3, 1fr);
-  }
-
-  .nx-catalog-tools {
-    align-items: stretch;
-  }
-
-  .nx-tool-controls {
-    width: 100%;
-    justify-content: flex-end;
   }
 }
 
@@ -705,27 +859,14 @@
     gap: 0.8rem;
   }
 
-  .nx-tool-controls {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .nx-search input {
-    width: 100%;
-  }
-
-  .nx-sort {
-    justify-content: space-between;
-  }
-
-  .nx-sort select {
-    max-width: 220px;
-  }
-
   .nx-node-body,
   .nx-node-bottom {
     padding-left: 0.7rem;
     padding-right: 0.7rem;
+  }
+
+  .nx-pagination {
+    gap: 0.3rem;
   }
 }
 
@@ -738,11 +879,11 @@
     height: 155px;
   }
 
-  .nx-search input {
-    width: 100%;
+  .nx-pagination {
+    gap: 0.25rem;
   }
-}
 
+<<<<<<< HEAD
 .nx-sort-filter {
   padding-top: 10px;
 }
@@ -926,4 +1067,14 @@
 
 .nx-pagination button i {
   font-size: 13px;
+=======
+  .nx-pagination button {
+    min-width: 32px;
+    height: 32px;
+
+    padding: 0 0.5rem;
+
+    font-size: 0.7rem;
+  }
+>>>>>>> a0d0811 (Update home page)
 }
