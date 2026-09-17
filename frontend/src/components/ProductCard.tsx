@@ -1,32 +1,44 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Product } from "../types/product";
 
 type ProductCardProps = {
   product: Product;
   onAddToCart: (product: Product) => void;
+  isLiked: boolean;
+  onToggleWishlist: () => void;
 };
 
-function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  const [liked, setLiked] = useState(false);
-
+function ProductCard({
+  product,
+  onAddToCart,
+  isLiked,
+  onToggleWishlist,
+}: ProductCardProps) {
   return (
     <article className="nx-node-card">
       {/* Product Image */}
       <div className="nx-node-visual">
+
+        {/* Wishlist Heart */}
         <button
-          className={`nx-node-save ${liked ? "liked" : ""}`}
+          className={`nx-node-save ${isLiked ? "liked" : ""}`}
           type="button"
           aria-label={
-            liked
+            isLiked
               ? `Remove ${product.name} from favorites`
               : `Save ${product.name}`
           }
-          onClick={() => setLiked((previous) => !previous)}
+          onClick={onToggleWishlist}
         >
-          <span className="nx-heart-icon"></span>
+          <i
+            className={`bi ${
+              isLiked ? "bi-heart-fill" : "bi-heart"
+            }`}
+            aria-hidden="true"
+          ></i>
         </button>
 
+        {/* Product Image */}
         <div className="nx-device-glyph">
           <img
             src={`/products/${product.image}`}
@@ -34,6 +46,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
           />
         </div>
 
+        {/* Decorative Lines */}
         <div className="nx-device-lines">
           <i />
           <i />
@@ -82,11 +95,13 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
               </span>
             )}
 
-            {product.requestOnly ? "Request BTO" : "Add Cart"}
+            {product.requestOnly
+              ? "Request BTO"
+              : "Add Cart"}
           </button>
 
           <Link to={`/products/${product.id}`}>
-            View Node
+            View Details
           </Link>
         </div>
       </div>

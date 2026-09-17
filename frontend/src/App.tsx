@@ -2,17 +2,20 @@ import AppRoutes from "./routes/AppRoutes";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
 
 function App() {
   return (
     <CartProvider>
-      <Navbar />
+      <WishlistProvider>
+        <Navbar />
 
-      <main>
-        <AppRoutes />
-      </main>
+        <main>
+          <AppRoutes />
+        </main>
 
-      <Footer />
+        <Footer />
+      </WishlistProvider>
     </CartProvider>
   );
 }

@@ -1,22 +1,52 @@
 import "./ProductList.css";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { CartContext } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import ProductCard from "../components/ProductCard";
 import { products, categoryLabels } from "../data/products";
 import type { Product } from "../types/product";
 
 function ProductList() {
   const { addToCart } = useContext(CartContext);
+  const { wishlist, toggleWishlist } = useWishlist();
+
+  // =========================
+  // FILTER / SORT STATES
+  // =========================
 
   const [search, setSearch] = useState<string>("");
   const [selectedCategories, setSelectedCategories] =
     useState<string[]>([]);
-  const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
-  const [sortOpen, setSortOpen] = useState<boolean>(false);
-  const [priceRange, setPriceRange] = useState<number>(412000);
-  const [minRating, setMinRating] = useState<number>(0);
-  const [sort, setSort] = useState<string>("featured");
-  const [notice, setNotice] = useState<string>("" );
+  const [categoryOpen, setCategoryOpen] =
+    useState<boolean>(true);
+  const [sortOpen, setSortOpen] =
+    useState<boolean>(false);
+  const [priceRange, setPriceRange] =
+    useState<number>(412000);
+  const [minRating, setMinRating] =
+    useState<number>(0);
+  const [sort, setSort] =
+    useState<string>("featured");
+
+  // =========================
+  // PAGINATION
+  // =========================
+
+  const [currentPage, setCurrentPage] =
+    useState<number>(1);
+
+  const productsPerPage = 12;
+
+  // =========================
+  // CART NOTICE
+  // =========================
+
+  const [notice, setNotice] =
+    useState<string>("");
+
+  // =========================
+  // FILTER PRODUCTS
+  // =========================
 
   const visibleProducts = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -25,11 +55,17 @@ function ProductList() {
       .filter(
         (product) =>
           (selectedCategories.length === 0 ||
-            selectedCategories.includes(product.category)) &&
+            selectedCategories.includes(
+              product.category
+            )) &&
           product.price <= priceRange &&
           product.rating >= minRating &&
           (!query ||
-            [product.name, product.group, product.specs]
+            [
+              product.name,
+              product.group,
+              product.specs,
+            ]
               .join(" ")
               .toLowerCase()
               .includes(query))
@@ -57,17 +93,60 @@ function ProductList() {
     sort,
   ]);
 
+  // =========================
+  // PAGINATION CALCULATION
+  // =========================
+
+  const totalPages = Math.ceil(
+    visibleProducts.length / productsPerPage
+  );
+
+  const startIndex =
+    (currentPage - 1) * productsPerPage;
+
+  const paginatedProducts =
+    visibleProducts.slice(
+      startIndex,
+      startIndex + productsPerPage
+    );
+
+  // =========================
+  // RESET PAGE WHEN FILTER CHANGES
+  // =========================
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    selectedCategories,
+    priceRange,
+    minRating,
+    search,
+    sort,
+  ]);
+
+  // =========================
+  // ADD TO CART
+  // =========================
+
   const handleAddToCart = (product: Product) => {
     addToCart(product);
 
-    setNotice(`${product.name} added to cart`);
+    setNotice(
+      `${product.name} added to cart`
+    );
 
     window.setTimeout(() => {
       setNotice("");
     }, 2600);
   };
 
-  const handleCategoryChange = (categoryName: string) => {
+  // =========================
+  // CATEGORY FILTER
+  // =========================
+
+  const handleCategoryChange = (
+    categoryName: string
+  ) => {
     setSelectedCategories((previous) => {
       if (previous.includes(categoryName)) {
         return previous.filter(
@@ -75,14 +154,28 @@ function ProductList() {
         );
       }
 
-      return [...previous, categoryName];
+      return [
+        ...previous,
+        categoryName,
+      ];
     });
   };
 
-  const handleSortChange = (value: string) => {
+  // =========================
+  // SORT
+  // =========================
+
+  const handleSortChange = (
+    value: string
+  ) => {
     setSort(value);
     setSortOpen(false);
+    setCurrentPage(1);
   };
+
+  // =========================
+  // RESET FILTERS
+  // =========================
 
   const resetFilters = () => {
     setSearch("");
@@ -91,25 +184,53 @@ function ProductList() {
     setMinRating(0);
     setSort("featured");
     setSortOpen(false);
+    setCurrentPage(1);
   };
+
+  // =========================
+  // PAGINATION HANDLERS
+  // =========================
+
+  const goToPage = (page: number) => {
+    if (
+      page >= 1 &&
+      page <= totalPages
+    ) {
+      setCurrentPage(page);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // =========================
+  // UI
+  // =========================
 
   return (
     <div className="nx-catalog-page">
       <section className="container nx-catalog-shell">
         <div className="nx-catalog-content">
 
-          {/* LEFT FILTER SIDEBAR */}
+          {/* =========================
+              LEFT FILTER SIDEBAR
+          ========================== */}
+
           <aside className="nx-filter-sidebar">
             <h3>Filters</h3>
 
             {/* CATEGORY */}
+
             <div className="nx-filter-section">
               <button
                 type="button"
                 className="nx-category-dropdown"
                 onClick={() =>
                   setCategoryOpen(
-                    (previous) => !previous
+                    (previous) =>
+                      !previous
                   )
                 }
               >
@@ -117,7 +238,9 @@ function ProductList() {
 
                 <span
                   className={`nx-chevron ${
-                    categoryOpen ? "open" : ""
+                    categoryOpen
+                      ? "open"
+                      : ""
                   }`}
                   aria-hidden="true"
                 />
@@ -125,28 +248,44 @@ function ProductList() {
 
               {categoryOpen && (
                 <div className="nx-category-options">
+
+                  {/* ALL */}
+
                   <label className="nx-checkbox-row">
                     <input
                       type="checkbox"
                       checked={
-                        selectedCategories.length === 0
+                        selectedCategories.length ===
+                        0
                       }
                       onChange={() =>
-                        setSelectedCategories([])
+                        setSelectedCategories(
+                          []
+                        )
                       }
                     />
 
                     <span>All</span>
-                    <small>{products.length}</small>
+
+                    <small>
+                      {products.length}
+                    </small>
                   </label>
 
+                  {/* CATEGORIES */}
+
                   {categoryLabels
-                    .filter((label) => label !== "All")
+                    .filter(
+                      (label) =>
+                        label !== "All"
+                    )
                     .map((label) => {
-                      const count = products.filter(
-                        (item) =>
-                          item.category === label
-                      ).length;
+                      const count =
+                        products.filter(
+                          (item) =>
+                            item.category ===
+                            label
+                        ).length;
 
                       return (
                         <label
@@ -159,12 +298,19 @@ function ProductList() {
                               label
                             )}
                             onChange={() =>
-                              handleCategoryChange(label)
+                              handleCategoryChange(
+                                label
+                              )
                             }
                           />
 
-                          <span>{label}</span>
-                          <small>{count}</small>
+                          <span>
+                            {label}
+                          </span>
+
+                          <small>
+                            {count}
+                          </small>
                         </label>
                       );
                     })}
@@ -173,6 +319,7 @@ function ProductList() {
             </div>
 
             {/* PRICE RANGE */}
+
             <div className="nx-filter-section">
               <h4>Price Range</h4>
 
@@ -184,7 +331,9 @@ function ProductList() {
                 value={priceRange}
                 onChange={(event) =>
                   setPriceRange(
-                    Number(event.target.value)
+                    Number(
+                      event.target.value
+                    )
                   )
                 }
                 className="nx-price-slider"
@@ -194,27 +343,36 @@ function ProductList() {
                 <span>₹0</span>
 
                 <span>
-                  ₹{priceRange.toLocaleString("en-IN")}
+                  ₹
+                  {priceRange.toLocaleString(
+                    "en-IN"
+                  )}
                 </span>
               </div>
             </div>
 
-            {/* FEATURED ARCHITECTURE SORT */}
+            {/* SORT */}
+
             <div className="nx-filter-section nx-sort-filter">
               <button
                 type="button"
                 className="nx-sort-dropdown"
                 onClick={() =>
                   setSortOpen(
-                    (previous) => !previous
+                    (previous) =>
+                      !previous
                   )
                 }
               >
-                <span>Featured Architecture</span>
+                <span>
+                  Featured Architecture
+                </span>
 
                 <span
                   className={`nx-chevron ${
-                    sortOpen ? "open" : ""
+                    sortOpen
+                      ? "open"
+                      : ""
                   }`}
                   aria-hidden="true"
                 />
@@ -222,65 +380,84 @@ function ProductList() {
 
               {sortOpen && (
                 <div className="nx-sort-options">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleSortChange("price-high")
-                    }
-                  >
-                    Price: High to Low
-                  </button>
 
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleSortChange("price-low")
-                    }
-                  >
-                    Price: Low to High
-                  </button>
+                  <label className="nx-checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={sort === "price-high"}
+                      onChange={() =>
+                        handleSortChange("price-high")
+                      }
+                    />
 
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleSortChange("rating")
-                    }
-                  >
-                    Spec Rating (4.0 & Above)
-                  </button>
+                    <span>Price: High to Low</span>
+                  </label>
+
+                  <label className="nx-checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={sort === "price-low"}
+                      onChange={() =>
+                        handleSortChange("price-low")
+                      }
+                    />
+
+                    <span>Price: Low to High</span>
+                  </label>
+
+                  <label className="nx-checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={sort === "rating"}
+                      onChange={() =>
+                        handleSortChange("rating")
+                      }
+                    />
+
+                    <span>Spec Rating (4.0 & Above)</span>
+                  </label>
+
                 </div>
               )}
             </div>
 
             {/* RATING */}
+
             <div className="nx-filter-section">
               <h4>Rating</h4>
 
-              {[4, 3, 2, 1].map((rating) => (
-                <label
-                  key={rating}
-                  className="nx-checkbox-row"
-                >
-                  <input
-                    type="checkbox"
-                    checked={minRating === rating}
-                    onChange={() =>
-                      setMinRating(
-                        minRating === rating
-                          ? 0
-                          : rating
-                      )
-                    }
-                  />
+              {[4, 3, 2, 1].map(
+                (rating) => (
+                  <label
+                    key={rating}
+                    className="nx-checkbox-row"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={
+                        minRating ===
+                        rating
+                      }
+                      onChange={() =>
+                        setMinRating(
+                          minRating ===
+                            rating
+                            ? 0
+                            : rating
+                        )
+                      }
+                    />
 
-                  <span>
-                    {rating}.0 & above
-                  </span>
-                </label>
-              ))}
+                    <span>
+                      {rating}.0 & above
+                    </span>
+                  </label>
+                )
+              )}
             </div>
 
             {/* RESET */}
+
             <button
               type="button"
               className="nx-reset-filters"
@@ -290,9 +467,14 @@ function ProductList() {
             </button>
           </aside>
 
-          {/* RIGHT PRODUCT AREA */}
+          {/* =========================
+              RIGHT PRODUCT AREA
+          ========================== */}
+
           <div className="nx-product-area">
+
             {/* CART NOTICE */}
+
             {notice && (
               <div
                 className="nx-cart-notice"
@@ -306,39 +488,134 @@ function ProductList() {
               </div>
             )}
 
-            {/* PRODUCTS */}
+            {/* PRODUCT GRID */}
+
             <div className="nx-product-grid">
-              {visibleProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
+              {paginatedProducts.map(
+                (product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={
+                      handleAddToCart
+                    }
+                    isLiked={wishlist.includes(
+                      product.id
+                    )}
+                    onToggleWishlist={() =>
+                      toggleWishlist(
+                        product.id
+                      )
+                    }
+                  />
+                )
+              )}
             </div>
 
-            {/* EMPTY STATE */}
+            {/* =========================
+                PAGINATION
+            ========================== */}
+
+            {visibleProducts.length >
+              0 &&
+              totalPages > 1 && (
+                <div className="nx-pagination">
+
+                  {/* PREVIOUS */}
+
+                  <button
+                    type="button"
+                    disabled={
+                      currentPage === 1
+                    }
+                    onClick={() =>
+                      goToPage(
+                        currentPage - 1
+                      )
+                    }
+                    aria-label="Previous page"
+                  >
+                    <i className="bi bi-chevron-left"></i>
+                  </button>
+
+                  {/* PAGE NUMBERS */}
+
+                  {Array.from(
+                    {
+                      length: totalPages,
+                    },
+                    (_, index) =>
+                      index + 1
+                  ).map((page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      className={
+                        currentPage ===
+                        page
+                          ? "active"
+                          : ""
+                      }
+                      onClick={() =>
+                        goToPage(page)
+                      }
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  {/* NEXT */}
+
+                  <button
+                    type="button"
+                    disabled={
+                      currentPage ===
+                      totalPages
+                    }
+                    onClick={() =>
+                      goToPage(
+                        currentPage + 1
+                      )
+                    }
+                    aria-label="Next page"
+                  >
+                    <i className="bi bi-chevron-right"></i>
+                  </button>
+
+                </div>
+              )}
+
+            {/* =========================
+                EMPTY STATE
+            ========================== */}
+
             {!visibleProducts.length && (
               <div className="nx-empty-catalog">
                 <span className="material-symbols-outlined">
                   search_off
                 </span>
 
-                <h2>No matching nodes found</h2>
+                <h2>
+                  No matching nodes found
+                </h2>
 
                 <p>
-                  Try a different search phrase or adjust
-                  your filters.
+                  Try a different search
+                  phrase or adjust your
+                  filters.
                 </p>
 
                 <button
                   type="button"
-                  onClick={resetFilters}
+                  onClick={
+                    resetFilters
+                  }
                 >
                   Reset catalog
                 </button>
               </div>
             )}
+
           </div>
         </div>
       </section>

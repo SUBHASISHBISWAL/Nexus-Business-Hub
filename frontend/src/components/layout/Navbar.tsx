@@ -2,9 +2,11 @@ import { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import "./Navbar.css";
+import { useWishlist } from "../../context/WishlistContext";
 
 export default function Navbar() {
   const { cart } = useContext(CartContext);
+  const { wishlist } = useWishlist();
 
   return (
     <nav className="nexus-navbar">
@@ -64,7 +66,7 @@ export default function Navbar() {
             aria-label="Wishlist"
           >
             <i className="bi bi-heart"></i>
-            <span className="badge-count">2</span>
+            <span className="badge-count">{wishlist.length}</span>
           </button>
 
           {/* Cart */}
