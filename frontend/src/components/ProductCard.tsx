@@ -89,15 +89,7 @@ function ProductCard({
             className="nx-add-button"
             onClick={() => onAddToCart(product)}
           >
-            {product.requestOnly && (
-              <span className="material-symbols-outlined">
-                assignment
-              </span>
-            )}
-
-            {product.requestOnly
-              ? "Request BTO"
-              : "Add Cart"}
+            Add Cart
           </button>
 
           <Link to={`/products/${product.id}`}>
