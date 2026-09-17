@@ -41,7 +41,7 @@ function ProductCard({
         {/* Product Image */}
         <div className="nx-device-glyph">
           <img
-            src={`/products/${product.image}`}
+            src={product.image}
             alt={product.name}
           />
         </div>

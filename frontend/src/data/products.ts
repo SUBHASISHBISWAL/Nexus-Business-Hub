@@ -1,5 +1,22 @@
 import type { Product, ProductCategory } from "../types/product";
 
+import product1 from "../assets/product-images/product1.jpg";
+import product2 from "../assets/product-images/product2.jpg";
+import product3 from "../assets/product-images/product3.jpg";
+import product4 from "../assets/product-images/product4.jpg";
+import product5 from "../assets/product-images/product5.jpg";
+import product6 from "../assets/product-images/product6.jpg";
+import product7 from "../assets/product-images/product7.jpg";
+import product8 from "../assets/product-images/product8.jpg";
+import product9 from "../assets/product-images/product9.jpg";
+import product10 from "../assets/product-images/product10.jpg";
+import product11 from "../assets/product-images/product11.jpg";
+import product12 from "../assets/product-images/product12.jpg";
+import product13 from "../assets/product-images/product13.jpg";
+import product14 from "../assets/product-images/product14.jpg";
+import product15 from "../assets/product-images/product15.jpg";
+import product16 from "../assets/product-images/product16.jpg";
+
 export const products: Product[] = [
   {
     id: 1,
@@ -11,7 +28,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviews: 128,
     icon: "router",
-    image: "product1.jpg",
+    image: product1,
     specs: "Quad ARM A53 1.8GHz · Dual GbE · TPM 2.0",
     stock: "Ships in 24h",
     badge: "SAVE 15%",
@@ -25,7 +42,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 64,
     icon: "dns",
-    image: "product2.jpg",
+    image: product2,
     specs: "AMD Ryzen Embedded · 32GB ECC · NVMe RAID",
     stock: "In Stock",
     badge: "IP40 RATED",
@@ -39,7 +56,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviews: 97,
     icon: "monitoring",
-    image: "product3.jpg",
+    image: product3,
     specs: "Remote OTA · Device telemetry · Role controls",
     stock: "License Ready",
     badge: "ANNUAL PLAN",
@@ -53,7 +70,7 @@ export const products: Product[] = [
     rating: 4.7,
     reviews: 44,
     icon: "cable",
-    image: "product4.jpg",
+    image: product4,
     specs: "IP69K washdown · Oil resistant · 5m shielded",
     stock: "In Stock",
     badge: "IP69K RATED",
@@ -67,7 +84,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 36,
     icon: "thermal",
-    image: "product5.jpg",
+    image: product5,
     specs: "640 × 512 LWIR · -20°C to 85°C · PoE+",
     stock: "In Stock",
     badge: "CALIBRATED",
@@ -81,7 +98,7 @@ export const products: Product[] = [
     rating: 4.6,
     reviews: 71,
     icon: "architecture",
-    image: "product6.jpg",
+    image: product6,
     specs: "Anodized aluminum · DIN 35 compatible",
     stock: "In Stock",
     badge: "FIELD READY",
@@ -95,7 +112,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviews: 58,
     icon: "lan",
-    image: "product7.jpg",
+    image: product7,
     specs: "8 × GbE PoE+ · 2 × SFP · Redundant power",
     stock: "Ships in 48h",
     badge: "MANAGED",
@@ -109,7 +126,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 22,
     icon: "tune",
-    image: "product8.jpg",
+    image: product8,
     specs: "2.5kV isolation · Dual CAN 2.0B · Auto-baud",
     stock: "In Stock",
     badge: "2.5kV ISOLATION",
@@ -123,7 +140,7 @@ export const products: Product[] = [
     rating: 4.7,
     reviews: 49,
     icon: "insights",
-    image: "product9.jpg",
+    image: product9,
     specs: "Anomaly models · Event rules · CSV export",
     stock: "License Ready",
     badge: "AI ENABLED",
@@ -137,7 +154,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 31,
     icon: "memory",
-    image: "product10.jpg",
+    image: product10,
     specs: "12 I/O channels · RS-485 · Conformal coating",
     stock: "In Stock",
     badge: "IEC CERTIFIED",
@@ -151,7 +168,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviews: 83,
     icon: "shield_lock",
-    image: "product11.jpg",
+    image: product11,
     specs: "Zero-trust access · Audit logs · SSO support",
     stock: "License Ready",
     badge: "AES-256",
@@ -165,7 +182,7 @@ export const products: Product[] = [
     rating: 5.0,
     reviews: 15,
     icon: "lock",
-    image: "product12.jpg",
+    image: product12,
     specs: "10,000 RSA-4096 ops/s · Dual redundant PSU",
     stock: "Built-to-Order",
     badge: "CUSTOM CALIB",
@@ -180,7 +197,7 @@ export const products: Product[] = [
     rating: 4.6,
     reviews: 54,
     icon: "vibration",
-    image: "product13.jpg",
+    image: product13,
     specs: "3-axis MEMS · 8kHz sample rate · IP67",
     stock: "In Stock",
     badge: "IP67 RATED",
@@ -194,7 +211,7 @@ export const products: Product[] = [
     rating: 4.7,
     reviews: 29,
     icon: "handyman",
-    image: "product14.jpg",
+    image: product14,
     specs: "Crimp tools · Tester · Travel case",
     stock: "In Stock",
     badge: "SERVICE KIT",
@@ -208,7 +225,7 @@ export const products: Product[] = [
     rating: 4.5,
     reviews: 42,
     icon: "inventory_2",
-    image: "product15.jpg",
+    image: product15,
     specs: "QR inventory · Warranty alerts · REST API",
     stock: "License Ready",
     badge: "API INCLUDED",
@@ -222,7 +239,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 67,
     icon: "terminal",
-    image: "product16.jpg",
+    image: product16,
     specs: "C++ / Python SDK · Signed firmware · CI tools",
     stock: "License Ready",
     badge: "DEV LICENSE",
@@ -234,7 +251,8 @@ export const productCategories: ProductCategory[] = [
     id: "software",
     name: "Software",
     count: products.filter((p) => p.category === "Software").length,
-    description: "Mission-critical operating environments, fleet orchestrators & real-time telemetry analytics.",
+    description:
+      "Mission-critical operating environments, fleet orchestrators & real-time telemetry analytics.",
     icon: "bi-code-square",
     path: "/products?category=Software",
   },
@@ -242,7 +260,8 @@ export const productCategories: ProductCategory[] = [
     id: "hardware",
     name: "Hardware",
     count: products.filter((p) => p.category === "Hardware").length,
-    description: "High-throughput industrial computing units, cryptographic racks & edge appliances.",
+    description:
+      "High-throughput industrial computing units, cryptographic racks & edge appliances.",
     icon: "bi-cpu",
     path: "/products?category=Hardware",
   },
@@ -250,7 +269,8 @@ export const productCategories: ProductCategory[] = [
     id: "electronics",
     name: "Electronics",
     count: products.filter((p) => p.category === "Electronics").length,
-    description: "Precision IoT gateways, thermal imaging arrays & isolated field communication modules.",
+    description:
+      "Precision IoT gateways, thermal imaging arrays & isolated field communication modules.",
     icon: "bi-broadcast-pin",
     path: "/products?category=Electronics",
   },
@@ -258,7 +278,8 @@ export const productCategories: ProductCategory[] = [
     id: "accessories",
     name: "Accessories",
     count: products.filter((p) => p.category === "Accessories").length,
-    description: "Industrial washdown cabling, DIN-rail mounting kits & certified field deployment tools.",
+    description:
+      "Industrial washdown cabling, DIN-rail mounting kits & certified field deployment tools.",
     icon: "bi-tools",
     path: "/products?category=Accessories",
   },
