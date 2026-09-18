@@ -1,19 +1,10 @@
-
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import "./SupportTicketDetails.css";
 
-type TicketMessage = {
-  id: number;
-  sender: "Customer" | "Support Team";
-  message: string;
-  date: string;
-  time: string;
-};
-
-type TicketDetails = {
+type SupportTicket = {
   id: string;
   subject: string;
   category: string;
@@ -21,10 +12,23 @@ type TicketDetails = {
   status: "Open" | "In Progress" | "Awaiting Response" | "Resolved";
   created: string;
   updated: string;
-  messages: TicketMessage[];
+  order: string;
+  product: string;
+  description: string;
+  attachment?: string;
 };
 
-const tickets: TicketDetails[] = [
+type TicketMessage = {
+  id: number;
+  sender: "customer" | "support";
+  name: string;
+  time: string;
+  message: string;
+};
+
+const STORAGE_KEY = "nexus_support_tickets";
+
+const defaultTickets: SupportTicket[] = [
   {
     id: "TKT-1024",
     subject: "Gateway connectivity issue",
@@ -33,24 +37,10 @@ const tickets: TicketDetails[] = [
     status: "In Progress",
     created: "18 Sep 2026",
     updated: "2h ago",
-    messages: [
-      {
-        id: 1,
-        sender: "Customer",
-        message:
-          "The Smart IoT Gateway Pro is not connecting to our network. The device powers on normally, but the gateway is not establishing a network connection.",
-        date: "18 Sep 2026",
-        time: "10:24 AM",
-      },
-      {
-        id: 2,
-        sender: "Support Team",
-        message:
-          "Thank you for contacting Nexus Support. Our technical team is currently checking the connectivity issue. Please keep the gateway powered on while we review the configuration.",
-        date: "18 Sep 2026",
-        time: "11:42 AM",
-      },
-    ],
+    order: "ORD-1001",
+    product: "Smart IoT Gateway Pro",
+    description:
+      "Gateway is intermittently losing network connectivity.",
   },
   {
     id: "TKT-1021",
@@ -60,24 +50,10 @@ const tickets: TicketDetails[] = [
     status: "Awaiting Response",
     created: "18 Sep 2026",
     updated: "5h ago",
-    messages: [
-      {
-        id: 1,
-        sender: "Customer",
-        message:
-          "I need clarification regarding the invoice amount for my recent order.",
-        date: "18 Sep 2026",
-        time: "09:15 AM",
-      },
-      {
-        id: 2,
-        sender: "Support Team",
-        message:
-          "We have received your request. Our billing team is reviewing the invoice details and will respond shortly.",
-        date: "18 Sep 2026",
-        time: "10:05 AM",
-      },
-    ],
+    order: "ORD-1002",
+    product: "EdgeCompute R500",
+    description:
+      "Need clarification regarding the invoice amount and payment details.",
   },
   {
     id: "TKT-1018",
@@ -87,32 +63,10 @@ const tickets: TicketDetails[] = [
     status: "Resolved",
     created: "17 Sep 2026",
     updated: "1d ago",
-    messages: [
-      {
-        id: 1,
-        sender: "Customer",
-        message:
-          "I would like to request a replacement for the product received in my recent order.",
-        date: "17 Sep 2026",
-        time: "11:20 AM",
-      },
-      {
-        id: 2,
-        sender: "Support Team",
-        message:
-          "Your replacement request has been approved. The replacement shipment has been initiated.",
-        date: "17 Sep 2026",
-        time: "02:45 PM",
-      },
-      {
-        id: 3,
-        sender: "Customer",
-        message:
-          "Thank you. I have received the replacement shipment details.",
-        date: "17 Sep 2026",
-        time: "04:10 PM",
-      },
-    ],
+    order: "ORD-1003",
+    product: "NexusOS Fleet Control",
+    description:
+      "Requesting replacement for the received product.",
   },
   {
     id: "TKT-1015",
@@ -122,16 +76,10 @@ const tickets: TicketDetails[] = [
     status: "Open",
     created: "16 Sep 2026",
     updated: "2d ago",
-    messages: [
-      {
-        id: 1,
-        sender: "Customer",
-        message:
-          "Could you please provide an update on the expected delivery date of my shipment?",
-        date: "16 Sep 2026",
-        time: "01:30 PM",
-      },
-    ],
+    order: "ORD-1001",
+    product: "Smart IoT Gateway Pro",
+    description:
+      "Requesting an update regarding the shipment delivery status.",
   },
   {
     id: "TKT-1012",
@@ -141,38 +89,137 @@ const tickets: TicketDetails[] = [
     status: "Resolved",
     created: "15 Sep 2026",
     updated: "3d ago",
-    messages: [
-      {
-        id: 1,
-        sender: "Customer",
-        message:
-          "I need assistance with configuring the product for our deployment environment.",
-        date: "15 Sep 2026",
-        time: "09:45 AM",
-      },
-      {
-        id: 2,
-        sender: "Support Team",
-        message:
-          "Our technical team has shared the required configuration steps. Please let us know if you need any additional assistance.",
-        date: "15 Sep 2026",
-        time: "12:15 PM",
-      },
-    ],
+    order: "ORD-1002",
+    product: "EdgeCompute R500",
+    description:
+      "Need assistance with the initial product configuration.",
   },
 ];
 
 function SupportTicketDetails() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
-  const ticket = tickets.find(
-    (item) => item.id.toLowerCase() === id?.toLowerCase()
-  );
-
+  const [ticket, setTicket] = useState<SupportTicket | null>(null);
   const [reply, setReply] = useState("");
-  const [messages, setMessages] = useState<TicketMessage[]>(
-    ticket?.messages || []
-  );
+  const [messages, setMessages] = useState<TicketMessage[]>([]);
+  const [isSending, setIsSending] = useState(false);
+
+  useEffect(() => {
+    const loadTicket = () => {
+      try {
+        const storedTickets = localStorage.getItem(STORAGE_KEY);
+
+        let stored: SupportTicket[] = [];
+
+        if (storedTickets) {
+          const parsed = JSON.parse(storedTickets);
+
+          if (Array.isArray(parsed)) {
+            stored = parsed;
+          }
+        }
+
+        const allTickets = [...stored, ...defaultTickets].filter(
+          (item, index, array) =>
+            index === array.findIndex((ticketItem) => ticketItem.id === item.id)
+        );
+
+        const foundTicket = allTickets.find(
+          (ticketItem) => ticketItem.id === id
+        );
+
+        setTicket(foundTicket || null);
+
+        if (foundTicket) {
+          const savedMessages = localStorage.getItem(
+            `nexus_ticket_messages_${foundTicket.id}`
+          );
+
+          if (savedMessages) {
+            const parsedMessages = JSON.parse(savedMessages);
+
+            if (Array.isArray(parsedMessages)) {
+              setMessages(parsedMessages);
+              return;
+            }
+          }
+
+          setMessages([
+            {
+              id: 1,
+              sender: "customer",
+              name: "You",
+              time: foundTicket.created,
+              message: foundTicket.description,
+            },
+            {
+              id: 2,
+              sender: "support",
+              name: "Nexus Support",
+              time: "18 Sep 2026 · 11:24",
+              message:
+                "Thank you for contacting Nexus Support. We have received your request and our team is reviewing the issue.",
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error("Unable to load support ticket:", error);
+        setTicket(null);
+      }
+    };
+
+    loadTicket();
+  }, [id]);
+
+  const statusClass = useMemo(() => {
+    if (!ticket) {
+      return "";
+    }
+
+    return ticket.status.toLowerCase().replace(/\s+/g, "-");
+  }, [ticket]);
+
+  const priorityClass = useMemo(() => {
+    if (!ticket) {
+      return "";
+    }
+
+    return ticket.priority.toLowerCase();
+  }, [ticket]);
+
+  const handleSendReply = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedReply = reply.trim();
+
+    if (!trimmedReply || !ticket) {
+      return;
+    }
+
+    setIsSending(true);
+
+    const newMessage: TicketMessage = {
+      id: Date.now(),
+      sender: "customer",
+      name: "You",
+      time: "Just now",
+      message: trimmedReply,
+    };
+
+    const updatedMessages = [...messages, newMessage];
+
+    setMessages(updatedMessages);
+    setReply("");
+
+    localStorage.setItem(
+      `nexus_ticket_messages_${ticket.id}`,
+      JSON.stringify(updatedMessages)
+    );
+
+    window.setTimeout(() => {
+      setIsSending(false);
+    }, 400);
+  };
 
   if (!ticket) {
     return (
@@ -180,14 +227,14 @@ function SupportTicketDetails() {
         <div className="container">
           <div className="nx-ticket-not-found">
             <div className="nx-ticket-not-found-icon">
-              <i className="bi bi-ticket-perforated"></i>
+              <i className="bi bi-ticket-detailed"></i>
             </div>
 
-            <h1>Support Ticket Not Found</h1>
+            <h1>Ticket Not Found</h1>
 
             <p>
-              The support request you are looking for does not
-              exist or may no longer be available.
+              We could not find the support request you are looking for.
+              It may have been removed or the ticket ID may be incorrect.
             </p>
 
             <Link
@@ -203,469 +250,412 @@ function SupportTicketDetails() {
     );
   }
 
-  const handleReply = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const trimmedReply = reply.trim();
-
-    if (!trimmedReply) {
-      return;
-    }
-
-    const newMessage: TicketMessage = {
-      id: Date.now(),
-      sender: "Customer",
-      message: trimmedReply,
-      date: "18 Sep 2026",
-      time: "Just now",
-    };
-
-    setMessages((previous) => [
-      ...previous,
-      newMessage,
-    ]);
-
-    setReply("");
-  };
-
   return (
     <div className="nx-ticket-details-page">
-      {/* BREADCRUMB */}
-      <div className="container nx-ticket-breadcrumb">
-        <Link to="/">Home</Link>
+      <div className="container">
+        {/* BREADCRUMB */}
+        <div className="nx-ticket-breadcrumb">
+          <Link to="/">Home</Link>
+          <i className="bi bi-chevron-right"></i>
 
-        <i className="bi bi-chevron-right"></i>
+          <Link to="/support">Support</Link>
+          <i className="bi bi-chevron-right"></i>
 
-        <Link to="/support">Support</Link>
+          <Link to="/support/tickets">My Requests</Link>
+          <i className="bi bi-chevron-right"></i>
 
-        <i className="bi bi-chevron-right"></i>
-
-        <Link to="/support/tickets">
-          My Support Requests
-        </Link>
-
-        <i className="bi bi-chevron-right"></i>
-
-        <span>{ticket.id}</span>
-      </div>
-
-      {/* HEADER */}
-      <section className="container nx-ticket-details-header">
-        <div className="nx-ticket-header-main">
-          <div className="nx-ticket-header-label">
-            SUPPORT REQUEST
-          </div>
-
-          <div className="nx-ticket-title-row">
-            <div>
-              <div className="nx-ticket-id">
-                {ticket.id}
-              </div>
-
-              <h1>{ticket.subject}</h1>
-            </div>
-
-            <div className="nx-ticket-header-actions">
-              <Link
-                to="/support/tickets"
-                className="nx-ticket-outline-btn"
-              >
-                <i className="bi bi-arrow-left"></i>
-                My Requests
-              </Link>
-            </div>
-          </div>
-
-          <div className="nx-ticket-meta-row">
-            <span
-              className={`nx-ticket-status-badge ${ticket.status
-                .toLowerCase()
-                .replace(/\s+/g, "-")}`}
-            >
-              <span></span>
-              {ticket.status}
-            </span>
-
-            <span
-              className={`nx-ticket-priority-badge ${ticket.priority.toLowerCase()}`}
-            >
-              <i className="bi bi-flag"></i>
-              {ticket.priority} Priority
-            </span>
-
-            <span className="nx-ticket-meta-item">
-              <i className="bi bi-folder2-open"></i>
-              {ticket.category}
-            </span>
-
-            <span className="nx-ticket-meta-item">
-              <i className="bi bi-calendar3"></i>
-              Created {ticket.created}
-            </span>
-
-            <span className="nx-ticket-meta-item">
-              <i className="bi bi-clock"></i>
-              Updated {ticket.updated}
-            </span>
-          </div>
+          <span>{ticket.id}</span>
         </div>
-      </section>
 
-      {/* MAIN CONTENT */}
-      <section className="container nx-ticket-details-content">
-        <div className="nx-ticket-details-grid">
-          {/* LEFT - CONVERSATION */}
-          <div className="nx-ticket-conversation-card">
-            <div className="nx-conversation-header">
+        {/* HEADER */}
+        <section className="nx-ticket-details-header">
+          <div className="nx-ticket-header-main">
+            <span className="nx-ticket-header-label">
+              SUPPORT REQUEST
+            </span>
+
+            <div className="nx-ticket-title-row">
               <div>
-                <span className="nx-conversation-label">
-                  SUPPORT CONVERSATION
-                </span>
+                <div className="nx-ticket-id">{ticket.id}</div>
 
-                <h2>Request activity</h2>
+                <h1>{ticket.subject}</h1>
               </div>
 
-              <div className="nx-conversation-count">
-                {messages.length}{" "}
-                {messages.length === 1
-                  ? "Message"
-                  : "Messages"}
-              </div>
-            </div>
-
-            <div className="nx-conversation-body">
-              {messages.map((message) => (
-                <div
-                  className={`nx-ticket-message ${
-                    message.sender === "Customer"
-                      ? "customer"
-                      : "support"
-                  }`}
-                  key={message.id}
-                >
-                  <div className="nx-message-avatar">
-                    {message.sender === "Customer" ? (
-                      <i className="bi bi-person"></i>
-                    ) : (
-                      <i className="bi bi-headset"></i>
-                    )}
-                  </div>
-
-                  <div className="nx-message-content">
-                    <div className="nx-message-header">
-                      <strong>
-                        {message.sender}
-                      </strong>
-
-                      <span>
-                        {message.date} · {message.time}
-                      </span>
-                    </div>
-
-                    <div className="nx-message-bubble">
-                      {message.message}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* REPLY */}
-            {ticket.status !== "Resolved" && (
-              <div className="nx-ticket-reply-section">
-                <div className="nx-reply-header">
-                  <div>
-                    <span className="nx-reply-label">
-                      REPLY TO SUPPORT
-                    </span>
-
-                    <h3>
-                      Have more information to share?
-                    </h3>
-                  </div>
-
-                  <i className="bi bi-chat-left-text"></i>
-                </div>
-
-                <form
-                  className="nx-ticket-reply-form"
-                  onSubmit={handleReply}
-                >
-                  <textarea
-                    value={reply}
-                    onChange={(event) =>
-                      setReply(event.target.value)
-                    }
-                    placeholder="Type your reply or add additional information..."
-                    rows={5}
-                    aria-label="Reply to support"
-                  />
-
-                  <div className="nx-reply-footer">
-                    <span>
-                      <i className="bi bi-info-circle"></i>
-                      Our support team will be notified of
-                      your reply.
-                    </span>
-
-                    <button
-                      type="submit"
-                      className="nx-send-reply-btn"
-                      disabled={!reply.trim()}
-                    >
-                      <i className="bi bi-send"></i>
-                      Send Reply
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {ticket.status === "Resolved" && (
-              <div className="nx-ticket-resolved-notice">
-                <div className="nx-resolved-icon">
-                  <i className="bi bi-check-lg"></i>
-                </div>
-
-                <div>
-                  <strong>
-                    This support request has been resolved.
-                  </strong>
-
-                  <p>
-                    If you need further assistance, you can
-                    create a new support request.
-                  </p>
-                </div>
-
+              <div className="nx-ticket-header-actions">
                 <Link
-                  to="/support/create-ticket"
-                  className="nx-create-new-ticket-btn"
+                  to="/support/tickets"
+                  className="nx-ticket-outline-btn"
                 >
-                  Create New Ticket
+                  <i className="bi bi-arrow-left"></i>
+                  Back to Requests
                 </Link>
               </div>
-            )}
-          </div>
-
-          {/* RIGHT - TICKET INFORMATION */}
-          <aside className="nx-ticket-sidebar">
-            {/* TICKET INFORMATION */}
-            <div className="nx-ticket-info-card">
-              <div className="nx-ticket-info-header">
-                <div className="nx-ticket-info-icon">
-                  <i className="bi bi-ticket-detailed"></i>
-                </div>
-
-                <div>
-                  <span>REQUEST DETAILS</span>
-                  <h2>Ticket Information</h2>
-                </div>
-              </div>
-
-              <div className="nx-ticket-info-list">
-                <div className="nx-ticket-info-row">
-                  <span>Ticket ID</span>
-                  <strong>{ticket.id}</strong>
-                </div>
-
-                <div className="nx-ticket-info-row">
-                  <span>Category</span>
-                  <strong>{ticket.category}</strong>
-                </div>
-
-                <div className="nx-ticket-info-row">
-                  <span>Priority</span>
-                  <strong
-                    className={`nx-info-priority ${ticket.priority.toLowerCase()}`}
-                  >
-                    {ticket.priority}
-                  </strong>
-                </div>
-
-                <div className="nx-ticket-info-row">
-                  <span>Status</span>
-                  <strong
-                    className={`nx-info-status ${ticket.status
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")}`}
-                  >
-                    {ticket.status}
-                  </strong>
-                </div>
-
-                <div className="nx-ticket-info-row">
-                  <span>Created</span>
-                  <strong>{ticket.created}</strong>
-                </div>
-
-                <div className="nx-ticket-info-row">
-                  <span>Last Updated</span>
-                  <strong>{ticket.updated}</strong>
-                </div>
-              </div>
             </div>
 
-            {/* REQUEST TIMELINE */}
-            <div className="nx-ticket-timeline-card">
-              <div className="nx-timeline-header">
-                <span>REQUEST PROGRESS</span>
-                <h2>Ticket Timeline</h2>
+            <div className="nx-ticket-meta-row">
+              <span
+                className={`nx-ticket-status-badge ${statusClass}`}
+              >
+                <span></span>
+                {ticket.status}
+              </span>
+
+              <span
+                className={`nx-ticket-priority-badge ${priorityClass}`}
+              >
+                <i className="bi bi-flag-fill"></i>
+                {ticket.priority} Priority
+              </span>
+
+              <span className="nx-ticket-meta-item">
+                <i className="bi bi-folder2"></i>
+                {ticket.category}
+              </span>
+
+              <span className="nx-ticket-meta-item">
+                <i className="bi bi-calendar3"></i>
+                Created {ticket.created}
+              </span>
+
+              {ticket.order && ticket.order !== "Not specified" && (
+                <span className="nx-ticket-meta-item">
+                  <i className="bi bi-box-seam"></i>
+                  {ticket.order}
+                </span>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* MAIN CONTENT */}
+        <section className="nx-ticket-details-content">
+          <div className="nx-ticket-details-grid">
+            {/* LEFT */}
+            <div className="nx-ticket-conversation-card">
+              <div className="nx-conversation-header">
+                <div>
+                  <span className="nx-conversation-label">
+                    SUPPORT ACTIVITY
+                  </span>
+
+                  <h2>Conversation</h2>
+                </div>
+
+                <span className="nx-conversation-count">
+                  {messages.length}{" "}
+                  {messages.length === 1 ? "Message" : "Messages"}
+                </span>
               </div>
 
-              <div className="nx-ticket-timeline">
-                <div className="nx-timeline-item completed">
-                  <div className="nx-timeline-marker">
+              <div className="nx-conversation-body">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`nx-ticket-message ${message.sender}`}
+                  >
+                    <div className="nx-message-avatar">
+                      <i
+                        className={
+                          message.sender === "support"
+                            ? "bi bi-headset"
+                            : "bi bi-person"
+                        }
+                      ></i>
+                    </div>
+
+                    <div className="nx-message-content">
+                      <div className="nx-message-header">
+                        <strong>{message.name}</strong>
+                        <span>{message.time}</span>
+                      </div>
+
+                      <div className="nx-message-bubble">
+                        {message.message}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {ticket.status !== "Resolved" ? (
+                <div className="nx-ticket-reply-section">
+                  <div className="nx-reply-header">
+                    <div>
+                      <span className="nx-reply-label">
+                        ADD MESSAGE
+                      </span>
+
+                      <h3>Reply to Support</h3>
+                    </div>
+
+                    <i className="bi bi-chat-left-text"></i>
+                  </div>
+
+                  <form
+                    className="nx-ticket-reply-form"
+                    onSubmit={handleSendReply}
+                  >
+                    <textarea
+                      value={reply}
+                      onChange={(event) =>
+                        setReply(event.target.value)
+                      }
+                      placeholder="Write a message to the Nexus Support team..."
+                      rows={5}
+                    />
+
+                    <div className="nx-reply-footer">
+                      <span>
+                        <i className="bi bi-shield-check"></i>
+                        Do not share passwords or sensitive credentials.
+                      </span>
+
+                      <button
+                        type="submit"
+                        className="nx-send-reply-btn"
+                        disabled={!reply.trim() || isSending}
+                      >
+                        {isSending ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm"></span>
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            Send Reply
+                            <i className="bi bi-send"></i>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              ) : (
+                <div className="nx-ticket-resolved-notice">
+                  <div className="nx-resolved-icon">
                     <i className="bi bi-check-lg"></i>
                   </div>
 
                   <div>
-                    <strong>Request Created</strong>
-                    <span>{ticket.created}</span>
+                    <strong>This request has been resolved</strong>
+
+                    <p>
+                      This ticket is closed. Create a new support
+                      request if you need further assistance.
+                    </p>
                   </div>
+
+                  <Link
+                    to="/support/create-ticket"
+                    className="nx-create-new-ticket-btn"
+                  >
+                    Create New Ticket
+                  </Link>
                 </div>
-
-                <div className="nx-timeline-line"></div>
-
-                <div
-                  className={`nx-timeline-item ${
-                    ticket.status === "Open"
-                      ? "active"
-                      : "completed"
-                  }`}
-                >
-                  <div className="nx-timeline-marker">
-                    {ticket.status === "Open" ? (
-                      <span></span>
-                    ) : (
-                      <i className="bi bi-check-lg"></i>
-                    )}
-                  </div>
-
-                  <div>
-                    <strong>Support Team Assigned</strong>
-                    <span>
-                      {ticket.status === "Open"
-                        ? "Pending assignment"
-                        : "Support team assigned"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="nx-timeline-line"></div>
-
-                <div
-                  className={`nx-timeline-item ${
-                    ticket.status === "In Progress" ||
-                    ticket.status === "Awaiting Response"
-                      ? "active"
-                      : ticket.status === "Resolved"
-                      ? "completed"
-                      : ""
-                  }`}
-                >
-                  <div className="nx-timeline-marker">
-                    {ticket.status === "Resolved" ? (
-                      <i className="bi bi-check-lg"></i>
-                    ) : (
-                      <span></span>
-                    )}
-                  </div>
-
-                  <div>
-                    <strong>Investigation</strong>
-                    <span>
-                      {ticket.status === "Resolved"
-                        ? "Investigation completed"
-                        : ticket.status === "Open"
-                        ? "Waiting to start"
-                        : "Support team is reviewing"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="nx-timeline-line"></div>
-
-                <div
-                  className={`nx-timeline-item ${
-                    ticket.status === "Resolved"
-                      ? "completed"
-                      : ""
-                  }`}
-                >
-                  <div className="nx-timeline-marker">
-                    {ticket.status === "Resolved" ? (
-                      <i className="bi bi-check-lg"></i>
-                    ) : (
-                      <span></span>
-                    )}
-                  </div>
-
-                  <div>
-                    <strong>Resolution</strong>
-                    <span>
-                      {ticket.status === "Resolved"
-                        ? "Request resolved"
-                        : "Pending resolution"}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
 
-            {/* SUPPORT HELP */}
-            <div className="nx-ticket-help-card">
-              <div className="nx-ticket-help-icon">
-                <i className="bi bi-headset"></i>
+            {/* RIGHT SIDEBAR */}
+            <aside className="nx-ticket-sidebar">
+              {/* INFORMATION */}
+              <div className="nx-ticket-info-card">
+                <div className="nx-ticket-info-header">
+                  <div className="nx-ticket-info-icon">
+                    <i className="bi bi-info-lg"></i>
+                  </div>
+
+                  <div>
+                    <span>TICKET DETAILS</span>
+                    <h2>Request Information</h2>
+                  </div>
+                </div>
+
+                <div className="nx-ticket-info-list">
+                  <div className="nx-ticket-info-row">
+                    <span>Ticket ID</span>
+                    <strong>{ticket.id}</strong>
+                  </div>
+
+                  <div className="nx-ticket-info-row">
+                    <span>Category</span>
+                    <strong>{ticket.category}</strong>
+                  </div>
+
+                  <div className="nx-ticket-info-row">
+                    <span>Priority</span>
+                    <strong
+                      className={`nx-info-priority ${priorityClass}`}
+                    >
+                      {ticket.priority}
+                    </strong>
+                  </div>
+
+                  <div className="nx-ticket-info-row">
+                    <span>Status</span>
+                    <strong
+                      className={`nx-info-status ${statusClass}`}
+                    >
+                      {ticket.status}
+                    </strong>
+                  </div>
+
+                  <div className="nx-ticket-info-row">
+                    <span>Created</span>
+                    <strong>{ticket.created}</strong>
+                  </div>
+
+                  <div className="nx-ticket-info-row">
+                    <span>Last Updated</span>
+                    <strong>{ticket.updated}</strong>
+                  </div>
+
+                  <div className="nx-ticket-info-row">
+                    <span>Order</span>
+                    <strong>{ticket.order}</strong>
+                  </div>
+
+                  <div className="nx-ticket-info-row">
+                    <span>Product</span>
+                    <strong>{ticket.product}</strong>
+                  </div>
+
+                  {ticket.attachment && (
+                    <div className="nx-ticket-info-row">
+                      <span>Attachment</span>
+                      <strong>{ticket.attachment}</strong>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div>
-                <span>NEED MORE HELP?</span>
+              {/* TIMELINE */}
+              <div className="nx-ticket-timeline-card">
+                <div className="nx-timeline-header">
+                  <span>REQUEST HISTORY</span>
+                  <h2>Ticket Timeline</h2>
+                </div>
 
-                <h3>
-                  Our support team is here for you.
-                </h3>
+                <div className="nx-ticket-timeline">
+                  <div className="nx-timeline-item completed">
+                    <div className="nx-timeline-marker">
+                      <i className="bi bi-check2"></i>
+                    </div>
 
-                <p>
-                  If you have additional information about
-                  this issue, reply to the request or create
-                  a new ticket.
-                </p>
+                    <div>
+                      <strong>Request Created</strong>
+                      <span>{ticket.created}</span>
+                    </div>
+                  </div>
+
+                  <div className="nx-timeline-line"></div>
+
+                  <div
+                    className={`nx-timeline-item ${
+                      ticket.status !== "Open" ? "completed" : "active"
+                    }`}
+                  >
+                    <div className="nx-timeline-marker">
+                      {ticket.status !== "Open" ? (
+                        <i className="bi bi-check2"></i>
+                      ) : (
+                        <span></span>
+                      )}
+                    </div>
+
+                    <div>
+                      <strong>Support Review</strong>
+                      <span>
+                        {ticket.status === "Open"
+                          ? "Currently waiting for review"
+                          : "Support team has reviewed the request"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="nx-timeline-line"></div>
+
+                  <div
+                    className={`nx-timeline-item ${
+                      ticket.status === "Resolved"
+                        ? "completed"
+                        : "active"
+                    }`}
+                  >
+                    <div className="nx-timeline-marker">
+                      {ticket.status === "Resolved" ? (
+                        <i className="bi bi-check2"></i>
+                      ) : (
+                        <span></span>
+                      )}
+                    </div>
+
+                    <div>
+                      <strong>
+                        {ticket.status === "Resolved"
+                          ? "Resolved"
+                          : "Resolution"}
+                      </strong>
+
+                      <span>
+                        {ticket.status === "Resolved"
+                          ? "Request has been resolved"
+                          : "Pending final resolution"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <Link
-                to="/support"
-                className="nx-ticket-help-link"
-              >
-                Support Center
-                <i className="bi bi-arrow-right"></i>
-              </Link>
-            </div>
-          </aside>
+              {/* HELP */}
+              <div className="nx-ticket-help-card">
+                <div className="nx-ticket-help-icon">
+                  <i className="bi bi-headset"></i>
+                </div>
+
+                <div>
+                  <span>NEED MORE HELP?</span>
+
+                  <h3>Our support team is here to help.</h3>
+
+                  <p>
+                    If you need additional assistance, create a new
+                    support request and our team will get back to you.
+                  </p>
+
+                  <Link
+                    to="/support/create-ticket"
+                    className="nx-ticket-help-link"
+                  >
+                    Create Support Ticket
+                    <i className="bi bi-arrow-right"></i>
+                  </Link>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        {/* BOTTOM NAVIGATION */}
+        <div className="nx-ticket-bottom-navigation">
+          <Link
+            to="/support/tickets"
+            className="nx-ticket-bottom-back"
+          >
+            <i className="bi bi-arrow-left"></i>
+            Back to My Requests
+          </Link>
+
+          <Link
+            to="/support/create-ticket"
+            className="nx-ticket-bottom-create"
+          >
+            <i className="bi bi-plus-lg"></i>
+            Create New Ticket
+          </Link>
         </div>
-      </section>
-
-      {/* BOTTOM NAVIGATION */}
-      <section className="container nx-ticket-bottom-navigation">
-        <Link
-          to="/support/tickets"
-          className="nx-ticket-bottom-back"
-        >
-          <i className="bi bi-arrow-left"></i>
-          Back to My Support Requests
-        </Link>
-
-        <Link
-          to="/support/create-ticket"
-          className="nx-ticket-bottom-create"
-        >
-          <i className="bi bi-plus-lg"></i>
-          Create New Ticket
-        </Link>
-      </section>
+      </div>
     </div>
   );
 }
 
 export default SupportTicketDetails;
-
