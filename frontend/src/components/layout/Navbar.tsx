@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
-import "./Navbar.css";
 import { useWishlist } from "../../context/WishlistContext";
+
+import "./Navbar.css";
 
 export default function Navbar() {
   const { cart } = useContext(CartContext);
@@ -20,6 +21,8 @@ export default function Navbar() {
 
         {/* Navigation */}
         <div className="navbar-menu">
+
+          {/* Home */}
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -29,6 +32,7 @@ export default function Navbar() {
             Home
           </NavLink>
 
+          {/* Products */}
           <NavLink
             to="/products"
             className={({ isActive }) =>
@@ -38,24 +42,43 @@ export default function Navbar() {
             Products
           </NavLink>
 
-          <a href="/#categories" className="nav-link">
+          {/* Categories */}
+          <a
+            href="/#categories"
+            className="nav-link"
+          >
             Categories
           </a>
 
-          <a href="/#trust" className="nav-link">
+          {/* About */}
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
+          >
             About
-          </a>
+          </NavLink>
 
-          <a href="/#contact" className="nav-link">
+          {/* Support */}
+          <a
+            href="/#contact"
+            className="nav-link"
+          >
             Support
           </a>
+
         </div>
 
         {/* Right Actions */}
         <div className="navbar-actions">
 
           {/* Search */}
-          <Link to="/products" className="nav-icon-btn" aria-label="Search catalog">
+          <Link
+            to="/products"
+            className="nav-icon-btn"
+            aria-label="Search catalog"
+          >
             <i className="bi bi-search"></i>
           </Link>
 
@@ -66,7 +89,10 @@ export default function Navbar() {
             aria-label="Wishlist"
           >
             <i className="bi bi-heart"></i>
-            <span className="badge-count">{wishlist.length}</span>
+
+            <span className="badge-count">
+              {wishlist.length}
+            </span>
           </button>
 
           {/* Cart */}
@@ -76,7 +102,10 @@ export default function Navbar() {
             aria-label="Shopping Cart"
           >
             <i className="bi bi-bag"></i>
-            <span className="badge-count">{cart.length}</span>
+
+            <span className="badge-count">
+              {cart.length}
+            </span>
           </Link>
 
           {/* Notification */}
@@ -98,7 +127,10 @@ export default function Navbar() {
           </button>
 
           {/* View Products */}
-          <Link to="/products" className="view-products-btn">
+          <Link
+            to="/products"
+            className="view-products-btn"
+          >
             View Products
           </Link>
 
