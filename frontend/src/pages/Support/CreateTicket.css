@@ -1,0 +1,788 @@
+/* =========================================================
+   CREATE SUPPORT TICKET PAGE
+   ========================================================= */
+
+.nx-create-ticket-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #111827;
+  padding-bottom: 70px;
+}
+
+/* =========================================================
+   BREADCRUMB
+   ========================================================= */
+
+.nx-ticket-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-top: 24px;
+  padding-bottom: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.nx-ticket-breadcrumb a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nx-ticket-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.nx-ticket-breadcrumb span:last-child {
+  color: #475569;
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.nx-ticket-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  padding-top: 38px;
+  padding-bottom: 38px;
+}
+
+.nx-ticket-header .nx-support-label {
+  display: block;
+  margin-bottom: 12px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.nx-ticket-header h1 {
+  margin: 0;
+  font-size: 38px;
+  line-height: 1.15;
+  font-weight: 750;
+  letter-spacing: -1px;
+  color: #111827;
+}
+
+.nx-ticket-header p {
+  max-width: 650px;
+  margin: 14px 0 0;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.nx-ticket-history-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid #d8dee8;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.nx-ticket-history-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #f8fbff;
+}
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+.nx-ticket-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 28px;
+  align-items: start;
+}
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.nx-ticket-form-card {
+  background: #ffffff;
+  border: 1px solid #e1e7ef;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.035);
+  overflow: hidden;
+}
+
+.nx-ticket-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 30px;
+  border-bottom: 1px solid #e8edf3;
+}
+
+.nx-ticket-card-header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.nx-ticket-card-header p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.nx-required-note {
+  color: #94a3b8;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.nx-ticket-form-card form {
+  padding: 30px;
+}
+
+.nx-form-group {
+  margin-bottom: 24px;
+}
+
+.nx-form-group > label {
+  display: block;
+  margin-bottom: 8px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nx-form-group > label span {
+  color: #ef4444;
+}
+
+.nx-form-group input[type="text"],
+.nx-form-group textarea,
+.nx-select-wrapper select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d8dee8;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #1e293b;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nx-form-group input[type="text"] {
+  height: 46px;
+  padding: 0 14px;
+}
+
+.nx-form-group textarea {
+  min-height: 150px;
+  padding: 13px 14px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.nx-form-group input[type="text"]::placeholder,
+.nx-form-group textarea::placeholder {
+  color: #94a3b8;
+}
+
+.nx-form-group input[type="text"]:focus,
+.nx-form-group textarea:focus,
+.nx-select-wrapper select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+}
+
+.nx-form-group small {
+  display: block;
+  margin-top: 7px;
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   FORM ROW
+   ========================================================= */
+
+.nx-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* =========================================================
+   SELECT
+   ========================================================= */
+
+.nx-select-wrapper {
+  position: relative;
+}
+
+.nx-select-wrapper select {
+  height: 46px;
+  padding: 0 40px 0 14px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.nx-select-wrapper i {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* =========================================================
+   PRIORITY
+   ========================================================= */
+
+.nx-priority-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nx-priority-btn {
+  min-width: 96px;
+  height: 40px;
+  padding: 0 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #d8dee8;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #64748b;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nx-priority-btn span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+}
+
+.nx-priority-btn:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.nx-priority-btn.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.nx-priority-btn.normal.active span {
+  background: #2563eb;
+}
+
+.nx-priority-btn.high.active {
+  border-color: #f59e0b;
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.nx-priority-btn.high.active span {
+  background: #f59e0b;
+}
+
+.nx-priority-btn.urgent.active {
+  border-color: #ef4444;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.nx-priority-btn.urgent.active span {
+  background: #ef4444;
+}
+
+/* =========================================================
+   FILE UPLOAD
+   ========================================================= */
+
+.nx-upload-box {
+  min-height: 72px;
+  padding: 14px 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nx-upload-box:hover {
+  border-color: #2563eb;
+  background: #f8fbff;
+}
+
+.nx-upload-box > i {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 18px;
+}
+
+.nx-upload-box > div {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nx-upload-box strong {
+  overflow: hidden;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-upload-box span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.nx-upload-action {
+  padding: 7px 12px;
+  border: 1px solid #d8dee8;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #475569 !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   FORM ACTIONS
+   ========================================================= */
+
+.nx-ticket-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid #e8edf3;
+}
+
+.nx-ticket-cancel-btn {
+  height: 44px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d8dee8;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.nx-ticket-cancel-btn:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.nx-ticket-submit-btn {
+  height: 44px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid #2563eb;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nx-ticket-submit-btn:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   RIGHT SIDEBAR
+   ========================================================= */
+
+.nx-ticket-guidelines {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nx-guideline-card {
+  padding: 25px;
+  border: 1px solid #e1e7ef;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.035);
+}
+
+.nx-guideline-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 18px;
+}
+
+.nx-guideline-card h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.nx-guideline-card > p {
+  margin: 8px 0 22px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.nx-guideline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.nx-guideline-list div {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.nx-guideline-list i {
+  margin-top: 1px;
+  color: #16a34a;
+  font-size: 15px;
+}
+
+.nx-guideline-list span {
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   RESPONSE CARD
+   ========================================================= */
+
+.nx-response-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #eff6ff;
+}
+
+.nx-response-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #2563eb;
+  font-size: 17px;
+}
+
+.nx-response-card > div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-response-card span {
+  margin-bottom: 5px;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.nx-response-card strong {
+  color: #1e3a8a;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.nx-response-card p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SECURITY NOTE
+   ========================================================= */
+
+.nx-ticket-security {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 17px 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.nx-ticket-security > i {
+  color: #16a34a;
+  font-size: 17px;
+}
+
+.nx-ticket-security div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nx-ticket-security strong {
+  color: #334155;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.nx-ticket-security span {
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   RESPONSIVE - 1100px
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .nx-ticket-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 20px;
+  }
+
+  .nx-ticket-form-card form {
+    padding: 25px;
+  }
+
+  .nx-ticket-card-header {
+    padding: 25px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 900px
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .nx-ticket-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-ticket-guidelines {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .nx-guideline-card {
+    grid-row: span 2;
+  }
+
+  .nx-ticket-security {
+    border: 1px solid #e1e7ef;
+    border-radius: 10px;
+    background: #ffffff;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 700px
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .nx-ticket-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-top: 25px;
+    padding-bottom: 28px;
+  }
+
+  .nx-ticket-header h1 {
+    font-size: 32px;
+  }
+
+  .nx-ticket-history-btn {
+    width: fit-content;
+  }
+
+  .nx-form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .nx-ticket-guidelines {
+    display: flex;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 520px
+   ========================================================= */
+
+@media (max-width: 520px) {
+  .nx-ticket-breadcrumb {
+    padding-top: 18px;
+    font-size: 11px;
+  }
+
+  .nx-ticket-header h1 {
+    font-size: 28px;
+  }
+
+  .nx-ticket-header p {
+    font-size: 13px;
+  }
+
+  .nx-ticket-card-header {
+    flex-direction: column;
+    padding: 22px 20px;
+  }
+
+  .nx-ticket-form-card form {
+    padding: 22px 20px;
+  }
+
+  .nx-priority-options {
+    flex-wrap: wrap;
+  }
+
+  .nx-priority-btn {
+    min-width: 88px;
+  }
+
+  .nx-upload-box {
+    align-items: flex-start;
+  }
+
+  .nx-upload-action {
+    display: none;
+  }
+
+  .nx-ticket-form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .nx-ticket-cancel-btn,
+  .nx-ticket-submit-btn {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 420px
+   ========================================================= */
+
+@media (max-width: 420px) {
+  .nx-ticket-header {
+    padding-top: 20px;
+  }
+
+  .nx-ticket-header h1 {
+    font-size: 25px;
+  }
+
+  .nx-ticket-header p {
+    font-size: 12px;
+  }
+
+  .nx-ticket-history-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nx-ticket-form-card {
+    border-radius: 8px;
+  }
+
+  .nx-ticket-card-header {
+    padding: 20px 16px;
+  }
+
+  .nx-ticket-form-card form {
+    padding: 20px 16px;
+  }
+
+  .nx-form-group {
+    margin-bottom: 20px;
+  }
+
+  .nx-guideline-card {
+    padding: 20px;
+  }
+}

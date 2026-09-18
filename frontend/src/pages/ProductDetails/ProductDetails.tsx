@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { products } from "../../data/products";
-import type { Product } from "../../types/product";
+
 
 import product1Image from "../../assets/product-images/product1.jpg";
 import product1Image2 from "../../assets/product-images/product1-2.jpg";

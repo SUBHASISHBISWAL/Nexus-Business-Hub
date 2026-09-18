@@ -61,12 +61,14 @@ export default function Navbar() {
           </NavLink>
 
           {/* Support */}
-          <a
-            href="/#contact"
-            className="nav-link"
+          <NavLink
+            to="/support"
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
           >
             Support
-          </a>
+          </NavLink>
 
         </div>
 
