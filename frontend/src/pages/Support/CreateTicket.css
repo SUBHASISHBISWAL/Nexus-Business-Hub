@@ -131,6 +131,15 @@
   border-bottom: 1px solid #e8edf3;
 }
 
+.nx-ticket-card-header > div:first-child > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #2563eb;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
 .nx-ticket-card-header h2 {
   margin: 0;
   color: #111827;
@@ -138,17 +147,17 @@
   font-weight: 750;
 }
 
-.nx-ticket-card-header p {
-  margin: 7px 0 0;
-  color: #64748b;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.nx-required-note {
-  color: #94a3b8;
-  font-size: 11px;
-  white-space: nowrap;
+.nx-ticket-header-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 18px;
 }
 
 /* =========================================================
@@ -171,7 +180,7 @@
   font-weight: 700;
 }
 
-.nx-form-group > label span {
+.nx-form-group > label > span {
   color: #ef4444;
 }
 
@@ -214,14 +223,6 @@
 .nx-select-wrapper select:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
-}
-
-.nx-form-group small {
-  display: block;
-  margin-top: 7px;
-  color: #94a3b8;
-  font-size: 11px;
-  line-height: 1.5;
 }
 
 /* =========================================================
@@ -310,6 +311,16 @@
   background: #2563eb;
 }
 
+.nx-priority-btn.medium.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.nx-priority-btn.medium.active span {
+  background: #2563eb;
+}
+
 .nx-priority-btn.high.active {
   border-color: #f59e0b;
   background: #fffbeb;
@@ -383,7 +394,7 @@
   white-space: nowrap;
 }
 
-.nx-upload-box span {
+.nx-upload-box > div span {
   color: #94a3b8;
   font-size: 11px;
 }
@@ -457,6 +468,12 @@
   background: #1d4ed8;
   border-color: #1d4ed8;
   transform: translateY(-1px);
+}
+
+.nx-ticket-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* =========================================================

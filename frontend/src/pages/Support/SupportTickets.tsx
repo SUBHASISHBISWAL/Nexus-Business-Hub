@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import "./SupportTickets.css";
@@ -15,60 +15,121 @@ type Ticket = {
     | "Open";
   updated: string;
   created: string;
+  order?: string;
+  product?: string;
+  description?: string;
+  attachment?: string;
 };
+
+const STORAGE_KEY = "nexus_support_tickets";
+
+const defaultTickets: Ticket[] = [
+  {
+    id: "TKT-1024",
+    subject: "Gateway connectivity issue",
+    category: "Technical Support",
+    priority: "High",
+    status: "In Progress",
+    updated: "2h ago",
+    created: "18 Sep 2026",
+  },
+  {
+    id: "TKT-1021",
+    subject: "Invoice clarification",
+    category: "Orders & Payments",
+    priority: "Medium",
+    status: "Awaiting Response",
+    updated: "5h ago",
+    created: "18 Sep 2026",
+  },
+  {
+    id: "TKT-1018",
+    subject: "Product replacement request",
+    category: "Returns & Warranty",
+    priority: "High",
+    status: "Resolved",
+    updated: "1d ago",
+    created: "17 Sep 2026",
+  },
+  {
+    id: "TKT-1015",
+    subject: "Shipment delivery update",
+    category: "Shipping & Delivery",
+    priority: "Normal",
+    status: "Open",
+    updated: "2d ago",
+    created: "16 Sep 2026",
+  },
+  {
+    id: "TKT-1012",
+    subject: "Product configuration assistance",
+    category: "Technical Support",
+    priority: "Normal",
+    status: "Resolved",
+    updated: "3d ago",
+    created: "15 Sep 2026",
+  },
+];
 
 function SupportTickets() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
 
-  const tickets: Ticket[] = [
-    {
-      id: "TKT-1024",
-      subject: "Gateway connectivity issue",
-      category: "Technical Support",
-      priority: "High",
-      status: "In Progress",
-      updated: "2h ago",
-      created: "18 Sep 2026",
-    },
-    {
-      id: "TKT-1021",
-      subject: "Invoice clarification",
-      category: "Orders & Payments",
-      priority: "Medium",
-      status: "Awaiting Response",
-      updated: "5h ago",
-      created: "18 Sep 2026",
-    },
-    {
-      id: "TKT-1018",
-      subject: "Product replacement request",
-      category: "Returns & Warranty",
-      priority: "High",
-      status: "Resolved",
-      updated: "1d ago",
-      created: "17 Sep 2026",
-    },
-    {
-      id: "TKT-1015",
-      subject: "Shipment delivery update",
-      category: "Shipping & Delivery",
-      priority: "Normal",
-      status: "Open",
-      updated: "2d ago",
-      created: "16 Sep 2026",
-    },
-    {
-      id: "TKT-1012",
-      subject: "Product configuration assistance",
-      category: "Technical Support",
-      priority: "Normal",
-      status: "Resolved",
-      updated: "3d ago",
-      created: "15 Sep 2026",
-    },
-  ];
+  const [tickets, setTickets] =
+    useState<Ticket[]>(defaultTickets);
+
+  /*
+   * Load tickets from localStorage.
+   *
+   * CreateTicket.tsx saves newly created tickets using
+   * the same STORAGE_KEY.
+   */
+  useEffect(() => {
+    const loadTickets = () => {
+      try {
+        const storedTickets =
+          localStorage.getItem(STORAGE_KEY);
+
+        if (!storedTickets) {
+          setTickets(defaultTickets);
+          return;
+        }
+
+        const parsedTickets: Ticket[] =
+          JSON.parse(storedTickets);
+
+        if (Array.isArray(parsedTickets)) {
+          setTickets(parsedTickets);
+        } else {
+          setTickets(defaultTickets);
+        }
+      } catch (error) {
+        console.error(
+          "Unable to load support tickets:",
+          error
+        );
+
+        setTickets(defaultTickets);
+      }
+    };
+
+    loadTickets();
+
+    /*
+     * Listen for storage changes.
+     * This also keeps the list synced if localStorage
+     * changes from another browser tab.
+     */
+    window.addEventListener("storage", loadTickets);
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        loadTickets
+      );
+    };
+  }, []);
 
   const filteredTickets = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -100,7 +161,12 @@ function SupportTickets() {
         matchesPriority
       );
     });
-  }, [search, statusFilter, priorityFilter]);
+  }, [
+    tickets,
+    search,
+    statusFilter,
+    priorityFilter,
+  ]);
 
   return (
     <div className="nx-support-tickets-page">
@@ -163,7 +229,10 @@ function SupportTickets() {
 
           <div>
             <span>Total Requests</span>
-            <strong>{tickets.length}</strong>
+
+            <strong>
+              {tickets.length}
+            </strong>
           </div>
         </div>
 
@@ -174,6 +243,7 @@ function SupportTickets() {
 
           <div>
             <span>Open Requests</span>
+
             <strong>
               {
                 tickets.filter(
@@ -192,6 +262,7 @@ function SupportTickets() {
 
           <div>
             <span>Resolved</span>
+
             <strong>
               {
                 tickets.filter(
@@ -210,6 +281,7 @@ function SupportTickets() {
 
           <div>
             <span>Support Status</span>
+
             <strong>Online</strong>
           </div>
         </div>
@@ -236,6 +308,7 @@ function SupportTickets() {
           <div className="nx-tickets-filters">
 
             {/* SEARCH */}
+
             <div className="nx-tickets-search">
               <i className="bi bi-search"></i>
 
@@ -251,6 +324,7 @@ function SupportTickets() {
             </div>
 
             {/* STATUS */}
+
             <div className="nx-ticket-filter-select">
               <select
                 value={statusFilter}
@@ -283,6 +357,7 @@ function SupportTickets() {
             </div>
 
             {/* PRIORITY */}
+
             <div className="nx-ticket-filter-select">
               <select
                 value={priorityFilter}
@@ -333,13 +408,17 @@ function SupportTickets() {
             >
 
               {/* Ticket ID */}
+
               <div className="nx-ticket-list-id">
                 <span>Ticket ID</span>
 
-                <strong>{ticket.id}</strong>
+                <strong>
+                  {ticket.id}
+                </strong>
               </div>
 
               {/* Subject */}
+
               <div className="nx-ticket-list-subject">
 
                 <strong>
@@ -353,6 +432,7 @@ function SupportTickets() {
               </div>
 
               {/* Priority */}
+
               <div className="nx-ticket-list-priority">
 
                 <span>Priority</span>
@@ -367,6 +447,7 @@ function SupportTickets() {
               </div>
 
               {/* Status */}
+
               <div className="nx-ticket-list-status">
 
                 <span>Status</span>
@@ -383,6 +464,7 @@ function SupportTickets() {
               </div>
 
               {/* Updated */}
+
               <div className="nx-ticket-list-updated">
 
                 <span>Last Updated</span>
@@ -394,6 +476,7 @@ function SupportTickets() {
               </div>
 
               {/* Arrow */}
+
               <div className="nx-ticket-list-arrow">
                 <i className="bi bi-chevron-right"></i>
               </div>
@@ -466,6 +549,7 @@ function SupportTickets() {
             className="nx-tickets-bottom-btn"
           >
             Create New Ticket
+
             <i className="bi bi-arrow-right"></i>
           </Link>
 
