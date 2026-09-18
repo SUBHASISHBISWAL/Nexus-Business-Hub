@@ -14,20 +14,19 @@ import product1Image4 from "../../assets/product-images/product1-4.jpg";
 import "./ProductDetails.css";
 
 function ProductDetails() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
 
-  const product = products.find((item) => item.id === Number(id)) as
-    Product | undefined;
+  const product = products.find(
+    (item) => item.id === Number(id)
+  );
 
   const [quantity, setQuantity] = useState(1);
-  const [notice, setNotice] = useState("");
   const [currentImage, setCurrentImage] = useState(0);
 
-  // Amazon-style image magnifier
   const [zoomPosition, setZoomPosition] = useState({
     x: 50,
     y: 50,
@@ -35,85 +34,64 @@ function ProductDetails() {
 
   const [isZooming, setIsZooming] = useState(false);
 
-  /*
-   * Product Images
-   *
-   * Product 1 has 4 different images.
-   * Other products currently use their existing image.
-   */
-  const productImages = product
-    ? product.id === 1
-      ? [product1Image, product1Image2, product1Image3, product1Image4]
-      : [product.image, product.image, product.image, product.image]
-    : [];
-
   if (!product) {
     return (
-      <div className="nx-details-page">
-        <div className="container nx-details-not-found">
-          <span className="material-symbols-outlined">search_off</span>
+      <div className="nx-product-not-found">
+        <span className="material-symbols-outlined">
+          search_off
+        </span>
 
-          <h2>Product Not Found</h2>
+        <h2>Product Not Found</h2>
 
-          <p>The product you are looking for does not exist.</p>
+        <p>
+          The product you are looking for does not exist.
+        </p>
 
-          <Link to="/products" className="nx-back-products">
-            Back to Products
-          </Link>
-        </div>
+        <Link
+          to="/products"
+          className="nx-back-products"
+        >
+          Back to Products
+        </Link>
       </div>
     );
   }
 
+  /*
+   * Product Gallery
+   * Product 1 has four real images.
+   * Other products currently use their main image
+   * for all four gallery positions.
+   */
+  const productImages =
+    product.id === 1
+      ? [
+          product1Image,
+          product1Image2,
+          product1Image3,
+          product1Image4,
+        ]
+      : [
+          product.image,
+          product.image,
+          product.image,
+          product.image,
+        ];
+
   const isLiked = wishlist.includes(product.id);
 
-  const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i += 1) {
-      addToCart(product);
-    }
+  /* Image Mouse Move */
+  const handleImageMouseMove = (
+    event: React.MouseEvent<HTMLDivElement>
+  ) => {
+    const rect =
+      event.currentTarget.getBoundingClientRect();
 
-    setNotice(`${product.name} added to cart`);
+    const x =
+      ((event.clientX - rect.left) / rect.width) * 100;
 
-    window.setTimeout(() => {
-      setNotice("");
-    }, 2600);
-  };
-
-  const handleDecrease = () => {
-    setQuantity((current) => Math.max(1, current - 1));
-  };
-
-  const handleIncrease = () => {
-    setQuantity((current) => current + 1);
-  };
-
-  const handleRequestQuote = () => {
-    setNotice("Quote request submitted successfully");
-
-    window.setTimeout(() => {
-      setNotice("");
-    }, 2600);
-  };
-
-  const handlePreviousImage = () => {
-    setCurrentImage((current) =>
-      current === 0 ? productImages.length - 1 : current - 1,
-    );
-  };
-
-  const handleNextImage = () => {
-    setCurrentImage((current) =>
-      current === productImages.length - 1 ? 0 : current + 1,
-    );
-  };
-
-  // Amazon-style cursor tracking
-  const handleImageMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    const y =
+      ((event.clientY - rect.top) / rect.height) * 100;
 
     setZoomPosition({
       x,
@@ -121,70 +99,130 @@ function ProductDetails() {
     });
   };
 
+  /* Previous Image */
+  const handlePreviousImage = () => {
+    setCurrentImage((previous) =>
+      previous === 0
+        ? productImages.length - 1
+        : previous - 1
+    );
+  };
+
+  /* Next Image */
+  const handleNextImage = () => {
+    setCurrentImage((previous) =>
+      previous === productImages.length - 1
+        ? 0
+        : previous + 1
+    );
+  };
+
+  /* Quantity */
+  const decreaseQuantity = () => {
+    setQuantity((previous) =>
+      Math.max(1, previous - 1)
+    );
+  };
+
+  const increaseQuantity = () => {
+    setQuantity((previous) => previous + 1);
+  };
+
+  /* Add To Cart */
+  const handleAddToCart = () => {
+    for (let index = 0; index < quantity; index++) {
+      addToCart(product);
+    }
+  };
+
+  /* Buy Now */
+  const handleBuyNow = () => {
+    for (let index = 0; index < quantity; index++) {
+      addToCart(product);
+    }
+
+    navigate("/cart");
+  };
+
   return (
-    <div className="nx-details-page">
-      <div className="container nx-details-shell">
-        {/* Breadcrumb */}
-        <div className="nx-details-breadcrumb">
-          <Link to="/products">Products</Link>
+    <div className="nx-product-details-page">
 
-          <i className="bi bi-chevron-right"></i>
+      {/* Breadcrumb */}
+      <div className="container nx-details-breadcrumb">
+        <Link to="/">Home</Link>
 
-          <span>{product.category}</span>
+        <span>/</span>
 
-          <i className="bi bi-chevron-right"></i>
+        <Link to="/products">Products</Link>
 
-          <span>{product.name}</span>
-        </div>
+        <span>/</span>
 
-        {/* Notification */}
-        {notice && (
-          <div className="nx-details-notice" role="status">
-            <i className="bi bi-check-circle-fill"></i>
+        <span>{product.name}</span>
+      </div>
 
-            <span>{notice}</span>
-          </div>
-        )}
 
-        {/* Back Button */}
-        <button
-          type="button"
-          className="nx-back-button"
-          onClick={() => navigate(-1)}
-        >
-          <i className="bi bi-arrow-left"></i>
-          Back to Products
-        </button>
+      {/* MAIN PRODUCT SECTION */}
+      <section className="container nx-product-details-container">
 
-        {/* Product Details Card */}
-        <section className="nx-details-card">
-          {/* LEFT - PRODUCT IMAGE */}
+        <div className="nx-product-details-grid">
+
+
+          {/* =========================================
+              LEFT IMAGE SECTION
+              ========================================= */}
+
           <div className="nx-details-image-section">
-            <div className="nx-details-image-wrap">
-              {/* Previous Image Button */}
-              <button
-                type="button"
-                className="nx-image-arrow nx-image-arrow-left"
-                onClick={handlePreviousImage}
-                aria-label="Previous product image"
-              >
-                ❮
-              </button>
 
-              {/* Product Image + Amazon Magnifier */}
+            <div className="nx-details-image-wrap">
+
+              {/* MAIN IMAGE + MAGNIFIER */}
+
               <div
                 className="nx-image-zoom-area"
                 onMouseMove={handleImageMouseMove}
-                onMouseEnter={() => setIsZooming(true)}
-                onMouseLeave={() => setIsZooming(false)}
+                onMouseEnter={() =>
+                  setIsZooming(true)
+                }
+                onMouseLeave={() =>
+                  setIsZooming(false)
+                }
               >
+
                 <img
                   src={productImages[currentImage]}
-                  alt={`${product.name} ${currentImage + 1}`}
+                  alt={`${product.name} ${
+                    currentImage + 1
+                  }`}
                   className="nx-details-image"
                 />
 
+
+                {/* Previous Arrow */}
+
+                <button
+                  type="button"
+                  className="nx-image-arrow nx-image-arrow-left"
+                  onClick={handlePreviousImage}
+                  aria-label="Previous product image"
+                >
+                  ❮
+                </button>
+
+
+                {/* Next Arrow */}
+
+                <button
+                  type="button"
+                  className="nx-image-arrow nx-image-arrow-right"
+                  onClick={handleNextImage}
+                  aria-label="Next product image"
+                >
+                  ❯
+                </button>
+
+
                 {/* Magnifier */}
+
                 {isZooming && (
                   <div
                     className="nx-image-magnifier"
@@ -196,255 +234,584 @@ function ProductDetails() {
                     }}
                   />
                 )}
+
               </div>
 
-              {/* Next Image Button */}
+
+              {/* IMAGE DOTS */}
+
+              <div className="nx-image-dots">
+
+                {productImages.map(
+                  (_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className={
+                        index === currentImage
+                          ? "active"
+                          : ""
+                      }
+                      onClick={() =>
+                        setCurrentImage(index)
+                      }
+                      aria-label={`View image ${
+                        index + 1
+                      }`}
+                    >
+                      {index === currentImage
+                        ? "●"
+                        : "○"}
+                    </button>
+                  )
+                )}
+
+              </div>
+
+
+              {/* THUMBNAILS */}
+
+              <div className="nx-product-thumbnails">
+
+                {productImages.map(
+                  (image, index) => (
+                    <button
+                      type="button"
+                      key={index}
+                      className={`nx-product-thumbnail ${
+                        index === currentImage
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setCurrentImage(index)
+                      }
+                      aria-label={`Select product image ${
+                        index + 1
+                      }`}
+                    >
+                      <img
+                        src={image}
+                        alt={`${product.name} thumbnail ${
+                          index + 1
+                        }`}
+                        className="nx-thumbnail-image"
+                      />
+                    </button>
+                  )
+                )}
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/* =========================================
+              RIGHT PRODUCT INFORMATION
+              ========================================= */}
+
+          <div className="nx-details-content">
+
+
+            {/* Product Category */}
+
+            <div className="nx-details-category">
+              {product.category}
+            </div>
+
+
+            {/* Product Title */}
+
+            <div className="nx-details-title-row">
+
+              <h1>{product.name}</h1>
+
               <button
                 type="button"
-                className="nx-image-arrow nx-image-arrow-right"
-                onClick={handleNextImage}
-                aria-label="Next product image"
-              >
-                ❯
-              </button>
-
-              {/* Badge */}
-              {product.badge && (
-                <span className="nx-details-badge">{product.badge}</span>
-              )}
-
-              {/* Wishlist */}
-              <button
-                type="button"
-                className={`nx-details-wishlist ${isLiked ? "liked" : ""}`}
-                onClick={() => toggleWishlist(product.id)}
+                className={`nx-details-wishlist ${
+                  isLiked ? "liked" : ""
+                }`}
+                onClick={() =>
+                  toggleWishlist(product.id)
+                }
                 aria-label={
                   isLiked
-                    ? `Remove ${product.name} from wishlist`
-                    : `Add ${product.name} to wishlist`
+                    ? `Remove ${product.name} from favorites`
+                    : `Save ${product.name}`
                 }
               >
                 <i
-                  className={`bi ${isLiked ? "bi-heart-fill" : "bi-heart"}`}
+                  className={`bi ${
+                    isLiked
+                      ? "bi-heart-fill"
+                      : "bi-heart"
+                  }`}
                 ></i>
               </button>
 
-              {/* Image Dots */}
-              <div className="nx-image-dots">
-                {productImages.map((_, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className={`nx-image-dot ${
-                      currentImage === index ? "active" : ""
-                    }`}
-                    onClick={() => setCurrentImage(index)}
-                    aria-label={`View product image ${index + 1}`}
-                  />
-                ))}
-              </div>
-
-              {/* Product Thumbnails */}
-              <div className="nx-product-thumbnails">
-                {productImages.map((image, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className={`nx-product-thumbnail ${
-                      currentImage === index ? "active" : ""
-                    }`}
-                    onClick={() => setCurrentImage(index)}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.name} thumbnail ${index + 1}`}
-                      className="nx-thumbnail-image"
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT - PRODUCT INFORMATION */}
-          <div className="nx-details-info">
-            {/* Category */}
-            <div className="nx-details-category">
-              {product.category} · {product.group}
             </div>
 
-            {/* Product Name */}
-            <h1>{product.name}</h1>
 
             {/* Rating */}
+
             <div className="nx-details-rating">
-              <div className="nx-stars">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <i
-                    key={index}
-                    className={`bi ${
-                      index < Math.round(product.rating)
-                        ? "bi-star-fill"
-                        : "bi-star"
-                    }`}
-                  ></i>
-                ))}
-              </div>
 
-              <strong>{product.rating}</strong>
+              <span className="nx-rating-stars">
+                ★★★★★
+              </span>
 
-              <span>({product.reviews} reviews)</span>
+              <strong>
+                {product.rating}
+              </strong>
+
+              <span>
+                ({product.reviews} reviews)
+              </span>
+
             </div>
 
-            {/* Divider */}
-            <div className="nx-details-divider"></div>
 
             {/* Price */}
+
             <div className="nx-details-price">
+
               <span className="nx-current-price">
                 ₹{product.price.toLocaleString("en-IN")}
               </span>
 
               {product.oldPrice && (
                 <span className="nx-old-price">
-                  ₹{product.oldPrice.toLocaleString("en-IN")}
+                  ₹
+                  {product.oldPrice.toLocaleString(
+                    "en-IN"
+                  )}
                 </span>
               )}
+
             </div>
 
-            {/* Saving */}
-            {product.oldPrice && (
-              <div className="nx-saving-text">
-                Save ₹
-                {(product.oldPrice - product.price).toLocaleString("en-IN")}
-              </div>
-            )}
 
-            {/* Product Description */}
-            <p className="nx-details-description">{product.specs}</p>
+            {/* Badge */}
 
-            {/* Technical Specifications */}
-            <div className="nx-details-spec-box">
-              <div className="nx-spec-title">
-                <i className="bi bi-cpu"></i>
-                Technical Specifications
-              </div>
-
-              <div className="nx-spec-row">
-                <span>Product Group</span>
-
-                <strong>{product.group}</strong>
-              </div>
-
-              <div className="nx-spec-row">
-                <span>Category</span>
-
-                <strong>{product.category}</strong>
-              </div>
-
-              <div className="nx-spec-row">
-                <span>Specifications</span>
-
-                <strong>{product.specs}</strong>
-              </div>
-
-              <div className="nx-spec-row">
-                <span>Availability</span>
-
-                <strong>{product.stock}</strong>
-              </div>
+            <div className="nx-details-badge">
+              {product.badge}
             </div>
+
 
             {/* Stock */}
+
             <div className="nx-details-stock">
               <span className="nx-stock-dot"></span>
 
-              {product.stock}
+              <span>{product.stock}</span>
             </div>
 
-            {/* Add To Cart */}
-            {!product.requestOnly && (
-              <div className="nx-details-actions">
-                {/* Quantity */}
-                <div className="nx-quantity">
-                  <button
-                    type="button"
-                    onClick={handleDecrease}
-                    aria-label="Decrease quantity"
-                  >
-                    <i className="bi bi-dash"></i>
-                  </button>
 
-                  <span>{quantity}</span>
+            {/* Product Short Description */}
 
-                  <button
-                    type="button"
-                    onClick={handleIncrease}
-                    aria-label="Increase quantity"
-                  >
-                    <i className="bi bi-plus"></i>
-                  </button>
-                </div>
+            <div className="nx-details-description">
 
-                {/* Add Cart */}
+              <p>
+                {product.summary ||
+                  `${product.name} is designed for reliable industrial deployment, secure operation, and efficient performance in demanding business environments.`}
+              </p>
+
+            </div>
+
+
+            {/* Quick Specification */}
+
+            <div className="nx-details-quick-spec">
+
+              <div>
+                <span>Product Group</span>
+
+                <strong>
+                  {product.group}
+                </strong>
+              </div>
+
+              <div>
+                <span>Specifications</span>
+
+                <strong>
+                  {product.specs}
+                </strong>
+              </div>
+
+            </div>
+
+
+            {/* Quantity + Cart */}
+
+            <div className="nx-details-purchase">
+
+              <div className="nx-quantity-control">
+
                 <button
                   type="button"
-                  className="nx-add-cart-button"
-                  onClick={handleAddToCart}
+                  onClick={decreaseQuantity}
+                  aria-label="Decrease quantity"
                 >
-                  <i className="bi bi-cart-plus"></i>
-                  Add to Cart
+                  −
                 </button>
-              </div>
-            )}
 
-            {/* Request Quote */}
-            {product.requestOnly && (
+                <span>{quantity}</span>
+
+                <button
+                  type="button"
+                  onClick={increaseQuantity}
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+
+              </div>
+
+
               <button
                 type="button"
-                className="nx-request-button"
-                onClick={handleRequestQuote}
+                className="nx-add-cart-details"
+                onClick={handleAddToCart}
               >
-                <i className="bi bi-send"></i>
-                Request a Quote
+                <i className="bi bi-cart3"></i>
+
+                Add to Cart
               </button>
-            )}
+
+
+              <button
+                type="button"
+                className="nx-buy-now-details"
+                onClick={handleBuyNow}
+              >
+                Buy Now
+              </button>
+
+            </div>
+
+
+            {/* Product Reference */}
+
+            <div className="nx-product-reference">
+
+              <span>
+                Product ID
+              </span>
+
+              <strong>
+                NX-
+                {String(product.id).padStart(
+                  4,
+                  "0"
+                )}
+              </strong>
+
+            </div>
+
           </div>
+
+        </div>
+
+
+        {/* =========================================
+            PRODUCT INFORMATION
+            ========================================= */}
+
+        <section className="nx-product-information">
+
+
+          {/* PRODUCT SUMMARY */}
+
+          <div className="nx-info-card">
+
+            <div className="nx-info-title">
+
+              <i className="bi bi-file-text"></i>
+
+              <div>
+                <h2>Product Summary</h2>
+
+                <p>
+                  Product overview and business
+                  application
+                </p>
+              </div>
+
+            </div>
+
+
+            <p className="nx-summary-text">
+
+              {product.summary ||
+                `${product.name} is an enterprise-grade ${product.group.toLowerCase()} solution designed for reliable industrial deployment. It provides secure, stable and efficient operation for demanding business and industrial environments.`}
+
+            </p>
+
+          </div>
+
+
+          {/* KEY FEATURES */}
+
+          <div className="nx-info-card">
+
+            <div className="nx-info-title">
+
+              <i className="bi bi-stars"></i>
+
+              <div>
+                <h2>Key Features</h2>
+
+                <p>
+                  Core capabilities and product
+                  highlights
+                </p>
+              </div>
+
+            </div>
+
+
+            <div className="nx-professional-features">
+
+              {(
+                product.features || [
+                  "Industrial-grade hardware architecture",
+                  "Reliable performance for continuous operation",
+                  "Enterprise-ready security and deployment",
+                  "Designed for demanding industrial environments",
+                ]
+              ).map(
+                (feature, index) => (
+                  <div
+                    className="nx-professional-feature"
+                    key={index}
+                  >
+
+                    <div className="nx-feature-icon">
+
+                      <i className="bi bi-check-lg"></i>
+
+                    </div>
+
+                    <span>
+                      {feature}
+                    </span>
+
+                  </div>
+                )
+              )}
+
+            </div>
+
+          </div>
+
+
+          {/* PRODUCT DETAILS */}
+
+          <div className="nx-info-card">
+
+            <div className="nx-info-title">
+
+              <i className="bi bi-info-circle"></i>
+
+              <div>
+                <h2>Product Details</h2>
+
+                <p>
+                  General product information
+                </p>
+              </div>
+
+            </div>
+
+
+            <div className="nx-spec-table">
+
+              {(
+                product.details || [
+                  {
+                    label: "Category",
+                    value: product.category,
+                  },
+                  {
+                    label: "Product Group",
+                    value: product.group,
+                  },
+                  {
+                    label: "Availability",
+                    value: product.stock,
+                  },
+                  {
+                    label: "Customer Rating",
+                    value: `${product.rating} / 5`,
+                  },
+                  {
+                    label: "Customer Reviews",
+                    value: `${product.reviews} Reviews`,
+                  },
+                  {
+                    label: "Product ID",
+                    value: `NX-${String(
+                      product.id
+                    ).padStart(4, "0")}`,
+                  },
+                ]
+              ).map(
+                (detail, index) => (
+                  <div
+                    className="nx-spec-row"
+                    key={index}
+                  >
+
+                    <span>
+                      {detail.label}
+                    </span>
+
+                    <strong>
+                      {detail.value}
+                    </strong>
+
+                  </div>
+                )
+              )}
+
+            </div>
+
+          </div>
+
+
+          {/* TECHNICAL SPECIFICATIONS */}
+
+          <div className="nx-info-card">
+
+            <div className="nx-info-title">
+
+              <i className="bi bi-cpu"></i>
+
+              <div>
+                <h2>
+                  Technical Specifications
+                </h2>
+
+                <p>
+                  Technical configuration and
+                  specifications
+                </p>
+              </div>
+
+            </div>
+
+
+            <div className="nx-spec-table">
+
+              {(
+                product.specifications || [
+                  {
+                    label: "Core Specifications",
+                    value: product.specs,
+                  },
+                  {
+                    label: "Product Category",
+                    value: product.category,
+                  },
+                  {
+                    label: "Product Group",
+                    value: product.group,
+                  },
+                  {
+                    label: "Deployment",
+                    value:
+                      "Industrial / Enterprise",
+                  },
+                ]
+              ).map(
+                (specification, index) => (
+                  <div
+                    className="nx-spec-row"
+                    key={index}
+                  >
+
+                    <span>
+                      {specification.label}
+                    </span>
+
+                    <strong>
+                      {specification.value}
+                    </strong>
+
+                  </div>
+                )
+              )}
+
+            </div>
+
+          </div>
+
+
+          {/* =========================================
+              BOTTOM FEATURES
+              ========================================= */}
+
+          <section className="nx-details-bottom">
+
+            <div className="nx-bottom-card">
+
+              <i className="bi bi-truck"></i>
+
+              <div>
+                <strong>
+                  Reliable Delivery
+                </strong>
+
+                <span>
+                  Secure enterprise shipping
+                </span>
+              </div>
+
+            </div>
+
+
+            <div className="nx-bottom-card">
+
+              <i className="bi bi-shield-check"></i>
+
+              <div>
+                <strong>
+                  Enterprise Quality
+                </strong>
+
+                <span>
+                  Certified industrial products
+                </span>
+              </div>
+
+            </div>
+
+
+            <div className="nx-bottom-card">
+
+              <i className="bi bi-headset"></i>
+
+              <div>
+                <strong>
+                  Technical Support
+                </strong>
+
+                <span>
+                  Expert assistance available
+                </span>
+              </div>
+
+            </div>
+
+          </section>
+
         </section>
 
-        {/* Bottom Features */}
-        <section className="nx-details-bottom">
-          <div className="nx-bottom-card">
-            <i className="bi bi-truck"></i>
+      </section>
 
-            <div>
-              <strong>Reliable Delivery</strong>
-
-              <span>Secure enterprise shipping</span>
-            </div>
-          </div>
-
-          <div className="nx-bottom-card">
-            <i className="bi bi-shield-check"></i>
-
-            <div>
-              <strong>Enterprise Quality</strong>
-
-              <span>Certified industrial products</span>
-            </div>
-          </div>
-
-          <div className="nx-bottom-card">
-            <i className="bi bi-headset"></i>
-
-            <div>
-              <strong>Technical Support</strong>
-
-              <span>Expert assistance available</span>
-            </div>
-          </div>
-        </section>
-      </div>
     </div>
   );
 }
