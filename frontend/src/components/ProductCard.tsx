@@ -18,7 +18,6 @@ function ProductCard({
     <article className="nx-node-card">
       {/* Product Image */}
       <div className="nx-node-visual">
-
         {/* Wishlist Heart */}
         <button
           className={`nx-node-save ${isLiked ? "liked" : ""}`}
@@ -31,9 +30,7 @@ function ProductCard({
           onClick={onToggleWishlist}
         >
           <i
-            className={`bi ${
-              isLiked ? "bi-heart-fill" : "bi-heart"
-            }`}
+            className={`bi ${isLiked ? "bi-heart-fill" : "bi-heart"}`}
             aria-hidden="true"
           ></i>
         </button>
@@ -41,7 +38,7 @@ function ProductCard({
         {/* Product Image */}
         <div className="nx-device-glyph">
           <img
-            src={product.image}
+            src={`/src/assets/product-images/${product.image}`}
             alt={product.name}
           />
         </div>
@@ -70,14 +67,10 @@ function ProductCard({
       {/* Price & Actions */}
       <div className="nx-node-bottom">
         <div className="nx-node-price">
-          <strong>
-            ₹{product.price.toLocaleString("en-IN")}
-          </strong>
+          <strong>₹{product.price.toLocaleString("en-IN")}</strong>
 
           {product.oldPrice && (
-            <del>
-              ₹{product.oldPrice.toLocaleString("en-IN")}
-            </del>
+            <del>₹{product.oldPrice.toLocaleString("en-IN")}</del>
           )}
 
           <span>{product.badge}</span>
@@ -92,9 +85,7 @@ function ProductCard({
             Add Cart
           </button>
 
-          <Link to={`/products/${product.id}`}>
-            View Details
-          </Link>
+          <Link to={`/products/${product.id}`}>View Details</Link>
         </div>
       </div>
     </article>

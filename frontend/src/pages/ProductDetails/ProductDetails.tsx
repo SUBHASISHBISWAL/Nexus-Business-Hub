@@ -1,10 +1,21 @@
-import { useContext, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
-import { products } from "../../data/products";
 
+import { getProductById } from "../../services/productService";
+
+import type { Product } from "../../types/product";
 
 import product1Image from "../../assets/product-images/product1.jpg";
 import product1Image2 from "../../assets/product-images/product1-2.jpg";
@@ -20,31 +31,115 @@ function ProductDetails() {
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
 
-  const product = products.find(
-    (item) => item.id === Number(id)
-  );
+  const [product, setProduct] = useState<Product | null>(null);
 
-  const [quantity, setQuantity] = useState(1);
-  const [currentImage, setCurrentImage] = useState(0);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const [error, setError] = useState<string>("");
+
+  const [quantity, setQuantity] = useState<number>(1);
+
+  const [currentImage, setCurrentImage] =
+    useState<number>(0);
 
   const [zoomPosition, setZoomPosition] = useState({
     x: 50,
     y: 50,
   });
 
-  const [isZooming, setIsZooming] = useState(false);
+  const [isZooming, setIsZooming] =
+    useState<boolean>(false);
 
-  if (!product) {
+  /*
+   * =========================================
+   * GET PRODUCT FROM API
+   * =========================================
+   */
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      if (!id) {
+        setError("Invalid product ID.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await getProductById(
+          Number(id)
+        );
+
+        setProduct(data);
+
+        setCurrentImage(0);
+        setQuantity(1);
+      } catch (err) {
+        console.error(
+          "Failed to load product:",
+          err
+        );
+
+        setProduct(null);
+
+        setError(
+          "Unable to load product details. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [id]);
+
+  /*
+   * =========================================
+   * LOADING STATE
+   * =========================================
+   */
+
+  if (loading) {
+    return (
+      <div className="nx-product-not-found">
+        <span className="material-symbols-outlined">
+          progress_activity
+        </span>
+
+        <h2>Loading Product...</h2>
+
+        <p>
+          Please wait while we load the product
+          details.
+        </p>
+      </div>
+    );
+  }
+
+  /*
+   * =========================================
+   * ERROR STATE
+   * =========================================
+   */
+
+  if (error || !product) {
     return (
       <div className="nx-product-not-found">
         <span className="material-symbols-outlined">
           search_off
         </span>
 
-        <h2>Product Not Found</h2>
+        <h2>
+          {error
+            ? "Unable to Load Product"
+            : "Product Not Found"}
+        </h2>
 
         <p>
-          The product you are looking for does not exist.
+          {error ||
+            "The product you are looking for does not exist."}
         </p>
 
         <Link
@@ -58,11 +153,24 @@ function ProductDetails() {
   }
 
   /*
-   * Product Gallery
+   * =========================================
+   * PRODUCT IMAGE PATH
+   * =========================================
+   */
+
+  const mainProductImage =
+    `/src/assets/product-images/${product.image}`;
+
+  /*
+   * =========================================
+   * PRODUCT GALLERY
+   * =========================================
+   *
    * Product 1 has four real images.
-   * Other products currently use their main image
+   * Other products use their main image
    * for all four gallery positions.
    */
+
   const productImages =
     product.id === 1
       ? [
@@ -72,15 +180,22 @@ function ProductDetails() {
           product1Image4,
         ]
       : [
-          product.image,
-          product.image,
-          product.image,
-          product.image,
+          mainProductImage,
+          mainProductImage,
+          mainProductImage,
+          mainProductImage,
         ];
 
-  const isLiked = wishlist.includes(product.id);
+  const isLiked = wishlist.includes(
+    product.id
+  );
 
-  /* Image Mouse Move */
+  /*
+   * =========================================
+   * IMAGE MOUSE MOVE
+   * =========================================
+   */
+
   const handleImageMouseMove = (
     event: React.MouseEvent<HTMLDivElement>
   ) => {
@@ -88,10 +203,14 @@ function ProductDetails() {
       event.currentTarget.getBoundingClientRect();
 
     const x =
-      ((event.clientX - rect.left) / rect.width) * 100;
+      ((event.clientX - rect.left) /
+        rect.width) *
+      100;
 
     const y =
-      ((event.clientY - rect.top) / rect.height) * 100;
+      ((event.clientY - rect.top) /
+        rect.height) *
+      100;
 
     setZoomPosition({
       x,
@@ -99,7 +218,12 @@ function ProductDetails() {
     });
   };
 
-  /* Previous Image */
+  /*
+   * =========================================
+   * PREVIOUS IMAGE
+   * =========================================
+   */
+
   const handlePreviousImage = () => {
     setCurrentImage((previous) =>
       previous === 0
@@ -108,7 +232,12 @@ function ProductDetails() {
     );
   };
 
-  /* Next Image */
+  /*
+   * =========================================
+   * NEXT IMAGE
+   * =========================================
+   */
+
   const handleNextImage = () => {
     setCurrentImage((previous) =>
       previous === productImages.length - 1
@@ -117,7 +246,12 @@ function ProductDetails() {
     );
   };
 
-  /* Quantity */
+  /*
+   * =========================================
+   * QUANTITY
+   * =========================================
+   */
+
   const decreaseQuantity = () => {
     setQuantity((previous) =>
       Math.max(1, previous - 1)
@@ -125,19 +259,39 @@ function ProductDetails() {
   };
 
   const increaseQuantity = () => {
-    setQuantity((previous) => previous + 1);
+    setQuantity(
+      (previous) => previous + 1
+    );
   };
 
-  /* Add To Cart */
+  /*
+   * =========================================
+   * ADD TO CART
+   * =========================================
+   */
+
   const handleAddToCart = () => {
-    for (let index = 0; index < quantity; index++) {
+    for (
+      let index = 0;
+      index < quantity;
+      index++
+    ) {
       addToCart(product);
     }
   };
 
-  /* Buy Now */
+  /*
+   * =========================================
+   * BUY NOW
+   * =========================================
+   */
+
   const handleBuyNow = () => {
-    for (let index = 0; index < quantity; index++) {
+    for (
+      let index = 0;
+      index < quantity;
+      index++
+    ) {
       addToCart(product);
     }
 
@@ -147,21 +301,33 @@ function ProductDetails() {
   return (
     <div className="nx-product-details-page">
 
-      {/* Breadcrumb */}
+      {/* =========================================
+          BREADCRUMB
+          ========================================= */}
+
       <div className="container nx-details-breadcrumb">
-        <Link to="/">Home</Link>
+        <Link to="/">
+          Home
+        </Link>
 
         <span>/</span>
 
-        <Link to="/products">Products</Link>
+        <Link to="/products">
+          Products
+        </Link>
 
         <span>/</span>
 
-        <span>{product.name}</span>
+        <span>
+          {product.name}
+        </span>
       </div>
 
 
-      {/* MAIN PRODUCT SECTION */}
+      {/* =========================================
+          MAIN PRODUCT SECTION
+          ========================================= */}
+
       <section className="container nx-product-details-container">
 
         <div className="nx-product-details-grid">
@@ -175,11 +341,14 @@ function ProductDetails() {
 
             <div className="nx-details-image-wrap">
 
+
               {/* MAIN IMAGE + MAGNIFIER */}
 
               <div
                 className="nx-image-zoom-area"
-                onMouseMove={handleImageMouseMove}
+                onMouseMove={
+                  handleImageMouseMove
+                }
                 onMouseEnter={() =>
                   setIsZooming(true)
                 }
@@ -189,7 +358,11 @@ function ProductDetails() {
               >
 
                 <img
-                  src={productImages[currentImage]}
+                  src={
+                    productImages[
+                      currentImage
+                    ]
+                  }
                   alt={`${product.name} ${
                     currentImage + 1
                   }`}
@@ -202,7 +375,9 @@ function ProductDetails() {
                 <button
                   type="button"
                   className="nx-image-arrow nx-image-arrow-left"
-                  onClick={handlePreviousImage}
+                  onClick={
+                    handlePreviousImage
+                  }
                   aria-label="Previous product image"
                 >
                   ❮
@@ -214,7 +389,9 @@ function ProductDetails() {
                 <button
                   type="button"
                   className="nx-image-arrow nx-image-arrow-right"
-                  onClick={handleNextImage}
+                  onClick={
+                    handleNextImage
+                  }
                   aria-label="Next product image"
                 >
                   ❯
@@ -238,7 +415,9 @@ function ProductDetails() {
               </div>
 
 
-              {/* IMAGE DOTS */}
+              {/* =====================================
+                  IMAGE DOTS
+                  ===================================== */}
 
               <div className="nx-image-dots">
 
@@ -253,7 +432,9 @@ function ProductDetails() {
                           : ""
                       }
                       onClick={() =>
-                        setCurrentImage(index)
+                        setCurrentImage(
+                          index
+                        )
                       }
                       aria-label={`View image ${
                         index + 1
@@ -269,7 +450,9 @@ function ProductDetails() {
               </div>
 
 
-              {/* THUMBNAILS */}
+              {/* =====================================
+                  THUMBNAILS
+                  ===================================== */}
 
               <div className="nx-product-thumbnails">
 
@@ -279,12 +462,15 @@ function ProductDetails() {
                       type="button"
                       key={index}
                       className={`nx-product-thumbnail ${
-                        index === currentImage
+                        index ===
+                        currentImage
                           ? "active"
                           : ""
                       }`}
                       onClick={() =>
-                        setCurrentImage(index)
+                        setCurrentImage(
+                          index
+                        )
                       }
                       aria-label={`Select product image ${
                         index + 1
@@ -326,15 +512,21 @@ function ProductDetails() {
 
             <div className="nx-details-title-row">
 
-              <h1>{product.name}</h1>
+              <h1>
+                {product.name}
+              </h1>
 
               <button
                 type="button"
                 className={`nx-details-wishlist ${
-                  isLiked ? "liked" : ""
+                  isLiked
+                    ? "liked"
+                    : ""
                 }`}
                 onClick={() =>
-                  toggleWishlist(product.id)
+                  toggleWishlist(
+                    product.id
+                  )
                 }
                 aria-label={
                   isLiked
@@ -378,7 +570,10 @@ function ProductDetails() {
             <div className="nx-details-price">
 
               <span className="nx-current-price">
-                ₹{product.price.toLocaleString("en-IN")}
+                ₹
+                {product.price.toLocaleString(
+                  "en-IN"
+                )}
               </span>
 
               {product.oldPrice && (
@@ -403,9 +598,13 @@ function ProductDetails() {
             {/* Stock */}
 
             <div className="nx-details-stock">
+
               <span className="nx-stock-dot"></span>
 
-              <span>{product.stock}</span>
+              <span>
+                {product.stock}
+              </span>
+
             </div>
 
 
@@ -426,19 +625,27 @@ function ProductDetails() {
             <div className="nx-details-quick-spec">
 
               <div>
-                <span>Product Group</span>
+
+                <span>
+                  Product Group
+                </span>
 
                 <strong>
                   {product.group}
                 </strong>
+
               </div>
 
               <div>
-                <span>Specifications</span>
+
+                <span>
+                  Specifications
+                </span>
 
                 <strong>
                   {product.specs}
                 </strong>
+
               </div>
 
             </div>
@@ -452,17 +659,23 @@ function ProductDetails() {
 
                 <button
                   type="button"
-                  onClick={decreaseQuantity}
+                  onClick={
+                    decreaseQuantity
+                  }
                   aria-label="Decrease quantity"
                 >
                   −
                 </button>
 
-                <span>{quantity}</span>
+                <span>
+                  {quantity}
+                </span>
 
                 <button
                   type="button"
-                  onClick={increaseQuantity}
+                  onClick={
+                    increaseQuantity
+                  }
                   aria-label="Increase quantity"
                 >
                   +
@@ -474,7 +687,9 @@ function ProductDetails() {
               <button
                 type="button"
                 className="nx-add-cart-details"
-                onClick={handleAddToCart}
+                onClick={
+                  handleAddToCart
+                }
               >
                 <i className="bi bi-cart3"></i>
 
@@ -485,7 +700,9 @@ function ProductDetails() {
               <button
                 type="button"
                 className="nx-buy-now-details"
-                onClick={handleBuyNow}
+                onClick={
+                  handleBuyNow
+                }
               >
                 Buy Now
               </button>
@@ -503,10 +720,9 @@ function ProductDetails() {
 
               <strong>
                 NX-
-                {String(product.id).padStart(
-                  4,
-                  "0"
-                )}
+                {String(
+                  product.id
+                ).padStart(4, "0")}
               </strong>
 
             </div>
@@ -523,7 +739,9 @@ function ProductDetails() {
         <section className="nx-product-information">
 
 
-          {/* PRODUCT SUMMARY */}
+          {/* =====================================
+              PRODUCT SUMMARY
+              ===================================== */}
 
           <div className="nx-info-card">
 
@@ -532,12 +750,16 @@ function ProductDetails() {
               <i className="bi bi-file-text"></i>
 
               <div>
-                <h2>Product Summary</h2>
+
+                <h2>
+                  Product Summary
+                </h2>
 
                 <p>
                   Product overview and business
                   application
                 </p>
+
               </div>
 
             </div>
@@ -553,7 +775,9 @@ function ProductDetails() {
           </div>
 
 
-          {/* KEY FEATURES */}
+          {/* =====================================
+              KEY FEATURES
+              ===================================== */}
 
           <div className="nx-info-card">
 
@@ -562,12 +786,16 @@ function ProductDetails() {
               <i className="bi bi-stars"></i>
 
               <div>
-                <h2>Key Features</h2>
+
+                <h2>
+                  Key Features
+                </h2>
 
                 <p>
                   Core capabilities and product
                   highlights
                 </p>
+
               </div>
 
             </div>
@@ -583,7 +811,10 @@ function ProductDetails() {
                   "Designed for demanding industrial environments",
                 ]
               ).map(
-                (feature, index) => (
+                (
+                  feature,
+                  index
+                ) => (
                   <div
                     className="nx-professional-feature"
                     key={index}
@@ -608,7 +839,9 @@ function ProductDetails() {
           </div>
 
 
-          {/* PRODUCT DETAILS */}
+          {/* =====================================
+              PRODUCT DETAILS
+              ===================================== */}
 
           <div className="nx-info-card">
 
@@ -617,11 +850,15 @@ function ProductDetails() {
               <i className="bi bi-info-circle"></i>
 
               <div>
-                <h2>Product Details</h2>
+
+                <h2>
+                  Product Details
+                </h2>
 
                 <p>
                   General product information
                 </p>
+
               </div>
 
             </div>
@@ -632,34 +869,49 @@ function ProductDetails() {
               {(
                 product.details || [
                   {
-                    label: "Category",
-                    value: product.category,
+                    label:
+                      "Category",
+                    value:
+                      product.category,
                   },
                   {
-                    label: "Product Group",
-                    value: product.group,
+                    label:
+                      "Product Group",
+                    value:
+                      product.group,
                   },
                   {
-                    label: "Availability",
-                    value: product.stock,
+                    label:
+                      "Availability",
+                    value:
+                      product.stock,
                   },
                   {
-                    label: "Customer Rating",
+                    label:
+                      "Customer Rating",
                     value: `${product.rating} / 5`,
                   },
                   {
-                    label: "Customer Reviews",
+                    label:
+                      "Customer Reviews",
                     value: `${product.reviews} Reviews`,
                   },
                   {
-                    label: "Product ID",
+                    label:
+                      "Product ID",
                     value: `NX-${String(
                       product.id
-                    ).padStart(4, "0")}`,
+                    ).padStart(
+                      4,
+                      "0"
+                    )}`,
                   },
                 ]
               ).map(
-                (detail, index) => (
+                (
+                  detail,
+                  index
+                ) => (
                   <div
                     className="nx-spec-row"
                     key={index}
@@ -682,7 +934,9 @@ function ProductDetails() {
           </div>
 
 
-          {/* TECHNICAL SPECIFICATIONS */}
+          {/* =====================================
+              TECHNICAL SPECIFICATIONS
+              ===================================== */}
 
           <div className="nx-info-card">
 
@@ -691,6 +945,7 @@ function ProductDetails() {
               <i className="bi bi-cpu"></i>
 
               <div>
+
                 <h2>
                   Technical Specifications
                 </h2>
@@ -699,6 +954,7 @@ function ProductDetails() {
                   Technical configuration and
                   specifications
                 </p>
+
               </div>
 
             </div>
@@ -709,36 +965,50 @@ function ProductDetails() {
               {(
                 product.specifications || [
                   {
-                    label: "Core Specifications",
-                    value: product.specs,
+                    label:
+                      "Core Specifications",
+                    value:
+                      product.specs,
                   },
                   {
-                    label: "Product Category",
-                    value: product.category,
+                    label:
+                      "Product Category",
+                    value:
+                      product.category,
                   },
                   {
-                    label: "Product Group",
-                    value: product.group,
+                    label:
+                      "Product Group",
+                    value:
+                      product.group,
                   },
                   {
-                    label: "Deployment",
+                    label:
+                      "Deployment",
                     value:
                       "Industrial / Enterprise",
                   },
                 ]
               ).map(
-                (specification, index) => (
+                (
+                  specification,
+                  index
+                ) => (
                   <div
                     className="nx-spec-row"
                     key={index}
                   >
 
                     <span>
-                      {specification.label}
+                      {
+                        specification.label
+                      }
                     </span>
 
                     <strong>
-                      {specification.value}
+                      {
+                        specification.value
+                      }
                     </strong>
 
                   </div>
@@ -750,9 +1020,9 @@ function ProductDetails() {
           </div>
 
 
-          {/* =========================================
+          {/* =====================================
               BOTTOM FEATURES
-              ========================================= */}
+              ===================================== */}
 
           <section className="nx-details-bottom">
 
@@ -761,6 +1031,7 @@ function ProductDetails() {
               <i className="bi bi-truck"></i>
 
               <div>
+
                 <strong>
                   Reliable Delivery
                 </strong>
@@ -768,6 +1039,7 @@ function ProductDetails() {
                 <span>
                   Secure enterprise shipping
                 </span>
+
               </div>
 
             </div>
@@ -778,6 +1050,7 @@ function ProductDetails() {
               <i className="bi bi-shield-check"></i>
 
               <div>
+
                 <strong>
                   Enterprise Quality
                 </strong>
@@ -785,6 +1058,7 @@ function ProductDetails() {
                 <span>
                   Certified industrial products
                 </span>
+
               </div>
 
             </div>
@@ -795,6 +1069,7 @@ function ProductDetails() {
               <i className="bi bi-headset"></i>
 
               <div>
+
                 <strong>
                   Technical Support
                 </strong>
@@ -802,6 +1077,7 @@ function ProductDetails() {
                 <span>
                   Expert assistance available
                 </span>
+
               </div>
 
             </div>

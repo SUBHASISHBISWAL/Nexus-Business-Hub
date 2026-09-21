@@ -14,10 +14,14 @@
   --nx-hairline: #e2e8f0;
   --nx-hairline-strong: #cbd5e1;
   --nx-hairline-hover: #94a3b8;
-  --nx-shadow-1: 0 1px 2px rgba(15, 23, 42, 0.03);
+
+  --nx-shadow-1:
+    0 1px 2px rgba(15, 23, 42, 0.03);
+
   --nx-shadow-2:
     0 4px 12px -2px rgba(15, 23, 42, 0.05),
     0 1px 3px rgba(15, 23, 42, 0.04);
+
   --nx-shadow-3:
     0 20px 32px -8px rgba(15, 23, 42, 0.08),
     0 8px 16px -4px rgba(15, 23, 42, 0.04);
@@ -310,13 +314,115 @@
    CATALOG SEARCH
    ========================================================= */
 
-.nx-catalog-search {
-  margin-bottom: 1.5rem;
+.nx-catalog-tools {
+  margin-bottom: 0;
 }
 
-.nx-catalog-search .nx-search {
+.nx-tool-controls {
   width: 100%;
-  max-width: 420px;
+}
+
+.nx-search {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+}
+
+.nx-search > .material-symbols-outlined {
+  position: absolute;
+  left: 12px;
+  z-index: 2;
+  color: #64748b;
+  font-size: 20px;
+  pointer-events: none;
+}
+
+.nx-search input {
+  width: 100%;
+  height: 42px;
+  padding: 0 42px 0 40px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 13px;
+  box-sizing: border-box;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.nx-search input::placeholder {
+  color: #94a3b8;
+}
+
+.nx-search input:focus {
+  border-color: #93c5fd;
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+/* =========================================================
+   SEARCH CLEAR
+   ========================================================= */
+
+.nx-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  width: 27px;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.nx-search-clear:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.nx-search-clear .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* =========================================================
+   RESULT SUMMARY
+   ========================================================= */
+
+.nx-result-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 18px 0 16px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.nx-result-summary strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.nx-filtered-label {
+  padding: 4px 9px;
+  border: 1px solid #dbeafe;
+  border-radius: 5px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 /* =========================================================
@@ -325,7 +431,10 @@
 
 .nx-product-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(
+    4,
+    minmax(0, 1fr)
+  );
   gap: 1.25rem;
 }
 
@@ -420,7 +529,10 @@
   z-index: 1;
   top: 0.65rem;
   left: 0.65rem;
-  font: 600 0.57rem "JetBrains Mono", ui-monospace, monospace;
+  font:
+    600 0.57rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
   color: #065f46;
   background: #ecfdf5;
   border: 1px solid #a7f3d0;
@@ -432,37 +544,26 @@
    SAVE / HEART BUTTON
    ========================================================= */
 
-/* =========================================================
-   SAVE / HEART BUTTON
-   ========================================================= */
-
 .nx-node-save {
   position: absolute;
   z-index: 5;
   top: 10px;
   right: 10px;
-
   width: 32px;
   height: 32px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 0;
   margin: 0;
-
   border: none;
   background: transparent;
   border-radius: 0;
-
   color: #64748b;
   cursor: pointer;
-
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
-
   transition:
     opacity 0.2s ease,
     visibility 0.2s ease,
@@ -470,14 +571,12 @@
     color 0.2s ease;
 }
 
-/* Show heart when mouse is over product */
 .nx-node-card:hover .nx-node-save {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-/* Keep liked heart visible even when mouse leaves */
 .nx-node-save.liked {
   opacity: 1;
   visibility: visible;
@@ -488,22 +587,6 @@
 .nx-node-save:hover {
   color: #ef4444;
   transform: scale(1.08);
-}
-
-.nx-node-save .bi {
-  font-size: 18px;
-  line-height: 1;
-}
-
-.nx-node-save:hover {
-  color: #ef4444;
-  transform: scale(1.08);
-}
-
-.nx-node-save.liked {
-  color: #ef4444;
-  opacity: 1;
-  visibility: visible;
 }
 
 .nx-node-save .bi {
@@ -537,7 +620,10 @@
   justify-content: space-between;
   gap: 0.4rem;
   color: #0369a1;
-  font: 0.57rem "JetBrains Mono", ui-monospace, monospace;
+  font:
+    0.57rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -594,7 +680,10 @@
   color: var(--nx-ink-muted);
   border: 1px solid #e9eef5;
   border-radius: 3px;
-  font: 0.62rem/1.35 "JetBrains Mono", ui-monospace, monospace;
+  font:
+    0.62rem/1.35 "JetBrains Mono",
+    ui-monospace,
+    monospace;
   overflow: hidden;
 }
 
@@ -621,12 +710,18 @@
 }
 
 .nx-node-price strong {
-  font: 700 1.05rem "Geist", system-ui, sans-serif;
+  font:
+    700 1.05rem "Geist",
+    system-ui,
+    sans-serif;
   color: var(--nx-ink);
 }
 
 .nx-node-price del {
-  font: 0.62rem "JetBrains Mono", ui-monospace, monospace;
+  font:
+    0.62rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
   color: var(--nx-ink-muted);
 }
 
@@ -636,7 +731,10 @@
   background: #ecfdf5;
   padding: 0.24rem 0.3rem;
   border-radius: 2px;
-  font: 700 0.52rem "JetBrains Mono", ui-monospace, monospace;
+  font:
+    700 0.52rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
 }
 
 /* =========================================================
@@ -658,12 +756,15 @@
   justify-content: center;
   gap: 0.25rem;
   border-radius: 3px;
-  font: 600 0.62rem "JetBrains Mono", ui-monospace, monospace;
+  font:
+    600 0.62rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
   text-decoration: none;
 }
 
 /* =========================================================
-   ADD CART — ALWAYS VISIBLE
+   ADD CART
    ========================================================= */
 
 .nx-add-button {
@@ -671,7 +772,6 @@
   background: var(--nx-ink);
   color: #fff;
   cursor: pointer;
-
   opacity: 1;
   visibility: visible;
   display: flex;
@@ -758,22 +858,31 @@
 }
 
 /* =========================================================
-   PAGINATION
+   PROFESSIONAL PAGINATION
    ========================================================= */
 
 .nx-pagination {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
   margin-top: 32px;
   margin-bottom: 24px;
 }
 
+.nx-pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .nx-pagination button {
-  min-width: 38px;
-  height: 38px;
-  padding: 0 12px;
+  min-width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
   border: 1px solid #dbe2ea;
   border-radius: 6px;
   background: #ffffff;
@@ -784,27 +893,54 @@
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
-    color 0.15s ease;
+    color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .nx-pagination button:hover:not(:disabled) {
   border-color: #2563eb;
   color: #2563eb;
+  background: #f8fbff;
 }
 
 .nx-pagination button.active {
   background: #2563eb;
   border-color: #2563eb;
   color: #ffffff;
+  box-shadow:
+    0 2px 5px rgba(37, 99, 235, 0.2);
 }
 
 .nx-pagination button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  background: #f8fafc;
 }
 
-.nx-pagination button i {
-  font-size: 13px;
+.nx-pagination-nav {
+  gap: 7px;
+  padding: 0 13px !important;
+  color: #475569 !important;
+}
+
+.nx-pagination-nav:hover:not(:disabled) {
+  color: #2563eb !important;
+}
+
+.nx-pagination-nav i {
+  font-size: 12px;
+}
+
+.nx-pagination-ellipsis {
+  min-width: 25px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
+  user-select: none;
 }
 
 /* =========================================================
@@ -813,7 +949,10 @@
 
 @media (max-width: 1100px) {
   .nx-product-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(
+      3,
+      minmax(0, 1fr)
+    );
   }
 }
 
@@ -828,13 +967,19 @@
   }
 
   .nx-product-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(
+      3,
+      minmax(0, 1fr)
+    );
   }
 }
 
 @media (max-width: 768px) {
   .nx-product-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
     gap: 0.8rem;
   }
 
@@ -844,8 +989,36 @@
     padding-right: 0.7rem;
   }
 
+  .nx-result-summary {
+    font-size: 12px;
+  }
+
   .nx-pagination {
-    gap: 0.3rem;
+    gap: 4px;
+  }
+
+  .nx-pagination-pages {
+    gap: 3px;
+  }
+
+  .nx-pagination button {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 7px;
+    font-size: 12px;
+  }
+
+  .nx-pagination-nav {
+    padding: 0 9px !important;
+  }
+
+  .nx-pagination-nav span {
+    display: none;
+  }
+
+  .nx-pagination-ellipsis {
+    min-width: 20px;
+    height: 32px;
   }
 }
 
@@ -858,14 +1031,34 @@
     height: 155px;
   }
 
+  .nx-result-summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
   .nx-pagination {
-    gap: 0.25rem;
+    gap: 2px;
+  }
+
+  .nx-pagination-pages {
+    gap: 2px;
   }
 
   .nx-pagination button {
-    min-width: 32px;
-    height: 32px;
-    padding: 0 0.5rem;
-    font-size: 0.7rem;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 5px;
+    font-size: 11px;
+  }
+
+  .nx-pagination-nav {
+    min-width: 30px !important;
+    padding: 0 7px !important;
+  }
+
+  .nx-pagination-ellipsis {
+    min-width: 16px;
+    height: 30px;
   }
 }
