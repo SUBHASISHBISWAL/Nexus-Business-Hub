@@ -39,6 +39,10 @@ function ProductCard({
         <div className="nx-device-glyph">
           <img
             src={`/src/assets/product-images/${product.image}`}
+            onError={(e) => {
+              console.log("Image failed:", product.image);
+              e.currentTarget.style.display = "none";
+            }}
             alt={product.name}
           />
         </div>
