@@ -1,7 +1,15 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { Link } from "react-router-dom";
+
 import { CartContext } from "../../context/CartContext";
+import type { Product } from "../../types/product";
+
 import "./Cart.css";
+
+type GroupedCartItem = {
+  product: Product;
+  quantity: number;
+};
 
 export default function Cart() {
   const {
@@ -12,271 +20,553 @@ export default function Cart() {
     clearCart,
   } = useContext(CartContext);
 
-  const cartItems = cart.reduce<
-    {
-      product: (typeof cart)[number];
-      quantity: number;
-    }[]
-  >((items, product) => {
-    const existingItem = items.find(
-      (item) => item.product.id === product.id
-    );
+  // =========================================
+  // GROUP SAME PRODUCTS
+  // =========================================
 
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      items.push({
-        product,
-        quantity: 1,
-      });
-    }
+  const groupedCart = useMemo<GroupedCartItem[]>(() => {
+    const productMap = new Map<number, GroupedCartItem>();
 
-    return items;
-  }, []);
+    cart.forEach((product) => {
+      const existingProduct = productMap.get(product.id);
 
-  const subtotal = cartItems.reduce(
-    (total, item) =>
-      total + item.product.price * item.quantity,
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        productMap.set(product.id, {
+          product,
+          quantity: 1,
+        });
+      }
+    });
+
+    return Array.from(productMap.values());
+  }, [cart]);
+
+  // =========================================
+  // TOTAL ITEMS
+  // =========================================
+
+  const totalItems = cart.length;
+
+  // =========================================
+  // SUBTOTAL
+  // =========================================
+
+  const subtotal = cart.reduce(
+    (total, product) => total + product.price,
     0
   );
 
-  const shipping = subtotal > 0 ? 0 : 0;
-  const total = subtotal + shipping;
+  // =========================================
+  // DELIVERY
+  // =========================================
+
+  const delivery = 0;
+
+  // =========================================
+  // FINAL TOTAL
+  // =========================================
+
+  const total = subtotal + delivery;
 
   return (
-    <main className="cart-page">
-      <div className="container">
+    <div className="cart-page">
 
-        <div className="cart-header">
-          <div>
-            <span className="cart-eyebrow">
-              SHOPPING CART
-            </span>
+      {/* =====================================
+          CART HEADER
+      ===================================== */}
 
-            <h1>Shopping Cart</h1>
+      <section className="cart-header">
+        <div className="container">
 
-            <p>
-              Review your selected products before checkout.
-            </p>
-          </div>
+          <span className="cart-eyebrow">
+            SHOPPING CART
+          </span>
 
-          {cart.length > 0 && (
-            <button
-              type="button"
-              className="clear-cart-btn"
-              onClick={clearCart}
-            >
-              <i className="bi bi-trash3"></i>
-              Clear Cart
-            </button>
-          )}
+          <h1>
+            Shopping Cart
+          </h1>
+
+          <p>
+            Review your selected products before checkout.
+          </p>
+
         </div>
+      </section>
 
-        {cart.length === 0 ? (
-          <div className="cart-empty">
-            <div className="cart-empty-icon">
-              <i className="bi bi-cart-x"></i>
+
+      {/* =====================================
+          CART CONTENT
+      ===================================== */}
+
+      <section className="cart-content">
+
+        <div className="container">
+
+          {/* ===================================
+              EMPTY CART
+          =================================== */}
+
+          {cart.length === 0 ? (
+
+            <div className="empty-cart">
+
+              <div className="empty-cart-icon">
+                <i className="bi bi-bag"></i>
+              </div>
+
+              <h2>
+                Your Cart is Empty
+              </h2>
+
+              <p>
+                You haven't added any products to your
+                cart yet. Explore our products and find
+                something you need.
+              </p>
+
+              <Link
+                to="/products"
+                className="browse-products-btn"
+              >
+                Browse Products
+
+                <i className="bi bi-arrow-right"></i>
+              </Link>
+
             </div>
 
-            <h2>Your Cart is Empty</h2>
+          ) : (
 
-            <p>
-              You haven't added any products to your cart yet.
-            </p>
+            /* ===================================
+               CART WITH PRODUCTS
+            =================================== */
 
-            <Link
-              to="/products"
-              className="btn btn-primary"
-            >
-              Browse Products
-              <i className="bi bi-arrow-right ms-2"></i>
-            </Link>
-          </div>
-        ) : (
-          <div className="row g-4">
+            <div className="cart-layout">
 
-            <div className="col-lg-8">
-              <div className="cart-card">
+              {/* =================================
+                  LEFT SIDE
+              ================================= */}
 
-                <div className="cart-card-header">
+              <div className="cart-products">
+
+                {/* CART HEADING */}
+
+                <div className="cart-section-heading">
+
                   <div>
-                    <span>SELECTED PRODUCTS</span>
 
-                    <h3>Cart Items</h3>
+                    <h2>
+                      Your Selected Products
+                    </h2>
+
+                    <p className="cart-items-subtitle">
+                      {groupedCart.length}{" "}
+                      {groupedCart.length === 1
+                        ? "Product"
+                        : "Products"}
+                      {" • "}
+                      {totalItems}{" "}
+                      {totalItems === 1
+                        ? "Item"
+                        : "Items"}
+                    </p>
+
                   </div>
 
-                  <strong>
-                    {cart.length}{" "}
-                    {cart.length === 1 ? "Item" : "Items"}
-                  </strong>
+
+                  {/* CLEAR CART */}
+
+                  <button
+                    type="button"
+                    className="clear-cart-btn"
+                    onClick={clearCart}
+                  >
+                    <i className="bi bi-trash3"></i>
+
+                    Clear Cart
+                  </button>
+
                 </div>
 
-                <div className="cart-items">
 
-                  {cartItems.map((item) => {
-                    const product = item.product;
+                {/* =================================
+                    PRODUCT LIST
+                ================================= */}
 
-                    return (
+                <div className="cart-product-list">
+
+                  {groupedCart.map(
+                    ({
+                      product,
+                      quantity,
+                    }) => (
+
                       <div
-                        className="cart-item"
+                        className="cart-product-card"
                         key={product.id}
                       >
 
+                        {/* =========================
+                            PRODUCT IMAGE
+                        ========================= */}
+
                         <div className="cart-product-image">
+
                           <img
                             src={product.image}
                             alt={product.name}
                           />
+
                         </div>
 
+
+                        {/* =========================
+                            PRODUCT DETAILS
+                        ========================= */}
+
                         <div className="cart-product-details">
-                          <h4>{product.name}</h4>
 
-                          {"category" in product &&
-                            product.category && (
-                              <span className="cart-category">
-                                {product.category}
-                              </span>
-                            )}
+                          <span className="cart-product-category">
+                            {product.category}
+                          </span>
 
-                          <div className="cart-product-price">
+                          <h3>
+                            {product.name}
+                          </h3>
+
+                          <p>
+                            Product SKU: NX-{product.id}
+                          </p>
+
+                          <div className="cart-unit-price">
                             ₹
                             {product.price.toLocaleString(
                               "en-IN"
                             )}
+                            {" / item"}
                           </div>
+
                         </div>
 
-                        <div className="cart-quantity-section">
-                          <span className="quantity-label">
+
+                        {/* =========================
                             QUANTITY
+                        ========================= */}
+
+                        <div className="cart-product-quantity">
+
+                          <span>
+                            Quantity
                           </span>
 
                           <div className="quantity-control">
 
+                            {/* MINUS */}
+
                             <button
                               type="button"
+                              className="quantity-btn"
                               onClick={() =>
-                                decreaseQuantity(product.id)
+                                decreaseQuantity(
+                                  product.id
+                                )
                               }
-                              aria-label="Decrease quantity"
+                              aria-label={`Decrease ${product.name} quantity`}
                             >
                               −
                             </button>
 
-                            <span>{item.quantity}</span>
+
+                            {/* NUMBER */}
+
+                            <span className="quantity-number">
+                              {quantity}
+                            </span>
+
+
+                            {/* PLUS */}
 
                             <button
                               type="button"
+                              className="quantity-btn"
                               onClick={() =>
                                 addToCart(product)
                               }
-                              aria-label="Increase quantity"
+                              aria-label={`Increase ${product.name} quantity`}
                             >
                               +
                             </button>
 
                           </div>
+
                         </div>
 
-                        <div className="cart-item-total">
-                          <span>ITEM TOTAL</span>
+
+                        {/* =========================
+                            PRODUCT TOTAL
+                        ========================= */}
+
+                        <div className="cart-product-price">
 
                           <strong>
                             ₹
                             {(
                               product.price *
-                              item.quantity
-                            ).toLocaleString("en-IN")}
+                              quantity
+                            ).toLocaleString(
+                              "en-IN"
+                            )}
                           </strong>
+
                         </div>
+
+
+                        {/* =========================
+                            REMOVE PRODUCT
+                        ========================= */}
 
                         <button
                           type="button"
-                          className="cart-remove-btn"
+                          className="remove-cart-item"
                           onClick={() =>
-                            removeFromCart(product.id)
+                            removeFromCart(
+                              product.id
+                            )
                           }
-                          aria-label={`Remove ${product.name}`}
+                          aria-label={`Remove ${product.name} from cart`}
+                          title="Remove product"
                         >
                           <i className="bi bi-trash3"></i>
                         </button>
 
                       </div>
-                    );
-                  })}
+
+                    )
+                  )}
 
                 </div>
+
+
+                {/* =================================
+                    CONTINUE SHOPPING
+                ================================= */}
+
+                <div className="cart-bottom-actions">
+
+                  <Link
+                    to="/products"
+                    className="continue-shopping"
+                  >
+                    <i className="bi bi-arrow-left"></i>
+
+                    Continue Shopping
+                  </Link>
+
+                </div>
+
               </div>
-            </div>
 
-            <div className="col-lg-4">
 
-              <div className="cart-summary">
+              {/* =================================
+                  RIGHT SIDE
+                  ORDER SUMMARY
+              ================================= */}
 
-                <div className="summary-heading">
-                  <span>ORDER SUMMARY</span>
+              <aside className="cart-summary">
 
-                  <h3>Checkout Details</h3>
-                </div>
+                <h2>
+                  Order Summary
+                </h2>
 
-                <div className="summary-row">
-                  <span>Products</span>
 
-                  <strong>{cart.length}</strong>
-                </div>
+                {/* PRODUCT COUNT */}
 
                 <div className="summary-row">
-                  <span>Subtotal</span>
+
+                  <span>
+                    Products
+                  </span>
+
+                  <strong>
+                    {totalItems}{" "}
+                    {totalItems === 1
+                      ? "Item"
+                      : "Items"}
+                  </strong>
+
+                </div>
+
+
+                {/* SUBTOTAL */}
+
+                <div className="summary-row">
+
+                  <span>
+                    Subtotal
+                  </span>
 
                   <strong>
                     ₹
-                    {subtotal.toLocaleString("en-IN")}
+                    {subtotal.toLocaleString(
+                      "en-IN"
+                    )}
                   </strong>
+
                 </div>
+
+
+                {/* DELIVERY */}
 
                 <div className="summary-row">
-                  <span>Shipping</span>
 
-                  <strong className="free-text">
-                    FREE
+                  <span>
+                    Delivery
+                  </span>
+
+                  <strong>
+                    Free
                   </strong>
+
                 </div>
+
+
+                {/* DIVIDER */}
 
                 <div className="summary-divider"></div>
 
+
+                {/* TOTAL */}
+
                 <div className="summary-total">
-                  <span>Total</span>
+
+                  <span>
+                    Total Payable
+                  </span>
 
                   <strong>
                     ₹
-                    {total.toLocaleString("en-IN")}
+                    {total.toLocaleString(
+                      "en-IN"
+                    )}
                   </strong>
+
                 </div>
 
-                <Link
-                  to="/checkout"
+
+                {/* CHECKOUT */}
+
+                <button
+                  type="button"
                   className="checkout-btn"
+                  onClick={() =>
+                    alert(
+                      "Checkout functionality will be connected with the backend later."
+                    )
+                  }
                 >
                   Proceed to Checkout
-                  <i className="bi bi-arrow-right"></i>
-                </Link>
 
-                <Link
-                  to="/products"
-                  className="continue-shopping"
-                >
-                  <i className="bi bi-arrow-left"></i>
-                  Continue Shopping
-                </Link>
+                  <i className="bi bi-arrow-right"></i>
+                </button>
+
+
+                {/* SECURITY NOTE */}
+
+                <div className="checkout-note">
+
+                  <i className="bi bi-shield-check"></i>
+
+                  <span>
+                    Secure checkout and reliable
+                    enterprise delivery.
+                  </span>
+
+                </div>
+
+              </aside>
+
+            </div>
+          )}
+
+
+          {/* =====================================
+              CART BENEFITS
+          ===================================== */}
+
+          <div className="cart-benefits">
+
+            {/* DELIVERY */}
+
+            <div className="cart-benefit">
+
+              <i className="bi bi-truck"></i>
+
+              <div>
+
+                <h3>
+                  Reliable Delivery
+                </h3>
+
+                <p>
+                  Fast and secure product delivery.
+                </p>
 
               </div>
 
             </div>
-          </div>
-        )}
 
-      </div>
-    </main>
+
+            {/* SECURITY */}
+
+            <div className="cart-benefit">
+
+              <i className="bi bi-shield-check"></i>
+
+              <div>
+
+                <h3>
+                  Secure Shopping
+                </h3>
+
+                <p>
+                  Safe and protected checkout
+                  experience.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            {/* PRODUCTS */}
+
+            <div className="cart-benefit">
+
+              <i className="bi bi-box-seam"></i>
+
+              <div>
+
+                <h3>
+                  Enterprise Products
+                </h3>
+
+                <p>
+                  Quality hardware and technology
+                  solutions.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
   );
 }

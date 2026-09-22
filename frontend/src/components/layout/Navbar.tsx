@@ -1,11 +1,12 @@
 import { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 
 import "./Navbar.css";
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const { cart } = useContext(CartContext);
   const { wishlist } = useWishlist();
 
@@ -89,6 +90,7 @@ export default function Navbar() {
             className="nav-icon-btn notification-icon"
             type="button"
             aria-label="Wishlist"
+            onClick={() => navigate("/wishlist")}
           >
             <i className="bi bi-heart"></i>
 
@@ -99,7 +101,7 @@ export default function Navbar() {
 
           {/* Cart */}
           <Link
-            to="/products"
+            to="/cart"
             className="nav-icon-btn notification-icon"
             aria-label="Shopping Cart"
           >

@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 import ProductCard from "../../components/ProductCard";
 import { products, productCategories } from "../../data/products";
 import type { Product } from "../../types/product";
@@ -9,6 +10,7 @@ import "./Home.css";
 
 function Home() {
   const { addToCart } = useContext(CartContext);
+  const { wishlist, toggleWishlist } = useWishlist();
 
   // Top 4 curated enterprise nodes for featured section
   const featuredProducts = products.slice(0, 4);
@@ -269,6 +271,8 @@ function Home() {
                 key={product.id}
                 product={product}
                 onAddToCart={handleAddToCart}
+                isLiked={wishlist.includes(product.id)}
+                onToggleWishlist={() => toggleWishlist(product.id)}
               />
             ))}
           </div>
