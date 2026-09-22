@@ -116,6 +116,7 @@
 .nav-icon-btn i {
   font-size: 20px;
   line-height: 1;
+  pointer-events: none;
 }
 
 /* Badge */
@@ -139,6 +140,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Theme */
