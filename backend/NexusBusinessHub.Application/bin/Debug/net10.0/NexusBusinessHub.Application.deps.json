@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "NexusBusinessHub.Application/1.0.0": {
+        "dependencies": {
+          "NexusBusinessHub.Domain": "1.0.0"
+        },
+        "runtime": {
+          "NexusBusinessHub.Application.dll": {}
+        }
+      },
+      "NexusBusinessHub.Domain/1.0.0": {
+        "runtime": {
+          "NexusBusinessHub.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "NexusBusinessHub.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NexusBusinessHub.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

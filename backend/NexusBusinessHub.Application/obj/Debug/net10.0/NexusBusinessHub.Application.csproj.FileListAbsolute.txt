@@ -1,0 +1,16 @@
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\bin\Debug\net10.0\NexusBusinessHub.Application.deps.json
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\bin\Debug\net10.0\NexusBusinessHub.Application.dll
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\bin\Debug\net10.0\NexusBusinessHub.Application.pdb
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\bin\Debug\net10.0\NexusBusinessHub.Domain.dll
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\bin\Debug\net10.0\NexusBusinessHub.Domain.pdb
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBusinessHub.Application.csproj.AssemblyReference.cache
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBusinessHub.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBusinessHub.Application.AssemblyInfoInputs.cache
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBusinessHub.Application.AssemblyInfo.cs
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBusinessHub.Application.csproj.CoreCompileInputs.cache
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBusinessHub.Application.sourcelink.json
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBus.EFCE747A.Up2Date
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBusinessHub.Application.dll
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\refint\NexusBusinessHub.Application.dll
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\NexusBusinessHub.Application.pdb
+C:\Users\ATL\Nexus-Business-Hub\backend\NexusBusinessHub.Application\obj\Debug\net10.0\ref\NexusBusinessHub.Application.dll
