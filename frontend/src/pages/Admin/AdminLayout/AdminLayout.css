@@ -1,0 +1,742 @@
+/* =========================================================
+   ADMIN LAYOUT
+========================================================= */
+
+.nx-admin-layout {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  background: #f6f7f9;
+  color: #172033;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.nx-admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1100;
+
+  width: 248px;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #111827;
+  border-right: 1px solid #1f2937;
+
+  transition:
+    transform 0.25s ease,
+    width 0.25s ease;
+}
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.nx-admin-brand {
+  height: 76px;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  border-bottom: 1px solid #202938;
+}
+
+.nx-admin-brand-mark {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.nx-admin-brand-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.nx-admin-brand-name {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+}
+
+.nx-admin-brand-subtitle {
+  margin-top: 4px;
+
+  color: #8f9bad;
+
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
+
+.nx-admin-sidebar-close {
+  display: none;
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.nx-admin-nav {
+  flex: 1;
+
+  padding: 22px 12px 12px;
+
+  overflow-y: auto;
+}
+
+.nx-admin-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.nx-admin-nav::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 10px;
+}
+
+.nx-admin-nav-section {
+  margin-bottom: 25px;
+}
+
+.nx-admin-nav-label {
+  display: block;
+
+  padding: 0 12px;
+  margin-bottom: 8px;
+
+  color: #687386;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+
+.nx-admin-nav-item {
+  position: relative;
+
+  width: 100%;
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 12px;
+  margin-bottom: 3px;
+
+  border-radius: 7px;
+
+  color: #aeb8c7;
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.nx-admin-nav-item:hover {
+  background: #1b2535;
+  color: #ffffff;
+}
+
+.nx-admin-nav-item.active {
+  background: #1d4ed8;
+  color: #ffffff;
+}
+
+.nx-admin-nav-icon {
+  width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-size: 16px;
+}
+
+.nx-admin-nav-text {
+  white-space: nowrap;
+}
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.nx-admin-sidebar-bottom {
+  padding: 12px;
+  border-top: 1px solid #202938;
+}
+
+.nx-admin-sidebar-bottom .nx-admin-nav-item {
+  margin-bottom: 3px;
+}
+
+.nx-admin-logout {
+  width: 100%;
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 12px;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #aeb8c7;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+  text-align: left;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.nx-admin-logout:hover {
+  background: #2a1d22;
+  color: #f87171;
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.nx-admin-main {
+  width: calc(100% - 248px);
+  min-height: 100vh;
+
+  margin-left: 248px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.nx-admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+
+  height: 68px;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 28px;
+
+  background: #ffffff;
+  border-bottom: 1px solid #e6e9ee;
+}
+
+.nx-admin-topbar-left,
+.nx-admin-topbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.nx-admin-topbar-left {
+  flex: 1;
+}
+
+.nx-admin-topbar-right {
+  gap: 16px;
+}
+
+/* =========================================================
+   MOBILE MENU BUTTON
+========================================================= */
+
+.nx-admin-menu-button {
+  display: none;
+
+  width: 38px;
+  height: 38px;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 12px;
+
+  border: 1px solid #e1e5ea;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-size: 19px;
+  cursor: pointer;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.nx-admin-search {
+  width: 360px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 0 10px;
+
+  border: 1px solid #e0e4e9;
+  border-radius: 7px;
+
+  background: #f8f9fb;
+  color: #7b8492;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.nx-admin-search:focus-within {
+  border-color: #93b4f8;
+  background: #ffffff;
+}
+
+.nx-admin-search > i {
+  font-size: 14px;
+}
+
+.nx-admin-search input {
+  flex: 1;
+
+  min-width: 0;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: #172033;
+
+  font-size: 13px;
+}
+
+.nx-admin-search input::placeholder {
+  color: #9aa3b1;
+}
+
+.nx-admin-search-shortcut {
+  width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dce1e7;
+  border-radius: 4px;
+
+  background: #ffffff;
+  color: #8992a0;
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   ICON BUTTON
+========================================================= */
+
+.nx-admin-icon-button {
+  position: relative;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e1e5ea;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #4b5563;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.nx-admin-icon-button:hover {
+  background: #f6f8fa;
+  border-color: #d4d9e0;
+}
+
+.nx-admin-notification-dot {
+  position: absolute;
+
+  top: 8px;
+  right: 8px;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #2563eb;
+  border: 1px solid #ffffff;
+}
+
+.nx-admin-topbar-divider {
+  width: 1px;
+  height: 30px;
+
+  background: #e5e7eb;
+}
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.nx-admin-profile-wrapper {
+  position: relative;
+}
+
+.nx-admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 3px;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.nx-admin-avatar {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e8eefc;
+  color: #2456b8;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nx-admin-profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  line-height: 1.2;
+}
+
+.nx-admin-profile-info strong {
+  color: #1f2937;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nx-admin-profile-info span {
+  margin-top: 3px;
+
+  color: #8a94a3;
+
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.nx-admin-profile > i {
+  margin-left: 3px;
+
+  color: #7d8795;
+
+  font-size: 11px;
+
+  transition: transform 0.18s ease;
+}
+
+.nx-admin-profile > i.open {
+  transform: rotate(180deg);
+}
+
+/* =========================================================
+   PROFILE MENU
+========================================================= */
+
+.nx-admin-profile-menu {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 190px;
+
+  padding: 7px;
+
+  border: 1px solid #e2e6eb;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.09);
+
+  animation: nxAdminMenuIn 0.16s ease;
+}
+
+@keyframes nxAdminMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nx-admin-profile-menu button {
+  width: 100%;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 10px;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #374151;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.nx-admin-profile-menu button:hover {
+  background: #f5f7fa;
+}
+
+.nx-admin-profile-menu button.danger {
+  color: #dc2626;
+}
+
+.nx-admin-profile-menu button.danger:hover {
+  background: #fef2f2;
+}
+
+.nx-admin-profile-menu-divider {
+  height: 1px;
+  margin: 6px 3px;
+
+  background: #edf0f3;
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.nx-admin-content {
+  flex: 1;
+
+  width: 100%;
+
+  padding: 28px;
+}
+
+/* =========================================================
+   MOBILE OVERLAY
+========================================================= */
+
+.nx-admin-overlay {
+  display: none;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+  .nx-admin-search {
+    width: 280px;
+  }
+
+  .nx-admin-profile-info {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .nx-admin-sidebar {
+    transform: translateX(-100%);
+    box-shadow: 12px 0 30px rgba(15, 23, 42, 0.12);
+  }
+
+  .nx-admin-sidebar-open {
+    transform: translateX(0);
+  }
+
+  .nx-admin-sidebar-close {
+    display: flex;
+
+    width: 32px;
+    height: 32px;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-left: auto;
+
+    border: 0;
+    border-radius: 6px;
+
+    background: transparent;
+    color: #9aa4b2;
+
+    cursor: pointer;
+  }
+
+  .nx-admin-sidebar-close:hover {
+    background: #1b2535;
+    color: #ffffff;
+  }
+
+  .nx-admin-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+
+    display: block;
+
+    border: 0;
+
+    background: rgba(15, 23, 42, 0.42);
+
+    cursor: pointer;
+  }
+
+  .nx-admin-main {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .nx-admin-menu-button {
+    display: flex;
+  }
+
+  .nx-admin-topbar {
+    padding: 0 18px;
+  }
+
+  .nx-admin-content {
+    padding: 20px;
+  }
+
+  .nx-admin-search {
+    width: min(320px, 100%);
+  }
+}
+
+@media (max-width: 560px) {
+  .nx-admin-topbar {
+    height: 62px;
+    padding: 0 14px;
+  }
+
+  .nx-admin-search {
+    width: auto;
+    flex: 1;
+  }
+
+  .nx-admin-search-shortcut {
+    display: none;
+  }
+
+  .nx-admin-topbar-right {
+    gap: 8px;
+  }
+
+  .nx-admin-topbar-divider {
+    display: none;
+  }
+
+  .nx-admin-profile {
+    padding: 0;
+  }
+
+  .nx-admin-profile > i {
+    display: none;
+  }
+
+  .nx-admin-icon-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nx-admin-content {
+    padding: 16px;
+  }
+}

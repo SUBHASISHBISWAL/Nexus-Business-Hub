@@ -1,0 +1,575 @@
+.nx-admin-shipments {
+  width: 100%;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.nx-shipments-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.nx-shipments-header h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.nx-shipments-header p {
+  margin: 7px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* =========================
+   SUMMARY
+========================= */
+
+.nx-shipments-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.nx-shipment-summary-card {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.nx-shipment-summary-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.nx-shipment-summary-card strong {
+  display: block;
+  color: #111827;
+  font-size: 23px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.nx-shipment-summary-card small {
+  display: block;
+  margin-top: 8px;
+  color: #9ca3af;
+  font-size: 10px;
+}
+
+.nx-shipment-summary-card.warning strong {
+  color: #dc2626;
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.nx-shipments-toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.nx-shipments-search {
+  position: relative;
+  flex: 1;
+  min-width: 230px;
+}
+
+.nx-shipments-search > span {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.nx-shipments-search input {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 12px 0 35px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  outline: none;
+  background: #ffffff;
+  color: #111827;
+  font-size: 12px;
+}
+
+.nx-shipments-search input::placeholder {
+  color: #9ca3af;
+}
+
+.nx-shipments-search input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.07);
+}
+
+.nx-shipment-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 145px;
+}
+
+.nx-shipment-filter label {
+  color: #6b7280;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.nx-shipment-filter select {
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  outline: none;
+  background: #ffffff;
+  color: #374151;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.nx-shipment-filter select:focus {
+  border-color: #2563eb;
+}
+
+.nx-clear-shipments {
+  height: 40px;
+  padding: 0 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-clear-shipments:hover {
+  background: #f9fafb;
+}
+
+/* =========================
+   TABLE CARD
+========================= */
+
+.nx-shipments-card {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.nx-shipments-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.nx-shipments-table {
+  width: 100%;
+  min-width: 1100px;
+  border-collapse: collapse;
+}
+
+.nx-shipments-table th {
+  height: 44px;
+  padding: 0 15px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.35px;
+  white-space: nowrap;
+}
+
+.nx-shipments-table td {
+  padding: 13px 15px;
+  border-bottom: 1px solid #f0f1f3;
+  color: #374151;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.nx-shipments-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.nx-shipments-table tbody tr:hover {
+  background: #fafafa;
+}
+
+/* =========================
+   SHIPMENT ID
+========================= */
+
+.nx-shipment-id {
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nx-shipment-id:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.nx-shipment-date {
+  display: block;
+  margin-top: 4px;
+  color: #9ca3af;
+  font-size: 10px;
+}
+
+/* =========================
+   ORDER
+========================= */
+
+.nx-shipment-order {
+  color: #374151;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* =========================
+   CUSTOMER
+========================= */
+
+.nx-shipment-customer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 125px;
+}
+
+.nx-shipment-customer strong {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nx-shipment-customer span {
+  color: #9ca3af;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* =========================
+   CARRIER
+========================= */
+
+.nx-carrier-name {
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* =========================
+   TRACKING
+========================= */
+
+.nx-tracking-number {
+  color: #6b7280;
+  font-family: monospace;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.nx-shipment-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nx-shipment-status.pending {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.nx-shipment-status.packed {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.nx-shipment-status.shipped {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.nx-shipment-status.in-transit {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.nx-shipment-status.delivered {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.nx-shipment-status.delayed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* =========================
+   DESTINATION
+========================= */
+
+.nx-destination {
+  color: #374151;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nx-estimated-date {
+  color: #6b7280;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* =========================
+   VIEW BUTTON
+========================= */
+
+.nx-view-shipment {
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-view-shipment:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.nx-shipments-empty {
+  padding: 65px 20px;
+  text-align: center;
+}
+
+.nx-empty-icon {
+  width: 45px;
+  height: 45px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-size: 20px;
+}
+
+.nx-shipments-empty h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+}
+
+.nx-shipments-empty p {
+  margin: 7px 0 16px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.nx-shipments-empty button {
+  height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* =========================
+   PAGINATION
+========================= */
+
+.nx-shipments-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 16px;
+  border-top: 1px solid #eef0f3;
+}
+
+.nx-shipments-pagination > span {
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.nx-pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nx-pagination-buttons button {
+  min-width: 32px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-pagination-buttons button:hover:not(:disabled) {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.nx-pagination-buttons button.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nx-pagination-buttons button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+  .nx-shipments-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .nx-shipments-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .nx-shipments-search {
+    flex: 1 1 100%;
+  }
+
+  .nx-shipment-filter {
+    flex: 1;
+  }
+
+  .nx-clear-shipments {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 700px) {
+  .nx-shipments-header h1 {
+    font-size: 24px;
+  }
+
+  .nx-shipments-header p {
+    font-size: 12px;
+  }
+
+  .nx-shipments-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nx-shipments-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .nx-shipment-filter {
+    width: 100%;
+  }
+
+  .nx-clear-shipments {
+    width: 100%;
+  }
+
+  .nx-shipments-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-pagination-buttons {
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-shipments-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-shipment-summary-card {
+    padding: 14px;
+  }
+
+  .nx-shipments-table {
+    min-width: 1100px;
+  }
+}

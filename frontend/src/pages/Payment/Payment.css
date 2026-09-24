@@ -1,0 +1,2342 @@
+/* =========================================================
+   NEXUS BUSINESS HUB
+   PAYMENT PAGE
+   ========================================================= */
+
+.nx-payment-page {
+  min-height: calc(100vh - 80px);
+  padding: 40px 0 70px;
+  background: #f6f8fb;
+  color: #172033;
+}
+
+.nx-payment-page .container {
+  max-width: 1240px;
+}
+
+
+/* =========================================================
+   PAYMENT HEADER
+   ========================================================= */
+
+.nx-payment-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.nx-payment-header > div:first-child > span {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.nx-payment-header h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.nx-payment-header p {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   SECURE PAYMENT BADGE
+   ========================================================= */
+
+.nx-payment-secure {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  border: 1px solid #dcefe3;
+  border-radius: 8px;
+  background: #f8fffa;
+}
+
+.nx-payment-secure > i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  background: #ecfdf3;
+  color: #16a34a;
+  font-size: 17px;
+}
+
+.nx-payment-secure > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nx-payment-secure strong {
+  color: #166534;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.nx-payment-secure span {
+  color: #86a68f;
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.nx-payment-error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 18px;
+  padding: 13px 15px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff7f7;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nx-payment-error i {
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   MAIN PAYMENT GRID
+   ========================================================= */
+
+.nx-payment-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 26px;
+  align-items: start;
+}
+
+.nx-payment-main {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   COMMON CARD
+   ========================================================= */
+
+.nx-payment-method-card,
+.nx-payment-items-card {
+  margin-bottom: 18px;
+  padding: 25px;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.nx-payment-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 23px;
+}
+
+.nx-payment-section-header > div {
+  min-width: 0;
+}
+
+.nx-payment-section-header > div > span {
+  display: block;
+  margin-bottom: 5px;
+  color: #2563eb;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.nx-payment-section-header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.nx-payment-section-header > span {
+  padding: 5px 9px;
+  border-radius: 5px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PAYMENT METHOD OPTIONS
+   ========================================================= */
+
+.nx-payment-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+
+/* =========================================================
+   PAYMENT METHOD BUTTON
+   ========================================================= */
+
+.nx-payment-methods > button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 82px;
+  padding: 14px 15px;
+  gap: 13px;
+
+  border: 1px solid #dce2ea;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #111827;
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.nx-payment-methods > button:hover {
+  border-color: #93c5fd;
+  background: #f8fbff;
+  transform: translateY(-1px);
+}
+
+.nx-payment-methods > button.active {
+  border-color: #2563eb;
+  background: #f8fbff;
+  box-shadow:
+    0 0 0 1px #2563eb,
+    0 5px 15px rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================================================
+   PAYMENT METHOD ICON
+   ========================================================= */
+
+.nx-payment-methods > button > i:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+
+  border: 1px solid #e5e9f0;
+  border-radius: 8px;
+
+  background: #f8fafc;
+  color: #2563eb;
+
+  font-size: 18px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.nx-payment-methods > button.active > i:first-child {
+  border-color: #dbeafe;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+
+/* =========================================================
+   PAYMENT METHOD TEXT
+   ========================================================= */
+
+.nx-payment-methods > button > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.nx-payment-methods > button > span strong {
+  display: block;
+  margin-bottom: 5px;
+
+  color: #1f2937;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.nx-payment-methods > button > span small {
+  display: block;
+
+  color: #9ca3af;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   RIGHT ARROW
+   ========================================================= */
+
+.nx-payment-methods > button > i:last-child {
+  color: #b4bbc6;
+  font-size: 13px;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.nx-payment-methods > button:hover > i:last-child,
+.nx-payment-methods > button.active > i:last-child {
+  color: #2563eb;
+  transform: translateX(2px);
+}
+
+
+/* =========================================================
+   PAYMENT FORM
+   ========================================================= */
+
+.nx-payment-form {
+  margin-top: 23px;
+  padding-top: 22px;
+  border-top: 1px solid #edf0f4;
+}
+
+.nx-payment-form > label {
+  display: block;
+  margin-bottom: 7px;
+
+  color: #374151;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nx-payment-form > input,
+.nx-payment-form > select {
+  width: 100%;
+  height: 44px;
+  padding: 0 13px;
+
+  border: 1px solid #dce2ea;
+  border-radius: 7px;
+
+  outline: none;
+  background: #ffffff;
+  color: #111827;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.nx-payment-form > input::placeholder {
+  color: #a4acb9;
+}
+
+.nx-payment-form > input:focus,
+.nx-payment-form > select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+}
+
+.nx-payment-form > small {
+  display: block;
+  margin-top: 7px;
+
+  color: #9ca3af;
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   CARD FORM
+   ========================================================= */
+
+.nx-payment-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-top: 17px;
+}
+
+.nx-payment-form-row > div {
+  min-width: 0;
+}
+
+.nx-payment-form-row label {
+  display: block;
+  margin-bottom: 7px;
+
+  color: #374151;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nx-payment-form-row input {
+  width: 100%;
+  height: 44px;
+  padding: 0 13px;
+
+  border: 1px solid #dce2ea;
+  border-radius: 7px;
+
+  outline: none;
+  background: #ffffff;
+  color: #111827;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.nx-payment-form-row input::placeholder {
+  color: #a4acb9;
+}
+
+.nx-payment-form-row input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+}
+
+
+/* =========================================================
+   OTHER PAYMENT
+   ========================================================= */
+
+.nx-other-payment-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  margin-top: 23px;
+  padding: 15px;
+
+  border: 1px solid #e5e9f0;
+  border-radius: 8px;
+
+  background: #f8fafc;
+}
+
+.nx-other-payment-info > i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+
+  border-radius: 7px;
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 15px;
+}
+
+.nx-other-payment-info > div {
+  min-width: 0;
+}
+
+.nx-other-payment-info strong {
+  display: block;
+  margin-bottom: 4px;
+
+  color: #374151;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.nx-other-payment-info p {
+  margin: 0;
+
+  color: #8a94a6;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   YOUR ORDER CARD
+   ========================================================= */
+
+.nx-payment-items-card {
+  padding: 25px;
+}
+
+.nx-payment-items-card .nx-payment-section-header {
+  margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   ORDER ITEMS
+   ========================================================= */
+
+.nx-payment-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-payment-item {
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr) auto;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+.nx-payment-item:first-child {
+  padding-top: 0;
+}
+
+.nx-payment-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+
+/* =========================================================
+   PRODUCT IMAGE
+   ========================================================= */
+
+.nx-payment-item-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 68px;
+  height: 68px;
+
+  overflow: hidden;
+
+  border: 1px solid #e8ebf0;
+  border-radius: 8px;
+
+  background: #f8fafc;
+}
+
+.nx-payment-item-image img {
+  width: 100%;
+  height: 100%;
+
+  padding: 5px;
+
+  object-fit: contain;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PRODUCT INFO
+   ========================================================= */
+
+.nx-payment-item-info {
+  min-width: 0;
+}
+
+.nx-payment-item-info > strong {
+  display: block;
+
+  overflow: hidden;
+
+  margin-bottom: 7px;
+
+  color: #1f2937;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  line-height: 1.4;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-payment-item-info > span {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 8px;
+
+  border-radius: 4px;
+
+  background: #f3f4f6;
+
+  color: #6b7280;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   PRODUCT PRICE
+   ========================================================= */
+
+.nx-payment-item > strong:last-child {
+  color: #111827;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   RIGHT PAYMENT SUMMARY
+   ========================================================= */
+
+.nx-payment-summary {
+  position: sticky;
+  top: 95px;
+
+  overflow: hidden;
+
+  border: 1px solid #e2e7ef;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+
+/* =========================================================
+   SUMMARY HEADER
+   ========================================================= */
+
+.nx-payment-summary-header {
+  padding: 22px 22px 18px;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+.nx-payment-summary-header > span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #2563eb;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.nx-payment-summary-header h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   SUMMARY ROWS
+   ========================================================= */
+
+.nx-payment-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 7px 22px;
+}
+
+.nx-payment-summary-row span {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.nx-payment-summary-row strong {
+  color: #374151;
+  font-size: 12px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   DISCOUNT
+   ========================================================= */
+
+.nx-payment-discount span,
+.nx-payment-discount strong {
+  color: #15803d;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.nx-payment-summary-divider {
+  height: 1px;
+
+  margin: 10px 22px;
+
+  background: #edf0f4;
+}
+
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
+.nx-payment-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 15px 22px 19px;
+}
+
+.nx-payment-total span {
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nx-payment-total strong {
+  color: #111827;
+
+  font-size: 21px;
+  font-weight: 900;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PAY NOW
+   ========================================================= */
+
+.nx-pay-now-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  width: calc(100% - 44px);
+  height: 48px;
+
+  margin: 0 22px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.nx-pay-now-button:hover {
+  background: #1d4ed8;
+
+  box-shadow:
+    0 5px 15px rgba(37, 99, 235, 0.22);
+}
+
+.nx-pay-now-button:active {
+  transform: translateY(1px);
+}
+
+.nx-pay-now-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.nx-pay-now-button i {
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   PAYMENT SPINNER
+   ========================================================= */
+
+.nx-payment-spinner {
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: nx-payment-spin 0.7s linear infinite;
+}
+
+@keyframes nx-payment-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   SECURITY NOTE
+   ========================================================= */
+
+.nx-payment-security {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 15px 22px 9px;
+
+  color: #9ca3af;
+
+  text-align: left;
+}
+
+.nx-payment-security > i {
+  margin-top: 1px;
+
+  color: #16a34a;
+
+  font-size: 13px;
+}
+
+.nx-payment-security > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nx-payment-security strong {
+  color: #6b7280;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.nx-payment-security span {
+  color: #a4acb9;
+
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.nx-payment-back {
+  display: block;
+
+  width: 100%;
+
+  padding: 8px 22px 18px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #6b7280;
+
+  font-family: inherit;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-align: center;
+
+  cursor: pointer;
+}
+
+.nx-payment-back:hover {
+  color: #2563eb;
+}
+
+.nx-payment-back i {
+  margin-right: 5px;
+}
+
+
+/* =========================================================
+   PAYMENT SUCCESS PAGE
+   ========================================================= */
+
+.nx-payment-success {
+  width: min(760px, 100%);
+  margin: 20px auto 60px;
+  text-align: center;
+}
+
+/* SUCCESS ICON */
+
+.nx-payment-success-icon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+
+  color: #16a34a;
+  font-size: 34px;
+
+  box-shadow:
+    0 8px 24px rgba(22, 163, 74, 0.12);
+}
+
+.nx-payment-success-icon i {
+  line-height: 1;
+}
+
+/* LABEL */
+
+.nx-payment-label {
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  color: #16a34a;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+/* TITLE */
+
+.nx-payment-success h1 {
+  margin: 0;
+
+  color: #111827;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.nx-payment-success > p {
+  max-width: 580px;
+  margin: 10px auto 28px;
+
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   PAYMENT DETAILS CARD
+   ========================================================= */
+
+.nx-payment-success-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  overflow: hidden;
+
+  margin-top: 25px;
+
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 18px rgba(15, 23, 42, 0.05);
+
+  text-align: left;
+}
+
+/* INDIVIDUAL DETAIL */
+
+.nx-payment-success-card > div {
+  min-width: 0;
+  padding: 19px 21px;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+.nx-payment-success-card > div:nth-child(odd) {
+  border-right: 1px solid #edf0f4;
+}
+
+/* REMOVE BOTTOM BORDER FROM LAST ROW */
+
+.nx-payment-success-card > div:nth-last-child(-n + 2) {
+  border-bottom: none;
+}
+
+/* LABEL */
+
+.nx-payment-success-card > div > span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #9ca3af;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+/* VALUE */
+
+.nx-payment-success-card > div > strong {
+  display: block;
+
+  overflow: hidden;
+
+  color: #111827;
+  font-size: 13px;
+  font-weight: 800;
+
+  line-height: 1.4;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PAID STATUS
+   ========================================================= */
+
+.nx-payment-success-card .nx-payment-paid {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #15803d;
+}
+
+.nx-payment-paid i {
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   SHIPMENT TRACKING
+   ========================================================= */
+
+.nx-payment-shipment {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 16px;
+  padding: 18px 20px;
+
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+
+  background: #f8fbff;
+
+  text-align: left;
+}
+
+.nx-payment-shipment > div:first-child {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 19px;
+}
+
+.nx-payment-shipment > div:last-child {
+  min-width: 0;
+}
+
+.nx-payment-shipment span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #2563eb;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.nx-payment-shipment strong {
+  display: block;
+
+  color: #111827;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.nx-payment-shipment p {
+  margin: 3px 0 0;
+
+  color: #6b7280;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   SUCCESS ACTION BUTTONS
+   ========================================================= */
+
+.nx-payment-success-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+.nx-payment-success-actions button {
+  min-width: 160px;
+  height: 45px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 18px;
+
+  border-radius: 7px;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+/* VIEW ORDERS */
+
+.nx-payment-success-actions button:first-child {
+  border: none;
+
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nx-payment-success-actions button:first-child:hover {
+  background: #1d4ed8;
+
+  box-shadow:
+    0 6px 16px rgba(37, 99, 235, 0.20);
+}
+
+/* ORDER DETAILS */
+
+.nx-payment-success-actions button:last-child {
+  border: 1px solid #dce2ea;
+
+  background: #ffffff;
+  color: #374151;
+}
+
+.nx-payment-success-actions button:last-child:hover {
+  border-color: #2563eb;
+
+  color: #2563eb;
+}
+
+.nx-payment-success-actions button:active {
+  transform: translateY(1px);
+}
+
+.nx-payment-success-actions i {
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   PAYMENT PAGE RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .nx-payment-success {
+    margin-top: 10px;
+    padding: 0 16px;
+  }
+
+  .nx-payment-success-icon {
+    width: 68px;
+    height: 68px;
+
+    font-size: 29px;
+  }
+
+  .nx-payment-success h1 {
+    font-size: 26px;
+  }
+
+  .nx-payment-success > p {
+    font-size: 13px;
+  }
+
+  .nx-payment-success-card {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-payment-success-card > div,
+  .nx-payment-success-card > div:nth-child(odd) {
+    border-right: none;
+    border-bottom: 1px solid #edf0f4;
+  }
+
+  .nx-payment-success-card > div:last-child {
+    border-bottom: none;
+  }
+
+  .nx-payment-success-card > div:nth-last-child(-n + 2) {
+    border-bottom: 1px solid #edf0f4;
+  }
+
+  .nx-payment-success-card > div:last-child {
+    border-bottom: none;
+  }
+
+  .nx-payment-shipment {
+    align-items: flex-start;
+  }
+
+  .nx-payment-success-actions {
+    flex-direction: column;
+  }
+
+  .nx-payment-success-actions button {
+    width: 100%;
+  }
+}
+
+.nx-payment-success-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  min-width: 150px;
+  height: 44px;
+
+  padding: 0 20px;
+
+  border-radius: 7px;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+/* PRIMARY */
+
+.nx-payment-success-actions button:first-child {
+  border: 1px solid #2563eb;
+
+  background: #2563eb;
+
+  color: #ffffff;
+}
+
+.nx-payment-success-actions button:first-child:hover {
+  background: #1d4ed8;
+
+  box-shadow:
+    0 5px 15px rgba(37, 99, 235, 0.18);
+}
+
+
+/* SECONDARY */
+
+.nx-payment-success-actions button:last-child {
+  border: 1px solid #dce2ea;
+
+  background: #ffffff;
+
+  color: #374151;
+}
+
+.nx-payment-success-actions button:last-child:hover {
+  border-color: #2563eb;
+
+  color: #2563eb;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+  .nx-payment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-payment-summary {
+    position: static;
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .nx-payment-page {
+    padding: 25px 0 50px;
+  }
+
+  .nx-payment-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .nx-payment-header h1 {
+    font-size: 28px;
+  }
+
+  .nx-payment-secure {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .nx-payment-method-card,
+  .nx-payment-items-card {
+    padding: 19px;
+  }
+
+  .nx-payment-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-payment-form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .nx-payment-form-row > div {
+    margin-bottom: 17px;
+  }
+
+  .nx-payment-success {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .nx-payment-success h1 {
+    font-size: 27px;
+  }
+
+  .nx-payment-success > p {
+    font-size: 13px;
+  }
+
+  .nx-payment-success-card > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .nx-payment-success-card > div > strong {
+    text-align: left;
+  }
+
+  .nx-payment-success-actions {
+    flex-direction: column;
+  }
+
+  .nx-payment-success-actions button {
+    width: 100%;
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .nx-payment-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .nx-payment-method-card,
+  .nx-payment-items-card {
+    padding: 17px;
+  }
+
+  .nx-payment-methods > button {
+    min-height: 72px;
+    padding: 12px;
+  }
+
+  .nx-payment-methods > button > i:first-child {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+    font-size: 16px;
+  }
+
+  .nx-payment-item {
+    grid-template-columns: 55px minmax(0, 1fr) auto;
+    gap: 11px;
+  }
+
+  .nx-payment-item-image {
+    width: 55px;
+    height: 55px;
+  }
+
+  .nx-payment-item-info > strong {
+    font-size: 11px;
+  }
+
+  .nx-payment-item > strong:last-child {
+    font-size: 11px;
+  }
+
+  .nx-payment-summary-header {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
+
+  .nx-payment-summary-row {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
+
+  .nx-payment-summary-divider {
+    margin-left: 17px;
+    margin-right: 17px;
+  }
+
+  .nx-payment-total {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
+
+  .nx-pay-now-button {
+    width: calc(100% - 34px);
+    margin-left: 17px;
+    margin-right: 17px;
+  }
+
+  .nx-payment-security {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
+
+}
+
+/* =========================================================
+   NEXUS BUSINESS HUB
+   PREMIUM PAYMENT SUCCESS PAGE
+   ========================================================= */
+
+.nx-payment-success-page {
+  min-height: calc(100vh - 80px);
+  background: #f6f8fb;
+  padding: 42px 0 75px;
+}
+
+.nx-payment-success-shell {
+  max-width: 1180px;
+}
+
+/* =========================================================
+   SUCCESS HERO
+   ========================================================= */
+
+.nx-success-hero {
+  text-align: center;
+  margin-bottom: 34px;
+}
+
+.nx-success-check {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  color: #16a34a;
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.07),
+    0 0 0 8px rgba(34, 197, 94, 0.05);
+  font-size: 34px;
+  animation: nxSuccessPop 0.45s ease-out;
+}
+
+.nx-success-check-ring {
+  position: absolute;
+  inset: -7px;
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 50%;
+}
+
+.nx-success-check i {
+  position: relative;
+  z-index: 2;
+  line-height: 1;
+}
+
+@keyframes nxSuccessPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+
+  70% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.nx-success-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #16a34a;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.nx-success-hero h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 34px;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.nx-success-hero > p {
+  max-width: 590px;
+  margin: 10px auto 15px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.nx-success-order-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid #e2e7ef;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.nx-success-order-ref span {
+  color: #9ca3af;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.nx-success-order-ref strong {
+  color: #374151;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
+
+.nx-success-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 22px;
+  align-items: start;
+}
+
+.nx-success-main {
+  min-width: 0;
+}
+
+.nx-success-sidebar {
+  position: sticky;
+  top: 95px;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.nx-success-card {
+  margin-bottom: 18px;
+  overflow: hidden;
+  border: 1px solid #e3e8ef;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 3px 15px rgba(15, 23, 42, 0.035);
+}
+
+.nx-success-card-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 20px 21px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.nx-success-card-header > div:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+
+.nx-success-card-header span {
+  display: block;
+  margin-bottom: 3px;
+  color: #9ca3af;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.nx-success-card-header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.nx-success-card-icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  font-size: 17px;
+}
+
+.nx-success-card-icon.payment {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.nx-success-card-icon.shipment {
+  background: #ecfdf5;
+  color: #16a34a;
+}
+
+.nx-success-paid-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 1px solid #bbf7d0;
+  border-radius: 5px;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.nx-success-paid-badge i {
+  font-size: 10px;
+}
+
+.nx-success-payment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.nx-success-payment-grid > div {
+  min-width: 0;
+  padding: 18px 21px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.nx-success-payment-grid > div:nth-child(odd) {
+  border-right: 1px solid #edf0f4;
+}
+
+.nx-success-payment-grid > div:nth-last-child(-n + 2) {
+  border-bottom: none;
+}
+
+.nx-success-payment-grid span {
+  display: block;
+  margin-bottom: 6px;
+  color: #9ca3af;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 1.3px;
+}
+
+.nx-success-payment-grid strong {
+  display: block;
+  overflow: hidden;
+  color: #1f2937;
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-success-payment-grid .nx-success-amount {
+  color: #111827;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.nx-success-payment-grid .nx-success-mono {
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.nx-success-payment-grid .nx-success-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #15803d;
+}
+
+.nx-success-status i {
+  font-size: 11px;
+}
+
+/* =========================================================
+   SHIPMENT
+   ========================================================= */
+
+.nx-shipment-status {
+  padding: 5px 9px;
+  border-radius: 5px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* TRACKING TIMELINE */
+
+.nx-tracking-timeline {
+  display: flex;
+  align-items: flex-start;
+  padding: 27px 25px 23px;
+}
+
+.nx-tracking-step {
+  min-width: 85px;
+  text-align: center;
+}
+
+.nx-tracking-dot {
+  position: relative;
+  z-index: 2;
+  width: 31px;
+  height: 31px;
+  margin: 0 auto 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dce2ea;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.nx-tracking-step.active .nx-tracking-dot {
+  border-color: #22c55e;
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.nx-tracking-step strong {
+  display: block;
+  color: #6b7280;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.nx-tracking-step.active strong {
+  color: #15803d;
+}
+
+.nx-tracking-step span {
+  display: block;
+  margin-top: 3px;
+  color: #a1a8b3;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.nx-tracking-line {
+  height: 1px;
+  flex: 1;
+  margin-top: 15px;
+  background: #e5e7eb;
+}
+
+.nx-tracking-line.active {
+  background: #86efac;
+}
+
+/* SHIPMENT INFO */
+
+.nx-shipment-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 21px 21px;
+  border: 1px solid #edf0f4;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.nx-shipment-info > div {
+  min-width: 0;
+  padding: 13px 15px;
+}
+
+.nx-shipment-info > div + div {
+  border-left: 1px solid #edf0f4;
+}
+
+.nx-shipment-info span {
+  display: block;
+  margin-bottom: 5px;
+  color: #9ca3af;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.nx-shipment-info strong {
+  display: block;
+  overflow: hidden;
+  color: #374151;
+  font-size: 10px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   WHAT HAPPENS NEXT
+   ========================================================= */
+
+.nx-success-next {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 2px;
+  padding: 15px 17px;
+  border: 1px solid #dbeafe;
+  border-radius: 9px;
+  background: #f8fbff;
+}
+
+.nx-success-next-icon {
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 14px;
+}
+
+.nx-success-next strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.nx-success-next p {
+  margin: 0;
+  color: #8a94a6;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   RIGHT SUMMARY
+   ========================================================= */
+
+.nx-success-summary {
+  overflow: hidden;
+  border: 1px solid #e1e6ee;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 5px 20px rgba(15, 23, 42, 0.05);
+}
+
+.nx-success-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 19px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.nx-success-summary-top span {
+  color: #2563eb;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.nx-success-summary-top i {
+  color: #16a34a;
+  font-size: 16px;
+}
+
+.nx-success-summary-amount {
+  padding: 20px 19px 17px;
+}
+
+.nx-success-summary-amount span {
+  display: block;
+  margin-bottom: 5px;
+  color: #9ca3af;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.nx-success-summary-amount strong {
+  display: block;
+  color: #111827;
+  font-size: 27px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.nx-success-summary-divider {
+  height: 1px;
+  margin: 0 19px;
+  background: #edf0f4;
+}
+
+.nx-success-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 19px;
+}
+
+.nx-success-summary-row span {
+  color: #8a94a6;
+  font-size: 10px;
+}
+
+.nx-success-summary-row strong {
+  max-width: 175px;
+  overflow: hidden;
+  color: #374151;
+  font-size: 10px;
+  font-weight: 800;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-success-summary-row strong.success {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #15803d;
+}
+
+.nx-success-summary-row strong.success i {
+  font-size: 10px;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.nx-success-primary-btn,
+.nx-success-secondary-btn,
+.nx-success-shopping-btn {
+  width: calc(100% - 38px);
+  margin-left: 19px;
+  margin-right: 19px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.nx-success-primary-btn {
+  height: 45px;
+  margin-top: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nx-success-primary-btn i:last-child {
+  margin-left: auto;
+}
+
+.nx-success-primary-btn:hover {
+  background: #1d4ed8;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+}
+
+.nx-success-secondary-btn {
+  height: 43px;
+  margin-top: 9px;
+  border: 1px solid #dce2ea;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+}
+
+.nx-success-secondary-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.nx-success-shopping-btn {
+  height: 38px;
+  margin-top: 4px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+}
+
+.nx-success-shopping-btn:hover {
+  color: #2563eb;
+}
+
+.nx-success-primary-btn:active,
+.nx-success-secondary-btn:active,
+.nx-success-shopping-btn:active {
+  transform: translateY(1px);
+}
+
+/* =========================================================
+   SECURE NOTE
+   ========================================================= */
+
+.nx-success-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 9px;
+  padding: 14px 15px 17px;
+  color: #9ca3af;
+  font-size: 8px;
+  text-align: center;
+}
+
+.nx-success-secure i {
+  color: #16a34a;
+  font-size: 12px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+  .nx-success-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-success-sidebar {
+    position: static;
+  }
+
+  .nx-success-summary {
+    max-width: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .nx-payment-success-page {
+    padding: 30px 0 55px;
+  }
+
+  .nx-success-hero {
+    padding: 0 16px;
+  }
+
+  .nx-success-hero h1 {
+    font-size: 27px;
+  }
+
+  .nx-success-hero > p {
+    font-size: 12px;
+  }
+
+  .nx-success-grid {
+    gap: 16px;
+  }
+
+  .nx-success-payment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-success-payment-grid > div,
+  .nx-success-payment-grid > div:nth-child(odd) {
+    border-right: none;
+    border-bottom: 1px solid #edf0f4;
+  }
+
+  .nx-success-payment-grid > div:last-child {
+    border-bottom: none;
+  }
+
+  .nx-success-card-header {
+    align-items: flex-start;
+  }
+
+  .nx-success-paid-badge,
+  .nx-shipment-status {
+    display: none;
+  }
+
+  .nx-tracking-timeline {
+    overflow-x: auto;
+    min-width: 600px;
+  }
+
+  .nx-shipment-card {
+    overflow-x: auto;
+  }
+
+  .nx-shipment-info {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-shipment-info > div + div {
+    border-top: 1px solid #edf0f4;
+    border-left: none;
+  }
+
+  .nx-success-next {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-payment-success-page {
+    padding-top: 24px;
+  }
+
+  .nx-success-check {
+    width: 68px;
+    height: 68px;
+    font-size: 29px;
+  }
+
+  .nx-success-order-ref {
+    max-width: calc(100% - 30px);
+  }
+
+  .nx-success-order-ref strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .nx-success-card-header {
+    padding: 17px;
+  }
+
+  .nx-success-payment-grid > div {
+    padding: 16px 17px;
+  }
+
+  .nx-success-summary {
+    margin: 0 0;
+  }
+}
+.nx-success-card-icon.order {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.nx-order-confirmation-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 21px;
+}
+
+.nx-order-confirmation-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: #f0fdf4;
+  color: #16a34a;
+  font-size: 20px;
+}
+
+.nx-order-confirmation-content strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #1f2937;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.nx-order-confirmation-content p {
+  max-width: 560px;
+  margin: 0;
+  color: #8a94a6;
+  font-size: 11px;
+  line-height: 1.6;
+}

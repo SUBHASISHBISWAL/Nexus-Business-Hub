@@ -1,0 +1,685 @@
+/* =========================================================
+   ADMIN PRODUCTS
+========================================================= */
+
+.nx-admin-products {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.nx-admin-products-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.nx-admin-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 9px;
+  color: #8b95a5;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.nx-admin-breadcrumb i {
+  font-size: 8px;
+  color: #b0b7c2;
+}
+
+.nx-admin-breadcrumb strong {
+  color: #526071;
+  font-weight: 600;
+}
+
+.nx-admin-products-header h1 {
+  margin: 0;
+  color: #172033;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.nx-admin-products-header p {
+  margin: 7px 0 0;
+  color: #7c8796;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+========================================================= */
+
+.nx-admin-primary-button {
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 15px;
+  border: 1px solid #1d4ed8;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.nx-admin-primary-button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+}
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.nx-admin-products-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.nx-admin-product-summary-box {
+  min-height: 82px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px 17px;
+  border: 1px solid #e5e8ed;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.nx-admin-product-summary-box span {
+  color: #7d8795;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.nx-admin-product-summary-box strong {
+  margin-top: 6px;
+  color: #172033;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.nx-admin-products-card {
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.nx-admin-products-toolbar {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 17px 18px;
+  border-bottom: 1px solid #e9ecf0;
+}
+
+.nx-admin-products-search {
+  width: 330px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px;
+  border: 1px solid #dfe4ea;
+  border-radius: 7px;
+  background: #f9fafb;
+  color: #8b95a3;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.nx-admin-products-search:focus-within {
+  border-color: #8eaff2;
+  background: #ffffff;
+}
+
+.nx-admin-products-search > i {
+  font-size: 13px;
+}
+
+.nx-admin-products-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #172033;
+  font-size: 12px;
+}
+
+.nx-admin-products-search input::placeholder {
+  color: #9aa3af;
+}
+
+.nx-admin-products-search button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #8b95a3;
+  cursor: pointer;
+}
+
+.nx-admin-products-search button:hover {
+  background: #eef1f5;
+  color: #374151;
+}
+
+.nx-admin-product-filters {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.nx-admin-product-filters select {
+  height: 38px;
+  min-width: 150px;
+  padding: 0 30px 0 11px;
+  border: 1px solid #dfe4ea;
+  border-radius: 7px;
+  outline: 0;
+  background: #ffffff;
+  color: #455163;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* =========================================================
+   RESULT INFO
+========================================================= */
+
+.nx-admin-products-result-info {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border-bottom: 1px solid #edf0f3;
+  color: #8a94a3;
+  font-size: 11px;
+}
+
+.nx-admin-products-result-info strong {
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.nx-admin-products-result-info button {
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-products-result-info button:hover {
+  text-decoration: underline;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.nx-admin-products-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.nx-admin-products-table {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: collapse;
+}
+
+.nx-admin-products-table th {
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid #e7eaee;
+  background: #fafbfc;
+  color: #7a8492;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.45px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nx-admin-products-table td {
+  height: 72px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #edf0f3;
+  color: #4b5563;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.nx-admin-products-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.nx-admin-products-table tbody tr:hover {
+  background: #fafbfd;
+}
+
+.nx-admin-products-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* =========================================================
+   PRODUCT CELL
+========================================================= */
+
+.nx-admin-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 235px;
+}
+
+.nx-admin-product-image {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid #e1e6ec;
+  border-radius: 7px;
+  background: #f6f8fa;
+  color: #64748b;
+  font-size: 17px;
+}
+
+.nx-admin-product-cell > div:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nx-admin-product-cell strong {
+  overflow: hidden;
+  color: #263142;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-admin-product-cell span {
+  margin-top: 4px;
+  color: #9aa3af;
+  font-size: 10px;
+}
+
+/* =========================================================
+   SKU / CATEGORY / PRICE
+========================================================= */
+
+.nx-admin-product-sku {
+  color: #687486;
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+  font-size: 10px;
+}
+
+.nx-admin-product-category {
+  color: #596576;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.nx-admin-product-price {
+  color: #263142;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   STOCK
+========================================================= */
+
+.nx-admin-product-stock {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.nx-admin-product-stock.good {
+  color: #16805b;
+}
+
+.nx-admin-product-stock.low {
+  color: #b7791f;
+}
+
+.nx-admin-product-stock.out {
+  color: #c24141;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.nx-admin-product-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 25px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nx-admin-product-status > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.nx-admin-product-status.active {
+  background: #ecfdf5;
+  color: #16805b;
+}
+
+.nx-admin-product-status.active > span {
+  background: #22a06b;
+}
+
+.nx-admin-product-status.draft {
+  background: #f3f4f6;
+  color: #687486;
+}
+
+.nx-admin-product-status.draft > span {
+  background: #8b95a3;
+}
+
+.nx-admin-product-status.out-of-stock {
+  background: #fef2f2;
+  color: #c24141;
+}
+
+.nx-admin-product-status.out-of-stock > span {
+  background: #ef4444;
+}
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.nx-admin-product-date {
+  color: #7d8795;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.nx-admin-product-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.nx-admin-product-actions button {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #7b8695;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.nx-admin-product-actions button:hover {
+  border-color: #e1e5ea;
+  background: #f5f7f9;
+  color: #2563eb;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.nx-admin-products-empty {
+  padding: 58px 20px;
+  text-align: center;
+}
+
+.nx-admin-products-empty > div {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: #f3f5f7;
+  color: #8a94a3;
+  font-size: 17px;
+}
+
+.nx-admin-products-empty h3 {
+  margin: 0;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.nx-admin-products-empty p {
+  margin: 6px 0 14px;
+  color: #8a94a3;
+  font-size: 12px;
+}
+
+.nx-admin-products-empty button {
+  height: 34px;
+  padding: 0 13px;
+  border: 1px solid #dfe4ea;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #4b5563;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-products-empty button:hover {
+  border-color: #b9c1cb;
+  background: #f8f9fb;
+}
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.nx-admin-products-pagination {
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border-top: 1px solid #e9ecf0;
+  color: #8a94a3;
+  font-size: 11px;
+}
+
+.nx-admin-pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nx-admin-pagination-buttons button {
+  min-width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7px;
+  border: 1px solid #dfe4ea;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #657082;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.nx-admin-pagination-buttons button:hover:not(:disabled) {
+  border-color: #aeb8c5;
+  background: #f7f9fb;
+}
+
+.nx-admin-pagination-buttons button.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nx-admin-pagination-buttons button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+  .nx-admin-products-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nx-admin-products-header {
+    align-items: flex-start;
+  }
+
+  .nx-admin-products-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .nx-admin-products-search {
+    width: 100%;
+  }
+
+  .nx-admin-product-filters {
+    width: 100%;
+  }
+
+  .nx-admin-product-filters select {
+    flex: 1;
+  }
+}
+
+@media (max-width: 560px) {
+  .nx-admin-products-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .nx-admin-products-header h1 {
+    font-size: 23px;
+  }
+
+  .nx-admin-primary-button {
+    width: 100%;
+  }
+
+  .nx-admin-products-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .nx-admin-product-summary-box {
+    min-height: 74px;
+    padding: 12px;
+  }
+
+  .nx-admin-product-summary-box strong {
+    font-size: 18px;
+  }
+
+  .nx-admin-product-filters {
+    flex-direction: column;
+  }
+
+  .nx-admin-product-filters select {
+    width: 100%;
+  }
+
+  .nx-admin-products-result-info {
+    padding: 0 13px;
+  }
+
+  .nx-admin-products-pagination {
+    padding: 0 13px;
+  }
+
+  .nx-admin-products-pagination > span {
+    display: none;
+  }
+}
