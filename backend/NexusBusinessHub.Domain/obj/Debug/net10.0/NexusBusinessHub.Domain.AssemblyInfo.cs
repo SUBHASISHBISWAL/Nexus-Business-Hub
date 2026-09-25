@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NexusBusinessHub.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+13b0823aa07ef47624c72a5174eaf4059e5bc176")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40412739cff2e9d82cf9e944d97edef1a35f7086")]
 [assembly: System.Reflection.AssemblyProductAttribute("NexusBusinessHub.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NexusBusinessHub.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

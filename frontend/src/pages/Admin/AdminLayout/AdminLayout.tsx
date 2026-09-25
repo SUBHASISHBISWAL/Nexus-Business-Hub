@@ -17,13 +17,22 @@ function AdminLayout({ children }: AdminLayoutProps) {
     setSidebarOpen(false);
   };
 
+  // Admin Logout
   const handleLogout = () => {
+    // Remove admin authentication
+    localStorage.removeItem("isAdmin");
+
+    // Close UI elements
     setProfileOpen(false);
-    navigate("/");
+    setSidebarOpen(false);
+
+    // Redirect to admin login
+    navigate("/admin/login", { replace: true });
   };
 
   return (
     <div className="nx-admin-layout">
+
       {/* Mobile overlay */}
       {sidebarOpen && (
         <button
@@ -40,9 +49,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
           sidebarOpen ? "nx-admin-sidebar-open" : ""
         }`}
       >
+
         {/* Brand */}
         <div className="nx-admin-brand">
-          <div className="nx-admin-brand-mark">N</div>
+
+          <div className="nx-admin-brand-mark">
+            N
+          </div>
 
           <div className="nx-admin-brand-copy">
             <span className="nx-admin-brand-name">
@@ -62,12 +75,16 @@ function AdminLayout({ children }: AdminLayoutProps) {
           >
             <i className="bi bi-x-lg" />
           </button>
+
         </div>
+
 
         {/* Navigation */}
         <nav className="nx-admin-nav">
+
           {/* Overview */}
           <div className="nx-admin-nav-section">
+
             <span className="nx-admin-nav-label">
               Overview
             </span>
@@ -89,10 +106,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 Dashboard
               </span>
             </NavLink>
+
           </div>
+
 
           {/* Commerce */}
           <div className="nx-admin-nav-section">
+
             <span className="nx-admin-nav-label">
               Commerce
             </span>
@@ -115,6 +135,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
               </span>
             </NavLink>
 
+
             <NavLink
               to="/admin/orders"
               className={({ isActive }) =>
@@ -132,13 +153,17 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 Orders
               </span>
             </NavLink>
+
           </div>
+
 
           {/* Operations */}
           <div className="nx-admin-nav-section">
+
             <span className="nx-admin-nav-label">
               Operations
             </span>
+
 
             <NavLink
               to="/admin/shipments"
@@ -158,6 +183,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
               </span>
             </NavLink>
 
+
             <NavLink
               to="/admin/tickets"
               className={({ isActive }) =>
@@ -175,11 +201,15 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 Support
               </span>
             </NavLink>
+
           </div>
+
         </nav>
+
 
         {/* Sidebar bottom */}
         <div className="nx-admin-sidebar-bottom">
+
           <NavLink
             to="/admin/settings"
             className={({ isActive }) =>
@@ -198,6 +228,8 @@ function AdminLayout({ children }: AdminLayoutProps) {
             </span>
           </NavLink>
 
+
+          {/* Logout */}
           <button
             type="button"
             className="nx-admin-logout"
@@ -209,14 +241,20 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             <span>Logout</span>
           </button>
+
         </div>
+
       </aside>
+
 
       {/* Main area */}
       <div className="nx-admin-main">
+
         {/* Topbar */}
         <header className="nx-admin-topbar">
+
           <div className="nx-admin-topbar-left">
+
             <button
               type="button"
               className="nx-admin-menu-button"
@@ -226,7 +264,9 @@ function AdminLayout({ children }: AdminLayoutProps) {
               <i className="bi bi-list" />
             </button>
 
+
             <div className="nx-admin-search">
+
               <i className="bi bi-search" />
 
               <input
@@ -238,10 +278,14 @@ function AdminLayout({ children }: AdminLayoutProps) {
               <span className="nx-admin-search-shortcut">
                 /
               </span>
+
             </div>
+
           </div>
 
+
           <div className="nx-admin-topbar-right">
+
             {/* Notifications */}
             <button
               type="button"
@@ -249,42 +293,63 @@ function AdminLayout({ children }: AdminLayoutProps) {
               aria-label="Notifications"
             >
               <i className="bi bi-bell" />
+
               <span className="nx-admin-notification-dot" />
             </button>
 
+
             <div className="nx-admin-topbar-divider" />
+
 
             {/* Profile */}
             <div className="nx-admin-profile-wrapper">
+
               <button
                 type="button"
                 className="nx-admin-profile"
                 onClick={() =>
-                  setProfileOpen((previous) => !previous)
+                  setProfileOpen(
+                    (previous) => !previous
+                  )
                 }
               >
+
                 <div className="nx-admin-avatar">
                   A
                 </div>
 
+
                 <div className="nx-admin-profile-info">
-                  <strong>Admin</strong>
-                  <span>Administrator</span>
+
+                  <strong>
+                    Admin
+                  </strong>
+
+                  <span>
+                    Administrator
+                  </span>
+
                 </div>
+
 
                 <i
                   className={`bi bi-chevron-down ${
                     profileOpen ? "open" : ""
                   }`}
                 />
+
               </button>
 
+
+              {/* Profile Dropdown */}
               {profileOpen && (
                 <div className="nx-admin-profile-menu">
+
                   <button type="button">
                     <i className="bi bi-person" />
                     Profile
                   </button>
+
 
                   <button
                     type="button"
@@ -297,7 +362,9 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     Settings
                   </button>
 
+
                   <div className="nx-admin-profile-menu-divider" />
+
 
                   <button
                     type="button"
@@ -307,17 +374,24 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     <i className="bi bi-box-arrow-right" />
                     Logout
                   </button>
+
                 </div>
               )}
+
             </div>
+
           </div>
+
         </header>
+
 
         {/* Page content */}
         <main className="nx-admin-content">
           {children}
         </main>
+
       </div>
+
     </div>
   );
 }
