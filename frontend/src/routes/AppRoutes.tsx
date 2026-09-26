@@ -53,6 +53,7 @@ import AdminOTP from "../pages/Admin/AdminOTP/AdminOTP";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 
 import Profile from "../pages/Profile/Profile";
+import Settings from "../pages/Settings/Settings";
 
 function AppRoutes() {
   return (
@@ -74,6 +75,8 @@ function AppRoutes() {
       <Route path="/about" element={<About />} />
 
       <Route path="/profile" element={<Profile />} />
+
+      <Route path="/settings" element={<Settings />} />
 
       {/* ==================== SHOPPING ==================== */}
 
