@@ -1,32 +1,28 @@
-/* =========================================================
+/* =========================================
+   NEXUS BUSINESS HUB
    ADMIN LAYOUT
-========================================================= */
+========================================= */
 
 .nx-admin-layout {
   min-height: 100vh;
   width: 100%;
   display: flex;
-  background: #f6f7f9;
+  background: #f6f8fb;
   color: #172033;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
 }
 
-/* =========================================================
+
+/* =========================================
    SIDEBAR
-========================================================= */
+========================================= */
 
 .nx-admin-sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1100;
+  z-index: 1000;
 
-  width: 248px;
+  width: 250px;
   height: 100vh;
 
   display: flex;
@@ -35,87 +31,129 @@
   background: #111827;
   border-right: 1px solid #1f2937;
 
+  color: #e5e7eb;
+
   transition:
-    transform 0.25s ease,
-    width 0.25s ease;
+    transform 0.22s ease,
+    width 0.22s ease;
+
+  overflow: hidden;
 }
 
-/* =========================================================
+
+/* =========================================
    BRAND
-========================================================= */
+========================================= */
 
 .nx-admin-brand {
   height: 76px;
-  padding: 0 20px;
+  min-height: 76px;
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
-  gap: 11px;
 
-  border-bottom: 1px solid #202938;
+  padding: 0 20px;
+
+  border-bottom: 1px solid #1f2937;
 }
 
 .nx-admin-brand-mark {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  flex-shrink: 0;
-
-  border-radius: 8px;
+  border-radius: 9px;
 
   background: #2563eb;
   color: #ffffff;
 
   font-size: 17px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
+  font-weight: 800;
+
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 .nx-admin-brand-copy {
+  margin-left: 11px;
+
   display: flex;
   flex-direction: column;
-  line-height: 1.1;
+
+  line-height: 1;
 }
 
 .nx-admin-brand-name {
-  color: #ffffff;
   font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.7px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+
+  color: #ffffff;
 }
 
 .nx-admin-brand-subtitle {
-  margin-top: 4px;
+  margin-top: 5px;
 
-  color: #8f9bad;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
 
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
+  color: #9ca3af;
 }
 
 .nx-admin-sidebar-close {
   display: none;
+
+  margin-left: auto;
+
+  width: 34px;
+  height: 34px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: transparent;
+
+  color: #9ca3af;
+
+  cursor: pointer;
 }
 
-/* =========================================================
+.nx-admin-sidebar-close:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+
+/* =========================================
    NAVIGATION
-========================================================= */
+========================================= */
 
 .nx-admin-nav {
   flex: 1;
 
-  padding: 22px 12px 12px;
+  min-height: 0;
 
   overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 18px 12px 14px;
 }
 
 .nx-admin-nav::-webkit-scrollbar {
   width: 4px;
+}
+
+.nx-admin-nav::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .nx-admin-nav::-webkit-scrollbar-thumb {
@@ -124,43 +162,116 @@
 }
 
 .nx-admin-nav-section {
-  margin-bottom: 25px;
+  margin-bottom: 12px;
+}
+
+
+/* =========================================
+   SECTION HEADER
+========================================= */
+
+.nx-admin-nav-section-header {
+  width: 100%;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 10px;
+  margin: 0 0 5px;
+
+  border: 0;
+  outline: none;
+
+  background: transparent;
+
+  color: #9ca3af;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  border-radius: 7px;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.nx-admin-nav-section-header:hover {
+  background: #1f2937;
+  color: #ffffff;
 }
 
 .nx-admin-nav-label {
-  display: block;
-
-  padding: 0 12px;
-  margin-bottom: 8px;
-
-  color: #687386;
-
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.9px;
+
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+
+.nx-admin-nav-section-header > i {
+  font-size: 10px;
+
+  color: #6b7280;
+
+  opacity: 0.9;
+
+  transition:
+    transform 0.18s ease,
+    color 0.18s ease;
+}
+
+.nx-admin-nav-section-header:hover > i {
+  color: #ffffff;
+}
+
+
+/* =========================================
+   SUBMENU
+========================================= */
+
+.nx-admin-nav-submenu {
+  overflow: hidden;
+
+  animation: nxAdminSubmenuIn 0.16s ease;
+}
+
+@keyframes nxAdminSubmenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================
+   NAV ITEM
+========================================= */
 
 .nx-admin-nav-item {
   position: relative;
 
-  width: 100%;
   min-height: 42px;
 
   display: flex;
   align-items: center;
-  gap: 12px;
 
-  padding: 0 12px;
-  margin-bottom: 3px;
+  padding: 0 11px;
+  margin: 2px 0;
 
-  border-radius: 7px;
+  border-radius: 8px;
 
-  color: #aeb8c7;
   text-decoration: none;
 
-  font-size: 13px;
-  font-weight: 500;
+  color: #cbd5e1;
 
   transition:
     background 0.18s ease,
@@ -168,44 +279,80 @@
 }
 
 .nx-admin-nav-item:hover {
-  background: #1b2535;
+  background: #1f2937;
   color: #ffffff;
 }
 
 .nx-admin-nav-item.active {
-  background: #1d4ed8;
+  background: #273449;
   color: #ffffff;
+
+  font-weight: 600;
+}
+
+.nx-admin-nav-item.active::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+
+  width: 3px;
+
+  border-radius: 0 3px 3px 0;
+
+  background: #ffffff;
 }
 
 .nx-admin-nav-icon {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  flex-shrink: 0;
+  font-size: 15px;
 
-  font-size: 16px;
+  color: inherit;
 }
 
 .nx-admin-nav-text {
-  white-space: nowrap;
+  margin-left: 7px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  color: inherit;
 }
 
-/* =========================================================
+
+/* =========================================
    SIDEBAR BOTTOM
-========================================================= */
+========================================= */
 
 .nx-admin-sidebar-bottom {
+  flex-shrink: 0;
+
   padding: 12px;
-  border-top: 1px solid #202938;
+
+  border-top: 1px solid #1f2937;
+
+  background: #111827;
 }
 
 .nx-admin-sidebar-bottom .nx-admin-nav-item {
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
+
+
+/* =========================================
+   LOGOUT
+========================================= */
 
 .nx-admin-logout {
   width: 100%;
@@ -213,20 +360,21 @@
 
   display: flex;
   align-items: center;
-  gap: 12px;
 
-  padding: 0 12px;
+  padding: 0 11px;
 
   border: 0;
-  border-radius: 7px;
+  border-radius: 8px;
 
   background: transparent;
-  color: #aeb8c7;
+
+  color: #cbd5e1;
+
+  cursor: pointer;
 
   font-size: 13px;
   font-weight: 500;
 
-  cursor: pointer;
   text-align: left;
 
   transition:
@@ -235,27 +383,36 @@
 }
 
 .nx-admin-logout:hover {
-  background: #2a1d22;
-  color: #f87171;
+  background: #2a1f22;
+  color: #ffb4b4;
 }
 
-/* =========================================================
-   MAIN
-========================================================= */
+.nx-admin-logout .nx-admin-nav-icon {
+  margin-right: 7px;
+}
+
+
+/* =========================================
+   MAIN AREA
+========================================= */
 
 .nx-admin-main {
-  width: calc(100% - 248px);
-  min-height: 100vh;
+  min-width: 0;
 
-  margin-left: 248px;
+  width: calc(100% - 250px);
+
+  margin-left: 250px;
+
+  min-height: 100vh;
 
   display: flex;
   flex-direction: column;
 }
 
-/* =========================================================
+
+/* =========================================
    TOPBAR
-========================================================= */
+========================================= */
 
 .nx-admin-topbar {
   position: sticky;
@@ -263,7 +420,9 @@
   z-index: 900;
 
   height: 68px;
-  width: 100%;
+  min-height: 68px;
+
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
@@ -271,8 +430,11 @@
 
   padding: 0 28px;
 
-  background: #ffffff;
-  border-bottom: 1px solid #e6e9ee;
+  background: rgba(255, 255, 255, 0.96);
+
+  border-bottom: 1px solid #e8ecf1;
+
+  backdrop-filter: blur(10px);
 }
 
 .nx-admin-topbar-left,
@@ -281,17 +443,10 @@
   align-items: center;
 }
 
-.nx-admin-topbar-left {
-  flex: 1;
-}
 
-.nx-admin-topbar-right {
-  gap: 16px;
-}
-
-/* =========================================================
+/* =========================================
    MOBILE MENU BUTTON
-========================================================= */
+========================================= */
 
 .nx-admin-menu-button {
   display: none;
@@ -299,49 +454,48 @@
   width: 38px;
   height: 38px;
 
+  margin-right: 12px;
+
   align-items: center;
   justify-content: center;
 
-  margin-right: 12px;
-
-  border: 1px solid #e1e5ea;
-  border-radius: 7px;
+  border: 1px solid #e4e8ee;
+  border-radius: 8px;
 
   background: #ffffff;
-  color: #374151;
 
-  font-size: 19px;
+  color: #4e5969;
+
   cursor: pointer;
+
+  font-size: 17px;
 }
 
-/* =========================================================
+.nx-admin-menu-button:hover {
+  background: #f7f8fa;
+  color: #172033;
+}
+
+
+/* =========================================
    SEARCH
-========================================================= */
+========================================= */
 
 .nx-admin-search {
-  width: 360px;
+  width: 280px;
   height: 38px;
 
   display: flex;
   align-items: center;
-  gap: 9px;
 
   padding: 0 10px;
 
-  border: 1px solid #e0e4e9;
-  border-radius: 7px;
+  border: 1px solid #e1e6ed;
+  border-radius: 8px;
 
-  background: #f8f9fb;
-  color: #7b8492;
+  background: #f9fafb;
 
-  transition:
-    border-color 0.18s ease,
-    background 0.18s ease;
-}
-
-.nx-admin-search:focus-within {
-  border-color: #93b4f8;
-  background: #ffffff;
+  color: #8a94a4;
 }
 
 .nx-admin-search > i {
@@ -349,9 +503,10 @@
 }
 
 .nx-admin-search input {
+  min-width: 0;
   flex: 1;
 
-  min-width: 0;
+  margin-left: 9px;
 
   border: 0;
   outline: 0;
@@ -364,29 +519,35 @@
 }
 
 .nx-admin-search input::placeholder {
-  color: #9aa3b1;
+  color: #9aa3b2;
 }
 
 .nx-admin-search-shortcut {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #dce1e7;
-  border-radius: 4px;
+  border: 1px solid #dfe4eb;
+  border-radius: 5px;
 
   background: #ffffff;
-  color: #8992a0;
+
+  color: #8c96a5;
 
   font-size: 11px;
 }
 
-/* =========================================================
-   ICON BUTTON
-========================================================= */
+
+/* =========================================
+   TOPBAR RIGHT
+========================================= */
+
+.nx-admin-topbar-right {
+  gap: 14px;
+}
 
 .nx-admin-icon-button {
   position: relative;
@@ -398,24 +559,21 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #e1e5ea;
-  border-radius: 7px;
+  border: 0;
+  border-radius: 8px;
 
-  background: #ffffff;
-  color: #4b5563;
+  background: transparent;
 
-  font-size: 16px;
+  color: #596579;
 
   cursor: pointer;
 
-  transition:
-    background 0.18s ease,
-    border-color 0.18s ease;
+  font-size: 16px;
 }
 
 .nx-admin-icon-button:hover {
-  background: #f6f8fa;
-  border-color: #d4d9e0;
+  background: #f5f7fa;
+  color: #172033;
 }
 
 .nx-admin-notification-dot {
@@ -429,20 +587,22 @@
 
   border-radius: 50%;
 
-  background: #2563eb;
+  background: #d9534f;
+
   border: 1px solid #ffffff;
 }
 
 .nx-admin-topbar-divider {
   width: 1px;
-  height: 30px;
+  height: 28px;
 
-  background: #e5e7eb;
+  background: #e5e9ef;
 }
 
-/* =========================================================
+
+/* =========================================
    PROFILE
-========================================================= */
+========================================= */
 
 .nx-admin-profile-wrapper {
   position: relative;
@@ -451,19 +611,30 @@
 .nx-admin-profile {
   display: flex;
   align-items: center;
+
   gap: 9px;
 
-  padding: 3px;
+  padding: 4px 7px;
 
   border: 0;
+  border-radius: 8px;
+
   background: transparent;
 
   cursor: pointer;
+
+  color: #172033;
+}
+
+.nx-admin-profile:hover {
+  background: #f5f7fa;
 }
 
 .nx-admin-avatar {
   width: 34px;
   height: 34px;
+
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
@@ -471,42 +642,41 @@
 
   border-radius: 50%;
 
-  background: #e8eefc;
-  color: #2456b8;
+  background: #172033;
+  color: #ffffff;
 
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .nx-admin-profile-info {
   display: flex;
   flex-direction: column;
+
   align-items: flex-start;
 
   line-height: 1.2;
 }
 
 .nx-admin-profile-info strong {
-  color: #1f2937;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .nx-admin-profile-info span {
   margin-top: 3px;
 
-  color: #8a94a3;
-
   font-size: 10px;
-  font-weight: 500;
+
+  color: #8b95a5;
 }
 
 .nx-admin-profile > i {
   margin-left: 3px;
 
-  color: #7d8795;
+  color: #8b95a5;
 
-  font-size: 11px;
+  font-size: 10px;
 
   transition: transform 0.18s ease;
 }
@@ -515,32 +685,33 @@
   transform: rotate(180deg);
 }
 
-/* =========================================================
-   PROFILE MENU
-========================================================= */
+
+/* =========================================
+   PROFILE DROPDOWN
+========================================= */
 
 .nx-admin-profile-menu {
   position: absolute;
 
-  top: calc(100% + 10px);
+  top: calc(100% + 9px);
   right: 0;
 
   width: 190px;
 
-  padding: 7px;
+  padding: 6px;
 
-  border: 1px solid #e2e6eb;
-  border-radius: 9px;
+  border: 1px solid #e3e7ed;
+  border-radius: 10px;
 
   background: #ffffff;
 
   box-shadow:
-    0 10px 30px rgba(15, 23, 42, 0.09);
+    0 12px 30px rgba(15, 23, 42, 0.1);
 
-  animation: nxAdminMenuIn 0.16s ease;
+  animation: nxAdminDropdownIn 0.15s ease;
 }
 
-@keyframes nxAdminMenuIn {
+@keyframes nxAdminDropdownIn {
   from {
     opacity: 0;
     transform: translateY(-4px);
@@ -554,50 +725,59 @@
 
 .nx-admin-profile-menu button {
   width: 100%;
-  height: 36px;
 
   display: flex;
   align-items: center;
-  gap: 10px;
 
-  padding: 0 10px;
+  gap: 9px;
+
+  padding: 9px 10px;
 
   border: 0;
-  border-radius: 6px;
+  border-radius: 7px;
 
   background: transparent;
-  color: #374151;
+
+  color: #4e5969;
 
   font-size: 12px;
-  font-weight: 500;
-
-  text-align: left;
 
   cursor: pointer;
+
+  text-align: left;
 }
 
 .nx-admin-profile-menu button:hover {
   background: #f5f7fa;
+  color: #172033;
 }
 
-.nx-admin-profile-menu button.danger {
-  color: #dc2626;
-}
+.nx-admin-profile-menu button i {
+  width: 17px;
 
-.nx-admin-profile-menu button.danger:hover {
-  background: #fef2f2;
+  text-align: center;
 }
 
 .nx-admin-profile-menu-divider {
   height: 1px;
-  margin: 6px 3px;
 
-  background: #edf0f3;
+  margin: 5px 0;
+
+  background: #edf0f4;
 }
 
-/* =========================================================
+.nx-admin-profile-menu button.danger {
+  color: #c0392b;
+}
+
+.nx-admin-profile-menu button.danger:hover {
+  background: #fff3f3;
+}
+
+
+/* =========================================
    CONTENT
-========================================================= */
+========================================= */
 
 .nx-admin-content {
   flex: 1;
@@ -607,75 +787,81 @@
   padding: 28px;
 }
 
-/* =========================================================
+
+/* =========================================
    MOBILE OVERLAY
-========================================================= */
+========================================= */
 
 .nx-admin-overlay {
   display: none;
+
+  position: fixed;
+  inset: 0;
+
+  z-index: 999;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+
+  background: rgba(15, 23, 42, 0.45);
+
+  cursor: pointer;
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
-@media (max-width: 1100px) {
-  .nx-admin-search {
-    width: 280px;
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1024px) {
+
+  .nx-admin-sidebar {
+    width: 235px;
   }
 
-  .nx-admin-profile-info {
-    display: none;
+  .nx-admin-main {
+    width: calc(100% - 235px);
+    margin-left: 235px;
   }
+
+  .nx-admin-topbar {
+    padding: 0 20px;
+  }
+
+  .nx-admin-content {
+    padding: 22px;
+  }
+
 }
+
+
+/* =========================================
+   MOBILE
+========================================= */
 
 @media (max-width: 768px) {
+
   .nx-admin-sidebar {
+    width: 260px;
+
     transform: translateX(-100%);
-    box-shadow: 12px 0 30px rgba(15, 23, 42, 0.12);
+
+    box-shadow:
+      12px 0 35px rgba(15, 23, 42, 0.25);
   }
 
-  .nx-admin-sidebar-open {
+  .nx-admin-sidebar.nx-admin-sidebar-open {
     transform: translateX(0);
   }
 
   .nx-admin-sidebar-close {
     display: flex;
-
-    width: 32px;
-    height: 32px;
-
-    align-items: center;
-    justify-content: center;
-
-    margin-left: auto;
-
-    border: 0;
-    border-radius: 6px;
-
-    background: transparent;
-    color: #9aa4b2;
-
-    cursor: pointer;
-  }
-
-  .nx-admin-sidebar-close:hover {
-    background: #1b2535;
-    color: #ffffff;
   }
 
   .nx-admin-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 1050;
-
     display: block;
-
-    border: 0;
-
-    background: rgba(15, 23, 42, 0.42);
-
-    cursor: pointer;
   }
 
   .nx-admin-main {
@@ -688,27 +874,43 @@
   }
 
   .nx-admin-topbar {
-    padding: 0 18px;
-  }
-
-  .nx-admin-content {
-    padding: 20px;
-  }
-
-  .nx-admin-search {
-    width: min(320px, 100%);
-  }
-}
-
-@media (max-width: 560px) {
-  .nx-admin-topbar {
     height: 62px;
+    min-height: 62px;
+
     padding: 0 14px;
   }
 
   .nx-admin-search {
-    width: auto;
-    flex: 1;
+    width: min(280px, 45vw);
+  }
+
+  .nx-admin-profile-info {
+    display: none;
+  }
+
+  .nx-admin-profile > i {
+    display: none;
+  }
+
+  .nx-admin-content {
+    padding: 18px 14px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .nx-admin-topbar {
+    padding: 0 10px;
+  }
+
+  .nx-admin-search {
+    width: 150px;
   }
 
   .nx-admin-search-shortcut {
@@ -716,27 +918,102 @@
   }
 
   .nx-admin-topbar-right {
-    gap: 8px;
+    gap: 5px;
   }
 
   .nx-admin-topbar-divider {
     display: none;
   }
 
-  .nx-admin-profile {
-    padding: 0;
-  }
-
-  .nx-admin-profile > i {
-    display: none;
-  }
-
-  .nx-admin-icon-button {
-    width: 36px;
-    height: 36px;
-  }
-
   .nx-admin-content {
-    padding: 16px;
+    padding: 14px 10px;
+  }
+
+}
+
+ /* =========================================
+   SIDEBAR COLLAPSE
+   ========================================= */
+
+.nx-admin-sidebar.is-collapsed {
+  transform: translateX(-100%);
+}
+
+.nx-admin-main.is-sidebar-collapsed {
+  width: 100%;
+  margin-left: 0;
+}
+
+/* Smooth main-area transition */
+.nx-admin-main {
+  transition:
+    width 0.28s ease,
+    margin-left 0.28s ease;
+}
+
+/* Sidebar already has transform transition above */
+.nx-admin-sidebar {
+  transition:
+    transform 0.28s ease;
+}
+
+
+/* =========================================
+   COLLAPSE TOGGLE BUTTON
+   ========================================= */
+
+.nx-admin-sidebar-toggle {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 12px;
+
+  border: 1px solid #e4e8ee;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #4e5969;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.nx-admin-sidebar-toggle:hover {
+  background: #f7f8fa;
+  color: #172033;
+}
+
+.nx-admin-sidebar-toggle:active {
+  transform: scale(0.94);
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  .nx-admin-sidebar.is-collapsed {
+    transform: translateX(-100%);
+  }
+
+  .nx-admin-main.is-sidebar-collapsed {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .nx-admin-sidebar-toggle {
+    display: none;
   }
 }

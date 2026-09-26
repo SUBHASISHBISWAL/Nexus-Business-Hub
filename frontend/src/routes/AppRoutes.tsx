@@ -51,6 +51,7 @@ import AdminLogin from "../pages/Admin/AdminLogin/AdminLogin";
 import AdminOTP from "../pages/Admin/AdminOTP/AdminOTP";
 
 import AdminProtectedRoute from "./AdminProtectedRoute";
+import AdminAdministrators from "../pages/Admin/AdminAdministrators/AdminAdministrators";
 
 import Profile from "../pages/Profile/Profile";
 import Settings from "../pages/Settings/Settings";
@@ -247,6 +248,15 @@ function AppRoutes() {
           }
         />
       </Route>
+
+      <Route
+        path="/admin/administrators"
+        element={
+          <AdminLayout>
+            <AdminAdministrators />
+          </AdminLayout>
+        }
+      />
     </Routes>
   );
 }

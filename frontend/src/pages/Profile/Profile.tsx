@@ -1,124 +1,273 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
 import "./Profile.css";
 
-interface CustomerProfile {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  pincode: string;
-  country: string;
-}
+const PROFILE_PHOTO_KEY = "customerProfilePhoto";
 
-const defaultProfile: CustomerProfile = {
-  name: "Ashutosh Sahu",
-  email: "ashutosh@email.com",
-  phone: "+91 98765 43210",
-  address: "Nexus Business Park",
-  city: "New Delhi",
-  state: "Delhi",
-  pincode: "110001",
-  country: "India",
-};
+const Profile = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-export default function Profile() {
-  const [profile, setProfile] =
-    useState<CustomerProfile>(defaultProfile);
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const [editProfile, setEditProfile] = useState(false);
-  const [editAddress, setEditAddress] = useState(false);
-  const [savedMessage, setSavedMessage] = useState("");
+  const [personalInfo, setPersonalInfo] = useState({
+    fullName: "Ashutosh Sahu",
+    email: "ashutosh@email.com",
+    mobile: "+91 98765 43210",
+  });
 
-  const [passwordModal, setPasswordModal] = useState(false);
+  const [editedPersonalInfo, setEditedPersonalInfo] =
+    useState(personalInfo);
 
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [address, setAddress] = useState({
+    addressLine: "123, Nexus Residency",
+    city: "Bhubaneswar",
+    state: "Odisha",
+    pincode: "751001",
+    country: "India",
+  });
+
+  const [editedAddress, setEditedAddress] = useState(address);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
 
   const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
 
-  const initials = profile.name
-    .split(" ")
-    .map((word) => word.charAt(0))
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  /* ================================
+     LOAD SAVED PROFILE PHOTO
+  ================================= */
 
-  const handleProfileChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    const savedPhoto = localStorage.getItem(PROFILE_PHOTO_KEY);
 
-    setProfile((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    if (savedPhoto) {
+      setProfilePhoto(savedPhoto);
+    }
+  }, []);
+
+  /* ================================
+     SUCCESS MESSAGE AUTO HIDE
+  ================================= */
+
+  useEffect(() => {
+    if (!successMessage) return;
+
+    const timer = setTimeout(() => {
+      setSuccessMessage("");
+    }, 3500);
+
+    return () => clearTimeout(timer);
+  }, [successMessage]);
+
+  /* ================================
+     INITIALS
+  ================================= */
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .filter(Boolean)
+      .map((word) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
   };
+
+  /* ================================
+     PHOTO UPLOAD
+  ================================= */
+
+  const handlePhotoUpload = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setSuccessMessage(
+        "Please upload a JPG, PNG or WEBP image."
+      );
+
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setSuccessMessage(
+        "Image size must be less than 5 MB."
+      );
+
+      event.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const imageData = reader.result as string;
+
+      localStorage.setItem(
+        PROFILE_PHOTO_KEY,
+        imageData
+      );
+
+      setProfilePhoto(imageData);
+
+      /*
+        After uploading/changing photo,
+        close edit mode.
+      */
+      setIsEditingProfile(false);
+
+      setSuccessMessage(
+        "Profile photo updated successfully."
+      );
+    };
+
+    reader.readAsDataURL(file);
+
+    event.target.value = "";
+  };
+
+  /* ================================
+     REMOVE PHOTO
+  ================================= */
+
+  const handleRemovePhoto = () => {
+    localStorage.removeItem(PROFILE_PHOTO_KEY);
+
+    setProfilePhoto(null);
+    setIsEditingProfile(false);
+
+    setSuccessMessage(
+      "Profile photo removed successfully."
+    );
+  };
+
+  /* ================================
+     EDIT PROFILE
+  ================================= */
+
+  const handleEditProfile = () => {
+    setEditedPersonalInfo(personalInfo);
+    setIsEditingProfile(true);
+  };
+
+  /* ================================
+     CANCEL PROFILE EDIT
+  ================================= */
+
+  const handleCancelProfile = () => {
+    setEditedPersonalInfo(personalInfo);
+    setIsEditingProfile(false);
+  };
+
+  /* ================================
+     SAVE PROFILE
+  ================================= */
 
   const handleSaveProfile = () => {
-    setEditProfile(false);
-    showSavedMessage("Profile information updated successfully.");
+    setPersonalInfo(editedPersonalInfo);
+    setIsEditingProfile(false);
+
+    setSuccessMessage(
+      "Profile information updated successfully."
+    );
   };
+
+  /* ================================
+     SAVE ADDRESS
+  ================================= */
 
   const handleSaveAddress = () => {
-    setEditAddress(false);
-    showSavedMessage("Delivery address updated successfully.");
+    setAddress(editedAddress);
+    setIsEditingAddress(false);
+
+    setSuccessMessage(
+      "Delivery address updated successfully."
+    );
   };
 
-  const showSavedMessage = (message: string) => {
-    setSavedMessage(message);
+  /* ================================
+     CANCEL ADDRESS
+  ================================= */
 
-    window.setTimeout(() => {
-      setSavedMessage("");
-    }, 3500);
+  const handleCancelAddress = () => {
+    setEditedAddress(address);
+    setIsEditingAddress(false);
   };
+
+  /* ================================
+     PASSWORD CHANGE
+  ================================= */
 
   const handlePasswordChange = () => {
     setPasswordError("");
+    setPasswordSuccess("");
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      setPasswordError("Please complete all password fields.");
-      return;
-    }
-
-    if (newPassword.length < 8) {
+    if (
+      !passwordData.currentPassword ||
+      !passwordData.newPassword ||
+      !passwordData.confirmPassword
+    ) {
       setPasswordError(
-        "New password must contain at least 8 characters."
+        "Please fill in all password fields."
       );
       return;
     }
 
-    if (newPassword !== confirmPassword) {
+    if (passwordData.newPassword.length < 8) {
       setPasswordError(
-        "New password and confirmation password do not match."
+        "New password must be at least 8 characters."
       );
       return;
     }
 
-    setPasswordModal(false);
+    if (
+      passwordData.newPassword !==
+      passwordData.confirmPassword
+    ) {
+      setPasswordError(
+        "New password and confirm password do not match."
+      );
+      return;
+    }
 
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    setPasswordSuccess(
+      "Password changed successfully."
+    );
 
-    showSavedMessage("Password updated successfully.");
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
   };
 
   return (
-    <main className="profile-page">
-      <div className="profile-container">
+    <div className="profile-page">
+      <div className="container-fluid profile-container">
 
-        {/* =========================
+        {/* ================================
             PAGE HEADER
-        ========================== */}
+        ================================= */}
 
         <div className="profile-page-header">
-
-          <div className="profile-heading-content">
+          <div>
             <span className="profile-eyebrow">
               MY ACCOUNT
             </span>
@@ -126,801 +275,856 @@ export default function Profile() {
             <h1>My Profile</h1>
 
             <p>
-              Manage your personal information, delivery address
-              and account security.
+              Manage your personal information, delivery
+              address and account security.
             </p>
           </div>
-
         </div>
 
-        {/* =========================
+        {/* ================================
             SUCCESS MESSAGE
-        ========================== */}
+        ================================= */}
 
-        {savedMessage && (
-          <div className="profile-success-message">
-
-            <div className="profile-success-icon">
-              <i className="bi bi-check-lg"></i>
-            </div>
-
-            <div>
-              <strong>Changes saved</strong>
-              <span>{savedMessage}</span>
-            </div>
-
-            <button
-              type="button"
-              aria-label="Close notification"
-              onClick={() => setSavedMessage("")}
-            >
-              <i className="bi bi-x"></i>
-            </button>
-
+        {successMessage && (
+          <div
+            className="alert alert-success profile-success-alert"
+            role="alert"
+          >
+            <i className="bi bi-check-circle-fill me-2"></i>
+            {successMessage}
           </div>
         )}
 
-        {/* =========================
+        {/* ================================
             ACCOUNT HEADER
-        ========================== */}
+        ================================= */}
 
-        <section className="profile-account-card">
+        <div className="card profile-account-card border-0">
+          <div className="card-body">
 
-          <div className="profile-account-main">
+            <div className="profile-account-left">
 
-            <div className="profile-avatar-large">
-              {initials}
-            </div>
+              {/* PROFILE PHOTO */}
 
-            <div className="profile-account-info">
+              <div className="profile-avatar-wrapper">
 
-              <div className="profile-name-row">
-
-                <h2>{profile.name}</h2>
-
-                <span className="profile-active-badge">
-                  <span></span>
-                  Active Customer
-                </span>
-
-              </div>
-
-              <p>{profile.email}</p>
-
-              <div className="profile-account-meta">
-
-                <span>
-                  <i className="bi bi-person-check"></i>
-                  Customer Account
-                </span>
-
-                <span>
-                  <i className="bi bi-shield-check"></i>
-                  Account Protected
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <div className="profile-account-actions">
-
-            <button
-              type="button"
-              className="profile-primary-btn"
-              onClick={() => setEditProfile(true)}
-            >
-              <i className="bi bi-pencil"></i>
-              Edit Profile
-            </button>
-
-          </div>
-
-        </section>
-
-        {/* =========================
-            ACCOUNT SUMMARY
-        ========================== */}
-
-        <section className="profile-summary-grid">
-
-          <Link
-            to="/orders"
-            className="profile-summary-card"
-          >
-            <div className="summary-icon blue">
-              <i className="bi bi-box-seam"></i>
-            </div>
-
-            <div className="summary-content">
-              <span>MY ORDERS</span>
-              <strong>View Orders</strong>
-              <small>Track your purchases</small>
-            </div>
-
-            <i className="bi bi-chevron-right summary-arrow"></i>
-          </Link>
-
-          <Link
-            to="/wishlist"
-            className="profile-summary-card"
-          >
-            <div className="summary-icon pink">
-              <i className="bi bi-heart"></i>
-            </div>
-
-            <div className="summary-content">
-              <span>WISHLIST</span>
-              <strong>Saved Products</strong>
-              <small>View your saved items</small>
-            </div>
-
-            <i className="bi bi-chevron-right summary-arrow"></i>
-          </Link>
-
-          <Link
-            to="/support/tickets"
-            className="profile-summary-card"
-          >
-            <div className="summary-icon purple">
-              <i className="bi bi-headset"></i>
-            </div>
-
-            <div className="summary-content">
-              <span>SUPPORT</span>
-              <strong>Support Tickets</strong>
-              <small>Get help with your orders</small>
-            </div>
-
-            <i className="bi bi-chevron-right summary-arrow"></i>
-          </Link>
-
-        </section>
-
-        {/* =========================
-            MAIN CONTENT
-        ========================== */}
-
-        <div className="profile-content-grid">
-
-          {/* =========================
-              PERSONAL INFORMATION
-          ========================== */}
-
-          <section className="profile-section-card">
-
-            <div className="profile-section-header">
-
-              <div className="profile-section-title">
-
-                <div className="profile-section-icon">
-                  <i className="bi bi-person"></i>
-                </div>
-
-                <div>
-                  <h3>Personal Information</h3>
-                  <p>
-                    Your basic customer account information
-                  </p>
-                </div>
-
-              </div>
-
-              {!editProfile && (
-                <button
-                  type="button"
-                  className="section-edit-btn"
-                  onClick={() => setEditProfile(true)}
-                >
-                  <i className="bi bi-pencil"></i>
-                  Edit
-                </button>
-              )}
-
-            </div>
-
-            <div className="profile-fields">
-
-              <div className="profile-field">
-
-                <label htmlFor="customerName">
-                  Full Name
-                </label>
-
-                <div className="profile-input">
-
-                  <i className="bi bi-person"></i>
-
-                  <input
-                    id="customerName"
-                    name="name"
-                    type="text"
-                    value={profile.name}
-                    onChange={handleProfileChange}
-                    disabled={!editProfile}
+                {profilePhoto ? (
+                  <img
+                    src={profilePhoto}
+                    alt="Profile"
+                    className="profile-avatar profile-avatar-image"
                   />
-
-                </div>
-
-              </div>
-
-              <div className="profile-field">
-
-                <label htmlFor="customerEmail">
-                  Email Address
-                </label>
-
-                <div className="profile-input">
-
-                  <i className="bi bi-envelope"></i>
-
-                  <input
-                    id="customerEmail"
-                    name="email"
-                    type="email"
-                    value={profile.email}
-                    onChange={handleProfileChange}
-                    disabled={!editProfile}
-                  />
-
-                </div>
-
-                <small className="verified-field">
-                  <i className="bi bi-patch-check-fill"></i>
-                  Verified email address
-                </small>
-
-              </div>
-
-              <div className="profile-field">
-
-                <label htmlFor="customerPhone">
-                  Mobile Number
-                </label>
-
-                <div className="profile-input">
-
-                  <i className="bi bi-telephone"></i>
-
-                  <input
-                    id="customerPhone"
-                    name="phone"
-                    type="tel"
-                    value={profile.phone}
-                    onChange={handleProfileChange}
-                    disabled={!editProfile}
-                  />
-
-                </div>
-
-              </div>
-
-            </div>
-
-            {editProfile && (
-              <div className="profile-section-actions">
-
-                <button
-                  type="button"
-                  className="profile-secondary-btn"
-                  onClick={() => {
-                    setProfile(defaultProfile);
-                    setEditProfile(false);
-                  }}
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="button"
-                  className="profile-primary-btn"
-                  onClick={handleSaveProfile}
-                >
-                  <i className="bi bi-check2"></i>
-                  Save Changes
-                </button>
-
-              </div>
-            )}
-
-          </section>
-
-          {/* =========================
-              ACCOUNT SECURITY
-          ========================== */}
-
-          <section className="profile-section-card">
-
-            <div className="profile-section-header">
-
-              <div className="profile-section-title">
-
-                <div className="profile-section-icon">
-                  <i className="bi bi-shield-lock"></i>
-                </div>
-
-                <div>
-                  <h3>Account Security</h3>
-                  <p>
-                    Manage your account security preferences
-                  </p>
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="security-list">
-
-              <div className="security-item">
-
-                <div className="security-item-left">
-
-                  <div className="security-item-icon">
-                    <i className="bi bi-key"></i>
+                ) : (
+                  <div className="profile-avatar">
+                    {getInitials(
+                      personalInfo.fullName
+                    )}
                   </div>
+                )}
 
-                  <div>
-                    <strong>Password</strong>
-                    <span>
-                      Your password is securely protected
-                    </span>
-                  </div>
+                {/* 
+                  Pencil is shown ONLY when
+                  there is no profile photo.
+                  
+                  It overlaps the TOP-RIGHT
+                  corner of the avatar.
+                */}
 
-                </div>
+                {!profilePhoto && (
+                  <button
+                    type="button"
+                    className="profile-avatar-edit"
+                    onClick={() =>
+                      fileInputRef.current?.click()
+                    }
+                    aria-label="Upload profile photo"
+                    title="Upload profile photo"
+                  >
+                    <i className="bi bi-pencil-fill"></i>
+                  </button>
+                )}
 
-                <button
-                  type="button"
-                  className="security-action-btn"
-                  onClick={() => setPasswordModal(true)}
-                >
-                  Change Password
-                  <i className="bi bi-chevron-right"></i>
-                </button>
+                {/* Hidden upload input */}
 
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="d-none"
+                  onChange={handlePhotoUpload}
+                />
               </div>
 
-              <div className="security-item">
+              {/* ACCOUNT INFORMATION */}
 
-                <div className="security-item-left">
+              <div className="profile-account-info">
 
-                  <div className="security-item-icon secure">
-                    <i className="bi bi-shield-check"></i>
-                  </div>
+                <div className="profile-name-row">
 
-                  <div>
-                    <strong>Account Protection</strong>
-                    <span>
-                      Your account security is active
-                    </span>
-                  </div>
+                  <h2>
+                    {personalInfo.fullName}
+                  </h2>
 
-                </div>
-
-                <span className="security-status">
-                  Protected
-                </span>
-
-              </div>
-
-            </div>
-
-          </section>
-
-          {/* =========================
-              DELIVERY ADDRESS
-          ========================== */}
-
-          <section className="profile-section-card profile-address-card">
-
-            <div className="profile-section-header">
-
-              <div className="profile-section-title">
-
-                <div className="profile-section-icon">
-                  <i className="bi bi-geo-alt"></i>
-                </div>
-
-                <div>
-                  <h3>Default Delivery Address</h3>
-                  <p>
-                    Your primary address for order delivery
-                  </p>
-                </div>
-
-              </div>
-
-              {!editAddress && (
-                <button
-                  type="button"
-                  className="section-edit-btn"
-                  onClick={() => setEditAddress(true)}
-                >
-                  <i className="bi bi-pencil"></i>
-                  Edit
-                </button>
-              )}
-
-            </div>
-
-            {!editAddress ? (
-              <div className="address-display">
-
-                <div className="address-label">
-                  <i className="bi bi-house"></i>
-                  <span>Primary Address</span>
-                </div>
-
-                <div className="address-text">
-                  <strong>{profile.address}</strong>
-
-                  <span>
-                    {profile.city}, {profile.state}{" "}
-                    - {profile.pincode}
+                  <span className="profile-status-badge">
+                    <span className="profile-status-dot"></span>
+                    Active Customer
                   </span>
 
-                  <span>{profile.country}</span>
                 </div>
 
-              </div>
-            ) : (
-              <div className="profile-fields address-edit-fields">
+                <p className="profile-email">
+                  {personalInfo.email}
+                </p>
 
-                <div className="profile-field address-full">
+                <div className="profile-account-meta">
 
-                  <label htmlFor="customerAddress">
-                    Address
-                  </label>
+                  <span>
+                    <i className="bi bi-person-badge me-1"></i>
+                    Customer Account
+                  </span>
 
-                  <div className="profile-input">
-                    <i className="bi bi-house"></i>
-
-                    <input
-                      id="customerAddress"
-                      name="address"
-                      type="text"
-                      value={profile.address}
-                      onChange={handleProfileChange}
-                    />
-                  </div>
-
-                </div>
-
-                <div className="profile-field">
-
-                  <label htmlFor="customerCity">
-                    City
-                  </label>
-
-                  <div className="profile-input">
-                    <i className="bi bi-buildings"></i>
-
-                    <input
-                      id="customerCity"
-                      name="city"
-                      type="text"
-                      value={profile.city}
-                      onChange={handleProfileChange}
-                    />
-                  </div>
-
-                </div>
-
-                <div className="profile-field">
-
-                  <label htmlFor="customerState">
-                    State
-                  </label>
-
-                  <div className="profile-input">
-                    <i className="bi bi-map"></i>
-
-                    <input
-                      id="customerState"
-                      name="state"
-                      type="text"
-                      value={profile.state}
-                      onChange={handleProfileChange}
-                    />
-                  </div>
-
-                </div>
-
-                <div className="profile-field">
-
-                  <label htmlFor="customerPincode">
-                    PIN Code
-                  </label>
-
-                  <div className="profile-input">
-                    <i className="bi bi-mailbox"></i>
-
-                    <input
-                      id="customerPincode"
-                      name="pincode"
-                      type="text"
-                      value={profile.pincode}
-                      onChange={handleProfileChange}
-                    />
-                  </div>
-
-                </div>
-
-                <div className="profile-field">
-
-                  <label htmlFor="customerCountry">
-                    Country
-                  </label>
-
-                  <div className="profile-input">
-                    <i className="bi bi-globe2"></i>
-
-                    <input
-                      id="customerCountry"
-                      name="country"
-                      type="text"
-                      value={profile.country}
-                      onChange={handleProfileChange}
-                    />
-                  </div>
+                  <span>
+                    <i className="bi bi-shield-check me-1"></i>
+                    Account Protected
+                  </span>
 
                 </div>
 
               </div>
+            </div>
+
+            {/* ================================
+                PROFILE ACTIONS
+            ================================= */}
+
+            {profilePhoto && !isEditingProfile && (
+              <button
+                type="button"
+                className="btn btn-outline-primary profile-edit-main-btn"
+                onClick={handleEditProfile}
+              >
+                <i className="bi bi-pencil me-2"></i>
+                Edit Profile
+              </button>
             )}
 
-            {editAddress && (
-              <div className="profile-section-actions">
+            {/* 
+              When Edit Profile is clicked,
+              ONLY these 3 actions are shown:
+
+              Change Photo
+              Remove Photo
+              Cancel
+
+              Edit Profile button disappears.
+            */}
+
+            {profilePhoto && isEditingProfile && (
+              <div className="profile-edit-actions">
 
                 <button
                   type="button"
-                  className="profile-secondary-btn"
-                  onClick={() => {
-                    setProfile(defaultProfile);
-                    setEditAddress(false);
-                  }}
+                  className="btn btn-outline-primary profile-photo-change-btn"
+                  onClick={() =>
+                    fileInputRef.current?.click()
+                  }
                 >
+                  <i className="bi bi-camera me-2"></i>
+                  Change Photo
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-outline-danger profile-photo-remove-btn"
+                  onClick={handleRemovePhoto}
+                >
+                  <i className="bi bi-trash3 me-2"></i>
+                  Remove Photo
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-light profile-photo-cancel-btn"
+                  onClick={handleCancelProfile}
+                >
+                  <i className="bi bi-x-lg me-2"></i>
                   Cancel
                 </button>
 
-                <button
-                  type="button"
-                  className="profile-primary-btn"
-                  onClick={handleSaveAddress}
-                >
-                  <i className="bi bi-check2"></i>
-                  Save Address
-                </button>
-
               </div>
             )}
 
-          </section>
+          </div>
+        </div>
+
+        {/* ================================
+            SUMMARY CARDS
+        ================================= */}
+
+        <div className="row g-3 profile-summary-row">
+
+          <div className="col-lg-4 col-md-6">
+            <Link
+              to="/orders"
+              className="profile-summary-card text-decoration-none"
+            >
+              <div className="profile-summary-icon">
+                <i className="bi bi-box-seam"></i>
+              </div>
+
+              <div>
+                <span>My Orders</span>
+                <strong>View your orders</strong>
+              </div>
+
+              <i className="bi bi-arrow-right profile-summary-arrow"></i>
+            </Link>
+          </div>
+
+          <div className="col-lg-4 col-md-6">
+            <Link
+              to="/wishlist"
+              className="profile-summary-card text-decoration-none"
+            >
+              <div className="profile-summary-icon">
+                <i className="bi bi-heart"></i>
+              </div>
+
+              <div>
+                <span>Wishlist</span>
+                <strong>Saved products</strong>
+              </div>
+
+              <i className="bi bi-arrow-right profile-summary-arrow"></i>
+            </Link>
+          </div>
+
+          <div className="col-lg-4 col-md-6">
+            <Link
+              to="/support/tickets"
+              className="profile-summary-card text-decoration-none"
+            >
+              <div className="profile-summary-icon">
+                <i className="bi bi-headset"></i>
+              </div>
+
+              <div>
+                <span>Support</span>
+                <strong>Manage support requests</strong>
+              </div>
+
+              <i className="bi bi-arrow-right profile-summary-arrow"></i>
+            </Link>
+          </div>
 
         </div>
 
-        {/* =========================
-            QUICK ACTIONS
-        ========================== */}
+        {/* ================================
+            PERSONAL INFORMATION
+        ================================= */}
 
-        <section className="profile-quick-actions">
+        <div className="card profile-section-card border-0">
+          <div className="card-body">
 
-          <div className="profile-quick-header">
+            <div className="profile-section-header">
 
-            <div>
-              <span className="profile-eyebrow">
-                QUICK ACCESS
-              </span>
+              <div>
+                <span className="profile-section-eyebrow">
+                  PERSONAL DETAILS
+                </span>
 
-              <h3>Manage Your Account</h3>
+                <h3>Personal Information</h3>
+
+                <p>
+                  Keep your account information up to date.
+                </p>
+              </div>
+
+              {!isEditingProfile && (
+                <button
+                  type="button"
+                  className="btn btn-light profile-section-edit-btn"
+                  onClick={handleEditProfile}
+                >
+                  <i className="bi bi-pencil me-2"></i>
+                  Edit
+                </button>
+              )}
+
             </div>
 
+            <div className="row g-3">
+
+              <div className="col-lg-4 col-md-6">
+
+                <label className="profile-field-label">
+                  Full Name
+                </label>
+
+                {isEditingProfile ? (
+                  <input
+                    type="text"
+                    className="form-control profile-form-control"
+                    value={editedPersonalInfo.fullName}
+                    onChange={(e) =>
+                      setEditedPersonalInfo({
+                        ...editedPersonalInfo,
+                        fullName: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  <div className="profile-field-value">
+                    {personalInfo.fullName}
+                  </div>
+                )}
+
+              </div>
+
+              <div className="col-lg-4 col-md-6">
+
+                <label className="profile-field-label">
+                  Email Address
+                </label>
+
+                <div className="profile-email-field">
+
+                  <div className="profile-field-value">
+                    {personalInfo.email}
+                  </div>
+
+                  <span className="profile-verified-badge">
+                    <i className="bi bi-check-circle-fill me-1"></i>
+                    Verified
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div className="col-lg-4 col-md-6">
+
+                <label className="profile-field-label">
+                  Mobile Number
+                </label>
+
+                {isEditingProfile ? (
+                  <input
+                    type="text"
+                    className="form-control profile-form-control"
+                    value={editedPersonalInfo.mobile}
+                    onChange={(e) =>
+                      setEditedPersonalInfo({
+                        ...editedPersonalInfo,
+                        mobile: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  <div className="profile-field-value">
+                    {personalInfo.mobile}
+                  </div>
+                )}
+
+              </div>
+
+            </div>
+
+            {isEditingProfile && (
+              <div className="profile-form-actions">
+
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleSaveProfile}
+                >
+                  <i className="bi bi-check-lg me-2"></i>
+                  Save Changes
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  onClick={handleCancelProfile}
+                >
+                  Cancel
+                </button>
+
+              </div>
+            )}
+
           </div>
+        </div>
 
-          <div className="quick-actions-grid">
+        {/* ================================
+            ACCOUNT SECURITY
+        ================================= */}
 
-            <Link
-              to="/orders"
-              className="quick-action"
-            >
-              <i className="bi bi-box-seam"></i>
+        <div className="card profile-section-card border-0">
+          <div className="card-body">
 
-              <div>
-                <strong>My Orders</strong>
-                <span>View and track your orders</span>
-              </div>
-
-              <i className="bi bi-arrow-up-right"></i>
-            </Link>
-
-            <Link
-              to="/wishlist"
-              className="quick-action"
-            >
-              <i className="bi bi-heart"></i>
+            <div className="profile-section-header">
 
               <div>
-                <strong>Wishlist</strong>
-                <span>Manage your saved products</span>
+                <span className="profile-section-eyebrow">
+                  SECURITY
+                </span>
+
+                <h3>Account Security</h3>
+
+                <p>
+                  Manage your password and account protection.
+                </p>
               </div>
 
-              <i className="bi bi-arrow-up-right"></i>
-            </Link>
+            </div>
 
-            <Link
-              to="/support/tickets"
-              className="quick-action"
-            >
-              <i className="bi bi-headset"></i>
+            <div className="profile-security-row">
 
-              <div>
-                <strong>Support Center</strong>
-                <span>View your support requests</span>
-              </div>
+              <div className="profile-security-info">
 
-              <i className="bi bi-arrow-up-right"></i>
-            </Link>
+                <div className="profile-security-icon">
+                  <i className="bi bi-shield-check"></i>
+                </div>
 
-            <Link
-              to="/settings"
-              className="quick-action"
-            >
-              <i className="bi bi-gear"></i>
+                <div>
+                  <strong>
+                    Account Protection
+                  </strong>
 
-              <div>
-                <strong>Account Settings</strong>
-                <span>Manage account preferences</span>
-              </div>
+                  <span>
+                    Your account is protected
+                  </span>
+                </div>
 
-              <i className="bi bi-arrow-up-right"></i>
-            </Link>
-
-          </div>
-
-        </section>
-
-      </div>
-
-      {/* =========================
-          CHANGE PASSWORD MODAL
-      ========================== */}
-
-      {passwordModal && (
-        <div
-          className="profile-modal-overlay"
-          onClick={() => setPasswordModal(false)}
-        >
-
-          <div
-            className="profile-password-modal"
-            onClick={(event) => event.stopPropagation()}
-          >
-
-            <div className="password-modal-header">
-
-              <div className="password-modal-icon">
-                <i className="bi bi-shield-lock"></i>
               </div>
 
               <button
                 type="button"
-                aria-label="Close"
-                onClick={() => setPasswordModal(false)}
+                className="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#changePasswordModal"
               >
-                <i className="bi bi-x-lg"></i>
+                <i className="bi bi-key me-2"></i>
+                Change Password
               </button>
 
             </div>
 
-            <div className="password-modal-title">
+          </div>
+        </div>
 
-              <h3>Change Password</h3>
+        {/* ================================
+            DELIVERY ADDRESS
+        ================================= */}
 
-              <p>
-                Update your account password to keep your
-                Nexus account secure.
-              </p>
+        <div className="card profile-section-card border-0">
+          <div className="card-body">
+
+            <div className="profile-section-header">
+
+              <div>
+                <span className="profile-section-eyebrow">
+                  DELIVERY
+                </span>
+
+                <h3>
+                  Default Delivery Address
+                </h3>
+
+                <p>
+                  This address will be used for your default deliveries.
+                </p>
+              </div>
+
+              {!isEditingAddress && (
+                <button
+                  type="button"
+                  className="btn btn-light profile-section-edit-btn"
+                  onClick={() => {
+                    setEditedAddress(address);
+                    setIsEditingAddress(true);
+                  }}
+                >
+                  <i className="bi bi-pencil me-2"></i>
+                  Edit
+                </button>
+              )}
 
             </div>
 
-            {passwordError && (
-              <div className="password-error">
-                <i className="bi bi-exclamation-circle"></i>
-                {passwordError}
+            {isEditingAddress ? (
+              <div className="row g-3">
+
+                <div className="col-12">
+
+                  <label className="profile-field-label">
+                    Address
+                  </label>
+
+                  <input
+                    type="text"
+                    className="form-control profile-form-control"
+                    value={editedAddress.addressLine}
+                    onChange={(e) =>
+                      setEditedAddress({
+                        ...editedAddress,
+                        addressLine: e.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+                <div className="col-md-4">
+
+                  <label className="profile-field-label">
+                    City
+                  </label>
+
+                  <input
+                    type="text"
+                    className="form-control profile-form-control"
+                    value={editedAddress.city}
+                    onChange={(e) =>
+                      setEditedAddress({
+                        ...editedAddress,
+                        city: e.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+                <div className="col-md-4">
+
+                  <label className="profile-field-label">
+                    State
+                  </label>
+
+                  <input
+                    type="text"
+                    className="form-control profile-form-control"
+                    value={editedAddress.state}
+                    onChange={(e) =>
+                      setEditedAddress({
+                        ...editedAddress,
+                        state: e.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+                <div className="col-md-4">
+
+                  <label className="profile-field-label">
+                    PIN Code
+                  </label>
+
+                  <input
+                    type="text"
+                    className="form-control profile-form-control"
+                    value={editedAddress.pincode}
+                    onChange={(e) =>
+                      setEditedAddress({
+                        ...editedAddress,
+                        pincode: e.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+                <div className="col-md-4">
+
+                  <label className="profile-field-label">
+                    Country
+                  </label>
+
+                  <input
+                    type="text"
+                    className="form-control profile-form-control"
+                    value={editedAddress.country}
+                    onChange={(e) =>
+                      setEditedAddress({
+                        ...editedAddress,
+                        country: e.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+                <div className="col-12">
+
+                  <div className="profile-form-actions">
+
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleSaveAddress}
+                    >
+                      <i className="bi bi-check-lg me-2"></i>
+                      Save Address
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-light"
+                      onClick={handleCancelAddress}
+                    >
+                      Cancel
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            ) : (
+              <div className="profile-address-box">
+
+                <div className="profile-address-icon">
+                  <i className="bi bi-geo-alt"></i>
+                </div>
+
+                <div className="profile-address-content">
+
+                  <strong>
+                    {address.addressLine}
+                  </strong>
+
+                  <span>
+                    {address.city}, {address.state}{" "}
+                    {address.pincode}
+                  </span>
+
+                  <span>
+                    {address.country}
+                  </span>
+
+                </div>
+
               </div>
             )}
 
-            <div className="password-fields">
+          </div>
+        </div>
 
-              <div className="profile-field">
+        {/* ================================
+            QUICK ACCESS
+        ================================= */}
 
-                <label htmlFor="currentPassword">
+        <div className="card profile-section-card border-0">
+          <div className="card-body">
+
+            <div className="profile-section-header">
+
+              <div>
+                <span className="profile-section-eyebrow">
+                  QUICK ACCESS
+                </span>
+
+                <h3>
+                  Account Shortcuts
+                </h3>
+
+                <p>
+                  Quickly access your most-used account sections.
+                </p>
+              </div>
+
+            </div>
+
+            <div className="row g-3">
+
+              <div className="col-lg-3 col-md-6">
+                <Link
+                  to="/orders"
+                  className="profile-quick-link"
+                >
+                  <i className="bi bi-box-seam"></i>
+                  <span>My Orders</span>
+                  <i className="bi bi-arrow-right"></i>
+                </Link>
+              </div>
+
+              <div className="col-lg-3 col-md-6">
+                <Link
+                  to="/wishlist"
+                  className="profile-quick-link"
+                >
+                  <i className="bi bi-heart"></i>
+                  <span>Wishlist</span>
+                  <i className="bi bi-arrow-right"></i>
+                </Link>
+              </div>
+
+              <div className="col-lg-3 col-md-6">
+                <Link
+                  to="/support/tickets"
+                  className="profile-quick-link"
+                >
+                  <i className="bi bi-headset"></i>
+                  <span>Support Center</span>
+                  <i className="bi bi-arrow-right"></i>
+                </Link>
+              </div>
+
+              <div className="col-lg-3 col-md-6">
+                <Link
+                  to="/settings"
+                  className="profile-quick-link"
+                >
+                  <i className="bi bi-gear"></i>
+                  <span>Account Settings</span>
+                  <i className="bi bi-arrow-right"></i>
+                </Link>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      {/* ================================
+          CHANGE PASSWORD MODAL
+      ================================= */}
+
+      <div
+        className="modal fade"
+        id="changePasswordModal"
+        tabIndex={-1}
+        aria-labelledby="changePasswordModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+
+          <div className="modal-content profile-password-modal">
+
+            <div className="modal-header">
+
+              <div>
+
+                <span className="profile-section-eyebrow">
+                  SECURITY
+                </span>
+
+                <h5
+                  className="modal-title"
+                  id="changePasswordModalLabel"
+                >
+                  Change Password
+                </h5>
+
+              </div>
+
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+
+            </div>
+
+            <div className="modal-body">
+
+              {passwordError && (
+                <div className="alert alert-danger">
+                  <i className="bi bi-exclamation-circle me-2"></i>
+                  {passwordError}
+                </div>
+              )}
+
+              {passwordSuccess && (
+                <div className="alert alert-success">
+                  <i className="bi bi-check-circle me-2"></i>
+                  {passwordSuccess}
+                </div>
+              )}
+
+              <div className="mb-3">
+
+                <label className="profile-field-label">
                   Current Password
                 </label>
 
-                <div className="profile-input">
-
-                  <i className="bi bi-lock"></i>
-
-                  <input
-                    id="currentPassword"
-                    type="password"
-                    value={currentPassword}
-                    onChange={(event) =>
-                      setCurrentPassword(event.target.value)
-                    }
-                  />
-
-                </div>
+                <input
+                  type="password"
+                  className="form-control profile-form-control"
+                  value={passwordData.currentPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      currentPassword: e.target.value,
+                    })
+                  }
+                />
 
               </div>
 
-              <div className="profile-field">
+              <div className="mb-3">
 
-                <label htmlFor="newPassword">
+                <label className="profile-field-label">
                   New Password
                 </label>
 
-                <div className="profile-input">
-
-                  <i className="bi bi-key"></i>
-
-                  <input
-                    id="newPassword"
-                    type="password"
-                    value={newPassword}
-                    onChange={(event) =>
-                      setNewPassword(event.target.value)
-                    }
-                  />
-
-                </div>
+                <input
+                  type="password"
+                  className="form-control profile-form-control"
+                  value={passwordData.newPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      newPassword: e.target.value,
+                    })
+                  }
+                />
 
               </div>
 
-              <div className="profile-field">
+              <div className="mb-3">
 
-                <label htmlFor="confirmPassword">
+                <label className="profile-field-label">
                   Confirm New Password
                 </label>
 
-                <div className="profile-input">
-
-                  <i className="bi bi-check2-circle"></i>
-
-                  <input
-                    id="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(event) =>
-                      setConfirmPassword(event.target.value)
-                    }
-                  />
-
-                </div>
+                <input
+                  type="password"
+                  className="form-control profile-form-control"
+                  value={passwordData.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                />
 
               </div>
 
             </div>
 
-            <div className="password-modal-actions">
+            <div className="modal-footer">
 
               <button
                 type="button"
-                className="profile-secondary-btn"
-                onClick={() => setPasswordModal(false)}
+                className="btn btn-light"
+                data-bs-dismiss="modal"
               >
                 Cancel
               </button>
 
               <button
                 type="button"
-                className="profile-primary-btn"
+                className="btn btn-primary"
                 onClick={handlePasswordChange}
               >
-                <i className="bi bi-shield-check"></i>
+                <i className="bi bi-shield-check me-2"></i>
                 Update Password
               </button>
 
@@ -929,8 +1133,9 @@ export default function Profile() {
           </div>
 
         </div>
-      )}
-
-    </main>
+      </div>
+    </div>
   );
-}
+};
+
+export default Profile;
