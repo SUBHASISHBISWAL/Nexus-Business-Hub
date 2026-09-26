@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import AdminGlobalSearch from "./AdminGlobalSearch";
 import "./AdminLayout.css";
 
 type AdminLayoutProps = {
@@ -481,21 +482,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
             </button>
 
             {/* Search */}
-            <div className="nx-admin-search">
-
-              <i className="bi bi-search" />
-
-              <input
-                type="search"
-                placeholder="Search..."
-                aria-label="Search admin panel"
-              />
-
-              <span className="nx-admin-search-shortcut">
-                /
-              </span>
-
-            </div>
+            <AdminGlobalSearch />
 
           </div>
 

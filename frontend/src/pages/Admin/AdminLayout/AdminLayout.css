@@ -1017,3 +1017,294 @@
     display: none;
   }
 }
+
+/* =========================================
+   GLOBAL ADMIN SEARCH
+   ========================================= */
+
+.nx-admin-global-search {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+}
+
+.nx-admin-global-search .nx-admin-search {
+  width: 100%;
+}
+
+
+/* Clear button */
+
+.nx-admin-search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 26px;
+  height: 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #7b8494;
+
+  cursor: pointer;
+}
+
+.nx-admin-search-clear:hover {
+  background: #f1f3f6;
+  color: #172033;
+}
+
+
+/* Search shortcut */
+
+.nx-admin-global-search
+.nx-admin-search-shortcut {
+  min-width: 46px;
+  padding: 3px 7px;
+}
+
+
+/* Results dropdown */
+
+.nx-admin-search-results {
+  position: absolute;
+
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+
+  z-index: 1200;
+
+  max-height: 440px;
+  overflow-y: auto;
+
+  padding: 8px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e9ef;
+  border-radius: 10px;
+
+  box-shadow:
+    0 14px 35px rgba(15, 23, 42, 0.12);
+
+  animation:
+    nxAdminSearchIn 0.16s ease-out;
+}
+
+@keyframes nxAdminSearchIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Group */
+
+.nx-admin-search-group {
+  padding: 2px 0;
+}
+
+.nx-admin-search-group
++ .nx-admin-search-group {
+  margin-top: 8px;
+}
+
+.nx-admin-search-group-title {
+  padding: 7px 10px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+
+  color: #8a93a3;
+}
+
+
+/* Result */
+
+.nx-admin-search-result {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 9px 10px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.16s ease,
+    transform 0.16s ease;
+}
+
+.nx-admin-search-result:hover,
+.nx-admin-search-result.selected {
+  background: #f5f7fa;
+}
+
+.nx-admin-search-result.selected {
+  transform: translateX(2px);
+}
+
+
+/* Result icon */
+
+.nx-admin-search-result-icon {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #f0f4ff;
+  color: #2563eb;
+}
+
+
+/* Result content */
+
+.nx-admin-search-result-content {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.nx-admin-search-result-content strong {
+  overflow: hidden;
+
+  color: #172033;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nx-admin-search-result-content small {
+  overflow: hidden;
+
+  color: #7b8494;
+
+  font-size: 11px;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nx-admin-search-result
+> .bi-arrow-up-right {
+  flex-shrink: 0;
+
+  color: #a0a8b5;
+  font-size: 12px;
+}
+
+
+/* Empty state */
+
+.nx-admin-search-empty {
+  min-height: 150px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding: 24px;
+
+  text-align: center;
+}
+
+.nx-admin-search-empty-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 4px;
+
+  border-radius: 10px;
+
+  background: #f5f7fa;
+  color: #8a93a3;
+}
+
+.nx-admin-search-empty strong {
+  color: #30394a;
+  font-size: 13px;
+}
+
+.nx-admin-search-empty span {
+  max-width: 260px;
+
+  color: #8a93a3;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .nx-admin-global-search {
+    max-width: min(280px, 45vw);
+  }
+
+  .nx-admin-search-results {
+    left: -40px;
+    right: -40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-admin-global-search {
+    max-width: 150px;
+  }
+
+  .nx-admin-search-results {
+    left: -70px;
+    right: -10px;
+  }
+}
