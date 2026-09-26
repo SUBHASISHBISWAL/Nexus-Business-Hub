@@ -51,7 +51,9 @@ import AdminLogin from "../pages/Admin/AdminLogin/AdminLogin";
 import AdminOTP from "../pages/Admin/AdminOTP/AdminOTP";
 
 import AdminProtectedRoute from "./AdminProtectedRoute";
+import AdminNotifications from "../pages/Admin/AdminNotifications/AdminNotifications";
 import AdminAdministrators from "../pages/Admin/AdminAdministrators/AdminAdministrators";
+
 
 import Profile from "../pages/Profile/Profile";
 import Settings from "../pages/Settings/Settings";
@@ -254,6 +256,17 @@ function AppRoutes() {
         element={
           <AdminLayout>
             <AdminAdministrators />
+          </AdminLayout>
+        }
+      />
+
+      {/* ==================== ADMIN NOTIFICATION ==================== */}
+
+      <Route
+        path="/admin/notifications"
+        element={
+          <AdminLayout>
+            <AdminNotifications />
           </AdminLayout>
         }
       />

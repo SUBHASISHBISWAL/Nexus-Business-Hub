@@ -481,7 +481,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
               />
             </button>
 
-            {/* Search */}
+            {/* Global Search */}
             <AdminGlobalSearch />
 
           </div>
@@ -494,6 +494,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
               type="button"
               className="nx-admin-icon-button"
               aria-label="Notifications"
+              title="Notifications"
+              onClick={() =>
+                navigate("/admin/notifications")
+              }
             >
               <i className="bi bi-bell" />
 

@@ -1,0 +1,435 @@
+/* =========================================
+   NEXUS ADMIN — NOTIFICATION CENTER
+   Enterprise E-commerce Style
+   ========================================= */
+
+.nx-admin-notifications {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* =========================================
+   NOTIFICATION PANEL
+   ========================================= */
+
+.nx-admin-notification-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -8px;
+  z-index: 1200;
+
+  width: 410px;
+  max-width: calc(100vw - 24px);
+
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid #e6eaf0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.12),
+    0 4px 12px rgba(15, 23, 42, 0.06);
+
+  animation: nxNotificationPanelIn 0.18s ease-out;
+}
+
+@keyframes nxNotificationPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.nx-admin-notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 64px;
+  padding: 14px 18px;
+
+  background: #ffffff;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.nx-admin-notification-header > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nx-admin-notification-header strong {
+  color: #172033;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+}
+
+.nx-admin-notification-header span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 22px;
+  height: 20px;
+  padding: 0 7px;
+
+  border-radius: 20px;
+
+  background: #eff4ff;
+  color: #2563eb;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.nx-admin-notification-header button {
+  padding: 5px 0;
+
+  border: 0;
+  background: transparent;
+
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.nx-admin-notification-header button:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* =========================================
+   NOTIFICATION LIST
+   ========================================= */
+
+.nx-admin-notification-list {
+  max-height: 390px;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+/* Professional scrollbar */
+
+.nx-admin-notification-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.nx-admin-notification-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nx-admin-notification-list::-webkit-scrollbar-thumb {
+  background: #d6dbe3;
+  border-radius: 10px;
+}
+
+.nx-admin-notification-list::-webkit-scrollbar-thumb:hover {
+  background: #b8c0cc;
+}
+
+/* =========================================
+   NOTIFICATION ITEM
+   ========================================= */
+
+.nx-admin-notification-item {
+  position: relative;
+
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+
+  padding: 15px 18px;
+
+  border: 0;
+  border-bottom: 1px solid #f0f2f5;
+
+  background: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.nx-admin-notification-item:last-child {
+  border-bottom: 0;
+}
+
+.nx-admin-notification-item:hover {
+  background: #f8fafc;
+}
+
+/* Unread notification */
+
+.nx-admin-notification-item.unread {
+  background: #f9fbff;
+}
+
+.nx-admin-notification-item.unread:hover {
+  background: #f3f7ff;
+}
+
+/* =========================================
+   LEFT ICON
+   ========================================= */
+
+.nx-admin-notification-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 1px;
+
+  border-radius: 10px;
+
+  font-size: 15px;
+}
+
+/* Order */
+
+.nx-admin-notification-icon.order {
+  background: #eef4ff;
+  color: #2563eb;
+}
+
+/* Payment */
+
+.nx-admin-notification-icon.payment {
+  background: #edf9f1;
+  color: #16a34a;
+}
+
+/* Shipment */
+
+.nx-admin-notification-icon.shipment {
+  background: #fff5e9;
+  color: #ea580c;
+}
+
+/* Ticket */
+
+.nx-admin-notification-icon.ticket {
+  background: #f4f0ff;
+  color: #7c3aed;
+}
+
+/* =========================================
+   CONTENT
+   ========================================= */
+
+.nx-admin-notification-content {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.nx-admin-notification-content strong {
+  color: #1f2937;
+
+  font-size: 12.5px;
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+.nx-admin-notification-content span {
+  overflow: hidden;
+
+  color: #667085;
+
+  font-size: 11.5px;
+  font-weight: 400;
+
+  line-height: 1.45;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nx-admin-notification-content small {
+  margin-top: 3px;
+
+  color: #98a2b3;
+
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+/* =========================================
+   UNREAD INDICATOR
+   ========================================= */
+
+.nx-admin-notification-unread {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  margin-top: 6px;
+
+  border-radius: 50%;
+
+  background: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.08);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.nx-admin-notification-unread:hover {
+  transform: scale(1.15);
+
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+/* =========================================
+   EMPTY STATE
+   ========================================= */
+
+.nx-admin-notification-empty {
+  min-height: 210px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 28px;
+
+  text-align: center;
+}
+
+.nx-admin-notification-empty > i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 46px;
+  height: 46px;
+
+  margin-bottom: 5px;
+
+  border-radius: 50%;
+
+  background: #f5f7fa;
+
+  color: #98a2b3;
+
+  font-size: 19px;
+}
+
+.nx-admin-notification-empty strong {
+  color: #344054;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nx-admin-notification-empty span {
+  color: #98a2b3;
+
+  font-size: 11px;
+}
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+  .nx-admin-notification-panel {
+    position: fixed;
+
+    top: 62px;
+    right: 10px;
+    left: 10px;
+
+    width: auto;
+    max-width: none;
+
+    border-radius: 12px;
+  }
+
+  .nx-admin-notification-list {
+    max-height: calc(100vh - 145px);
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 400px) {
+  .nx-admin-notification-panel {
+    right: 8px;
+    left: 8px;
+  }
+
+  .nx-admin-notification-header {
+    padding: 13px 14px;
+  }
+
+  .nx-admin-notification-item {
+    gap: 10px;
+    padding: 13px 14px;
+  }
+
+  .nx-admin-notification-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+}
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-admin-notification-panel {
+    animation: none;
+  }
+
+  .nx-admin-notification-item,
+  .nx-admin-notification-unread {
+    transition: none;
+  }
+}
