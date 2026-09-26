@@ -16,11 +16,15 @@ function ProductCard({
 }: ProductCardProps) {
   return (
     <article className="nx-node-card">
+
       {/* Product Image */}
       <div className="nx-node-visual">
+
         {/* Wishlist Heart */}
         <button
-          className={`nx-node-save ${isLiked ? "liked" : ""}`}
+          className={`nx-node-save ${
+            isLiked ? "liked" : ""
+          }`}
           type="button"
           aria-label={
             isLiked
@@ -30,19 +34,19 @@ function ProductCard({
           onClick={onToggleWishlist}
         >
           <i
-            className={`bi ${isLiked ? "bi-heart-fill" : "bi-heart"}`}
+            className={`bi ${
+              isLiked
+                ? "bi-heart-fill"
+                : "bi-heart"
+            }`}
             aria-hidden="true"
-          ></i>
+          />
         </button>
 
         {/* Product Image */}
         <div className="nx-device-glyph">
           <img
-            src={`/src/assets/product-images/${product.image}`}
-            onError={(e) => {
-              console.log("Image failed:", product.image);
-              e.currentTarget.style.display = "none";
-            }}
+            src={product.image}
             alt={product.name}
           />
         </div>
@@ -60,38 +64,68 @@ function ProductCard({
         <div className="nx-node-meta">
           <span className="nx-rating">
             {product.rating}
-            <span className="nx-star">★</span>
-            <small>({product.reviews})</small>
+
+            <span className="nx-star">
+              ★
+            </span>
+
+            <small>
+              ({product.reviews})
+            </small>
           </span>
         </div>
 
-        <h2>{product.name}</h2>
+        <h2>
+          {product.name}
+        </h2>
       </div>
 
       {/* Price & Actions */}
       <div className="nx-node-bottom">
+
         <div className="nx-node-price">
-          <strong>₹{product.price.toLocaleString("en-IN")}</strong>
+          <strong>
+            ₹
+            {product.price.toLocaleString(
+              "en-IN"
+            )}
+          </strong>
 
           {product.oldPrice && (
-            <del>₹{product.oldPrice.toLocaleString("en-IN")}</del>
+            <del>
+              ₹
+              {product.oldPrice.toLocaleString(
+                "en-IN"
+              )}
+            </del>
           )}
 
-          <span>{product.badge}</span>
+          <span>
+            {product.badge}
+          </span>
         </div>
 
         <div className="nx-node-actions">
+
           <button
             type="button"
             className="nx-add-button"
-            onClick={() => onAddToCart(product)}
+            onClick={() =>
+              onAddToCart(product)
+            }
           >
             Add Cart
           </button>
 
-          <Link to={`/products/${product.id}`}>View Details</Link>
+          <Link
+            to={`/products/${product.id}`}
+          >
+            View Details
+          </Link>
+
         </div>
       </div>
+
     </article>
   );
 }

@@ -1,4 +1,4 @@
-@NexusBusinessHub.API_HostAddress = http://localhost:5171
+@NexusBusinessHub.API_HostAddress = http://localhost:5133
 
 GET {{NexusBusinessHub.API_HostAddress}}/weatherforecast/
 Accept: application/json

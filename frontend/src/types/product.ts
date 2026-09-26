@@ -10,25 +10,34 @@ export interface Product {
     | "Accessories"
     | string;
 
-  group: string;
-
   price: number;
 
   oldPrice?: number;
 
   rating: number;
 
-  reviews: number;
+  reviews?: number;
 
-  icon: string;
+  icon?: string;
 
   image: string;
 
-  specs: string;
+  // Multiple product view images from backend API
+  images?: string[];
 
-  stock: string;
+  description?: string;
 
-  badge: string;
+  stockQuantity?: number;
+
+  isActive?: boolean;
+
+  group?: string;
+
+  specs?: string;
+
+  stock?: string;
+
+  badge?: string;
 
   requestOnly?: boolean;
 

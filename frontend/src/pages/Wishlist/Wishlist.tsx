@@ -1,24 +1,87 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useWishlist } from "../../context/WishlistContext";
 import { CartContext } from "../../context/CartContext";
-import { products } from "../../data/products";
+import { getProductById } from "../../services/productService";
 import type { Product } from "../../types/product";
 
 import "./Wishlist.css";
 
 export default function Wishlist() {
-  const { wishlist, toggleWishlist } = useWishlist();
+  const {
+    wishlist,
+    wishlistProducts,
+    removeFromWishlist,
+    clearWishlist,
+  } = useWishlist();
   const { addToCart } = useContext(CartContext);
   const navigate = useNavigate();
 
   const [notification, setNotification] = useState<string>("");
+  const [savedProducts, setSavedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Filter products that exist in wishlist
-  const savedProducts = useMemo<Product[]>(() => {
-    return products.filter((product) => wishlist.includes(product.id));
-  }, [wishlist]);
+  // Sync wishlist items from context & API
+  useEffect(() => {
+    if (wishlist.length === 0) {
+      setSavedProducts([]);
+      return;
+    }
+
+    const currentMap = new Map<number, Product>();
+
+    // Seed map with products already available in context
+    wishlistProducts.forEach((product) => {
+      if (wishlist.includes(product.id)) {
+        currentMap.set(product.id, product);
+      }
+    });
+
+    const missingIds = wishlist.filter((id) => !currentMap.has(id));
+
+    // If all products are already cached in context, render immediately
+    if (missingIds.length === 0) {
+      const items = wishlist
+        .map((id) => currentMap.get(id))
+        .filter((item): item is Product => item !== undefined);
+      setSavedProducts(items);
+      return;
+    }
+
+    // Otherwise, fetch missing products from the backend API
+    let isMounted = true;
+    setLoading(true);
+
+    Promise.all(
+      missingIds.map(async (id) => {
+        try {
+          return await getProductById(id);
+        } catch {
+          return null;
+        }
+      })
+    ).then((fetched) => {
+      if (!isMounted) return;
+
+      fetched.forEach((item) => {
+        if (item) {
+          currentMap.set(item.id, item);
+        }
+      });
+
+      const finalItems = wishlist
+        .map((id) => currentMap.get(id))
+        .filter((item): item is Product => item !== undefined);
+
+      setSavedProducts(finalItems);
+      setLoading(false);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [wishlist, wishlistProducts]);
 
   // Add individual product to cart
   const handleAddToCart = (product: Product) => {
@@ -34,12 +97,12 @@ export default function Wishlist() {
 
   // Remove individual product from wishlist
   const handleRemove = (productId: number) => {
-    toggleWishlist(productId);
+    removeFromWishlist(productId);
   };
 
   // Clear entire wishlist
   const handleClearWishlist = () => {
-    wishlist.forEach((id) => toggleWishlist(id));
+    clearWishlist();
   };
 
   // Helper to show temporary notification banner
@@ -85,7 +148,7 @@ export default function Wishlist() {
           {/* =====================================
               EMPTY WISHLIST
           ===================================== */}
-          {savedProducts.length === 0 ? (
+          {!loading && savedProducts.length === 0 ? (
             <div className="empty-wishlist">
               <div className="empty-wishlist-icon">
                 <i className="bi bi-heart"></i>
@@ -203,12 +266,19 @@ export default function Wishlist() {
                       </h3>
 
                       <p className="wishlist-product-specs">
-                        {product.specs}
+                        {product.specs ||
+                          product.description ||
+                          `${product.category} · Stock: ${product.stockQuantity ?? 0}`}
                       </p>
 
                       <div className="wishlist-card-stock">
                         <i className="bi bi-shield-check"></i>
-                        <span>{product.stock || "In Stock"}</span>
+                        <span>
+                          {product.stock ||
+                            (product.stockQuantity !== undefined
+                              ? `${product.stockQuantity} in stock`
+                              : "In Stock")}
+                        </span>
                       </div>
 
                       {/* PRICING */}
@@ -227,7 +297,7 @@ export default function Wishlist() {
                         <div className="wishlist-rating">
                           <i className="bi bi-star-fill"></i>
                           <span>{product.rating}</span>
-                          <small>({product.reviews})</small>
+                          <small>({product.reviews ?? 0})</small>
                         </div>
                       </div>
 

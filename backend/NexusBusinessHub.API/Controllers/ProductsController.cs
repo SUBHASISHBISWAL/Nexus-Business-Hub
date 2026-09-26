@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NexusBusinessHub.Infrastructure.Data;
+using NexusBusinessHub.Application.Interfaces;
 
 namespace NexusBusinessHub.API.Controllers;
 
@@ -8,32 +7,26 @@ namespace NexusBusinessHub.API.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IProductService _productService;
 
-    public ProductsController(AppDbContext context)
+    public ProductsController(IProductService productService)
     {
-        _context = context;
+        _productService = productService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetProducts()
     {
-        var products = await _context.Products
-            .AsNoTracking()
-            .OrderBy(p => p.Id)
-            .ToListAsync();
-
+        var products = await _productService.GetAllAsync();
         return Ok(products);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetProduct(int id)
     {
-        var product = await _context.Products
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == id);
+        var product = await _productService.GetByIdAsync(id);
 
-        if (product == null)
+        if (product is null)
         {
             return NotFound(new
             {

@@ -248,14 +248,6 @@ function ProductList() {
     }
   };
 
-  // =========================
-  // SEARCH CLEAR
-  // =========================
-
-  const clearSearch = () => {
-    setSearch("");
-    setCurrentPage(1);
-  };
 
   // =========================
   // RESULT RANGE
@@ -539,7 +531,7 @@ function ProductList() {
                     product={product}
                     onAddToCart={handleAddToCart}
                     isLiked={wishlist.includes(product.id)}
-                    onToggleWishlist={() => toggleWishlist(product.id)}
+                    onToggleWishlist={() => toggleWishlist(product)}
                   />
                 ))}
               </div>

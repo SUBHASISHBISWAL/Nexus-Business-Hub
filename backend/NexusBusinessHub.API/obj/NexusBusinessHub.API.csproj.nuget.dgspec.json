@@ -13,19 +13,13 @@
         "packagesPath": "C:\\Users\\ATL\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\ATL\\Nexus-Business-Hub\\backend\\NexusBusinessHub.API\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ATL\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\ATL\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -68,10 +62,6 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[10.0.12, )"
-            },
-            "Swashbuckle.AspNetCore": {
-              "target": "Package",
-              "version": "[10.2.3, )"
             }
           },
           "imports": [
@@ -520,19 +510,13 @@
         "packagesPath": "C:\\Users\\ATL\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\ATL\\Nexus-Business-Hub\\backend\\NexusBusinessHub.Application\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ATL\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\ATL\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -865,19 +849,13 @@
         "packagesPath": "C:\\Users\\ATL\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\ATL\\Nexus-Business-Hub\\backend\\NexusBusinessHub.Domain\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ATL\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\ATL\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -1206,19 +1184,13 @@
         "packagesPath": "C:\\Users\\ATL\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\ATL\\Nexus-Business-Hub\\backend\\NexusBusinessHub.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ATL\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\ATL\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -1228,9 +1200,6 @@
             "projectReferences": {
               "C:\\Users\\ATL\\Nexus-Business-Hub\\backend\\NexusBusinessHub.Application\\NexusBusinessHub.Application.csproj": {
                 "projectPath": "C:\\Users\\ATL\\Nexus-Business-Hub\\backend\\NexusBusinessHub.Application\\NexusBusinessHub.Application.csproj"
-              },
-              "C:\\Users\\ATL\\Nexus-Business-Hub\\backend\\NexusBusinessHub.Domain\\NexusBusinessHub.Domain.csproj": {
-                "projectPath": "C:\\Users\\ATL\\Nexus-Business-Hub\\backend\\NexusBusinessHub.Domain\\NexusBusinessHub.Domain.csproj"
               }
             }
           }
@@ -1252,6 +1221,10 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.12, )"
+            },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",

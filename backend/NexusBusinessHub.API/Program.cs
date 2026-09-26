@@ -1,68 +1,53 @@
 using Microsoft.EntityFrameworkCore;
-using NexusBusinessHub.Infrastructure.Data;
+using NexusBusinessHub.Application.Interfaces;
+using NexusBusinessHub.Application.Services;
+using NexusBusinessHub.Infrastructure.Persistence;
+using NexusBusinessHub.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// =========================
-// SERVICES
-// =========================
-
 builder.Services.AddControllers();
 
-// CORS - Allow React frontend
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Frontend", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy
-            .WithOrigins("http://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
-// SQL Server + Entity Framework Core
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    )
-);
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// =========================
-// DATABASE MIGRATION + SEED
-// =========================
-
+// Seed product catalog
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext =
-        scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    await dbContext.Database.MigrateAsync();
+    var seedFilePath = Path.Combine(
+        app.Environment.ContentRootPath,
+        "SeedData",
+        "nexus-products-1000.json");
 
-    await ProductSeeder.SeedAsync(dbContext);
+    await CatalogSeeder.SeedAsync(db, seedFilePath);
 }
 
-// =========================
-// MIDDLEWARE
-// =========================
-
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
-
-// CORS must be before Authorization
-app.UseCors("Frontend");
-
-app.UseAuthorization();
+app.UseCors("AllowFrontend");
 
 app.MapControllers();
 

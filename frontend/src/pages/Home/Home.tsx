@@ -272,7 +272,7 @@ function Home() {
                 product={product}
                 onAddToCart={handleAddToCart}
                 isLiked={wishlist.includes(product.id)}
-                onToggleWishlist={() => toggleWishlist(product.id)}
+                onToggleWishlist={() => toggleWishlist(product)}
               />
             ))}
           </div>

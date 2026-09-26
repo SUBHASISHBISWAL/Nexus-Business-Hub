@@ -8,10 +8,10 @@
     ".NETCoreApp,Version=v10.0": {
       "NexusBusinessHub.Infrastructure/1.0.0": {
         "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.12",
           "Microsoft.EntityFrameworkCore.Design": "10.0.12",
           "Microsoft.EntityFrameworkCore.SqlServer": "10.0.12",
-          "NexusBusinessHub.Application": "1.0.0",
-          "NexusBusinessHub.Domain": "1.0.0"
+          "NexusBusinessHub.Application": "1.0.0"
         },
         "runtime": {
           "NexusBusinessHub.Infrastructure.dll": {}
