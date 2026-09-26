@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
@@ -7,13 +7,51 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
+
   const { cart } = useContext(CartContext);
   const { wishlist } = useWishlist();
 
   const [profileOpen, setProfileOpen] = useState(false);
   const [logoutConfirm, setLogoutConfirm] = useState(false);
 
+  const profileRef = useRef<HTMLDivElement>(null);
+
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  /* =========================================================
+     CLOSE PROFILE MENU
+     - Outside click
+     - Escape key
+     ========================================================= */
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setProfileOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  /* =========================================================
+     PROTECTED NAVIGATION
+     ========================================================= */
 
   const handleProtectedNavigation = (path: string) => {
     if (!isLoggedIn) {
@@ -24,8 +62,13 @@ export default function Navbar() {
     navigate(path);
   };
 
+  /* =========================================================
+     LOGOUT
+     ========================================================= */
+
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
+
     setLogoutConfirm(false);
     setProfileOpen(false);
 
@@ -36,49 +79,66 @@ export default function Navbar() {
   return (
     <nav className="nexus-navbar">
       <div className="navbar-container">
-        {/* Brand */}
+
+        {/* =====================================================
+            BRAND
+            ===================================================== */}
+
         <Link to="/" className="navbar-brand">
           <i className="bi bi-hdd-network brand-icon"></i>
           <span>Nexus Technologies</span>
         </Link>
 
-        {/* Navigation */}
+        {/* =====================================================
+            MAIN NAVIGATION
+            ===================================================== */}
+
         <div className="navbar-menu">
-          {/* Home */}
+
           <NavLink
             to="/"
-            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
           >
             Home
           </NavLink>
 
-          {/* Products */}
           <NavLink
             to="/products"
-            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
           >
             Products
           </NavLink>
 
-          {/* About */}
           <NavLink
             to="/about"
-            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
           >
             About
           </NavLink>
 
-          {/* Support */}
           <NavLink
             to="/support"
-            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "active" : ""}`
+            }
           >
             Support
           </NavLink>
+
         </div>
 
-        {/* Right Actions */}
+        {/* =====================================================
+            RIGHT ACTIONS
+            ===================================================== */}
+
         <div className="navbar-actions">
+
           {/* Search */}
           <Link
             to="/products"
@@ -97,7 +157,9 @@ export default function Navbar() {
           >
             <i className="bi bi-heart"></i>
 
-            <span className="badge-count">{wishlist.length}</span>
+            {wishlist.length > 0 && (
+              <span className="badge-count">{wishlist.length}</span>
+            )}
           </button>
 
           {/* Cart */}
@@ -109,25 +171,36 @@ export default function Navbar() {
           >
             <i className="bi bi-bag"></i>
 
-            <span className="badge-count">{cart.length}</span>
+            {cart.length > 0 && (
+              <span className="badge-count">{cart.length}</span>
+            )}
           </button>
 
-          {/* Notification */}
+          {/* Notifications */}
           <button
             className="nav-icon-btn"
             type="button"
             aria-label="Notifications"
-            onClick={() => handleProtectedNavigation("/notifications")}
+            onClick={() =>
+              handleProtectedNavigation("/notifications")
+            }
           >
             <i className="bi bi-bell"></i>
           </button>
 
           {/* Theme */}
-          <button className="theme-btn" type="button" aria-label="Toggle theme">
+          <button
+            className="theme-btn"
+            type="button"
+            aria-label="Toggle theme"
+          >
             <i className="bi bi-sun"></i>
           </button>
 
-          {/* Guest / User */}
+          {/* =================================================
+              GUEST / LOGGED-IN USER
+              ================================================= */}
+
           {!isLoggedIn ? (
             <button
               className="get-started-btn"
@@ -137,36 +210,75 @@ export default function Navbar() {
               Get Started
             </button>
           ) : (
-            <div className="profile-wrapper">
-              {/* User Button */}
+            <div className="profile-wrapper" ref={profileRef}>
+
+              {/* =================================================
+                  PROFILE TRIGGER
+                  ================================================= */}
+
               <button
-                className={`user-btn ${profileOpen ? "profile-active" : ""}`}
+                className={`user-btn ${
+                  profileOpen ? "profile-active" : ""
+                }`}
                 type="button"
-                aria-label="User profile"
-                onClick={() => setProfileOpen(!profileOpen)}
+                aria-label="Open account menu"
+                aria-expanded={profileOpen}
+                aria-haspopup="menu"
+                onClick={() =>
+                  setProfileOpen((previous) => !previous)
+                }
               >
-                U
+                <span className="user-avatar-letter">A</span>
+
+                <i
+                  className={`bi ${
+                    profileOpen
+                      ? "bi-chevron-up"
+                      : "bi-chevron-down"
+                  } user-chevron`}
+                ></i>
               </button>
 
-              {/* Profile Dropdown */}
+              {/* =================================================
+                  PROFILE DROPDOWN
+                  ================================================= */}
+
               {profileOpen && (
-                <div className="profile-dropdown">
-                  {/* User Header */}
+                <div
+                  className="profile-dropdown"
+                  role="menu"
+                  aria-label="Account menu"
+                >
+
+                  {/* Profile Header */}
                   <div className="profile-header">
-                    <div className="profile-avatar">U</div>
+
+                    <div className="profile-avatar">
+                      A
+                    </div>
 
                     <div className="profile-info">
                       <strong>Ashutosh</strong>
                       <span>ashutosh@email.com</span>
+                      <small>Personal Account</small>
                     </div>
+
                   </div>
 
                   <div className="profile-divider"></div>
 
-                  {/* My Profile */}
+                  <div className="profile-section-label">
+                    ACCOUNT
+                  </div>
+
+                  {/* =================================================
+                      MY PROFILE
+                      ================================================= */}
+
                   <button
                     type="button"
                     className="profile-menu-item"
+                    role="menuitem"
                     onClick={() => {
                       setProfileOpen(false);
                       navigate("/profile");
@@ -178,16 +290,22 @@ export default function Navbar() {
 
                     <span className="profile-menu-text">
                       <strong>My Profile</strong>
-                      <small>View your profile</small>
+                      <small>
+                        Personal information
+                      </small>
                     </span>
 
                     <i className="bi bi-chevron-right menu-arrow"></i>
                   </button>
 
-                  {/* My Orders */}
+                  {/* =================================================
+                      MY ORDERS
+                      ================================================= */}
+
                   <button
                     type="button"
                     className="profile-menu-item"
+                    role="menuitem"
                     onClick={() => {
                       setProfileOpen(false);
                       navigate("/orders");
@@ -199,16 +317,22 @@ export default function Navbar() {
 
                     <span className="profile-menu-text">
                       <strong>My Orders</strong>
-                      <small>Track your orders</small>
+                      <small>
+                        View order history
+                      </small>
                     </span>
 
                     <i className="bi bi-chevron-right menu-arrow"></i>
                   </button>
 
-                  {/* Wishlist */}
+                  {/* =================================================
+                      WISHLIST
+                      ================================================= */}
+
                   <button
                     type="button"
                     className="profile-menu-item"
+                    role="menuitem"
                     onClick={() => {
                       setProfileOpen(false);
                       navigate("/wishlist");
@@ -226,13 +350,19 @@ export default function Navbar() {
                       </small>
                     </span>
 
-                    <i className="bi bi-chevron-right menu-arrow"></i>
+                    <span className="wishlist-count">
+                      {wishlist.length}
+                    </span>
                   </button>
 
-                  {/* Settings */}
+                  {/* =================================================
+                      ACCOUNT SETTINGS
+                      ================================================= */}
+
                   <button
                     type="button"
                     className="profile-menu-item"
+                    role="menuitem"
                     onClick={() => {
                       setProfileOpen(false);
                       navigate("/settings");
@@ -244,7 +374,9 @@ export default function Navbar() {
 
                     <span className="profile-menu-text">
                       <strong>Account Settings</strong>
-                      <small>Manage your account</small>
+                      <small>
+                        Manage your account
+                      </small>
                     </span>
 
                     <i className="bi bi-chevron-right menu-arrow"></i>
@@ -252,10 +384,38 @@ export default function Navbar() {
 
                   <div className="profile-divider"></div>
 
-                  {/* Logout */}
+                  {/* =================================================
+                      SECURITY STATUS
+                      ================================================= */}
+
+                  <div className="profile-security">
+                    <span className="security-icon">
+                      <i className="bi bi-shield-check"></i>
+                    </span>
+
+                    <span className="security-content">
+                      <strong>Account Protected</strong>
+                      <small>
+                        Your account is securely signed in
+                      </small>
+                    </span>
+
+                    <span className="security-status">
+                      <span></span>
+                      Secure
+                    </span>
+                  </div>
+
+                  <div className="profile-divider"></div>
+
+                  {/* =================================================
+                      LOGOUT
+                      ================================================= */}
+
                   <button
                     type="button"
                     className="profile-menu-item logout-item"
+                    role="menuitem"
                     onClick={() => {
                       setProfileOpen(false);
                       setLogoutConfirm(true);
@@ -267,20 +427,35 @@ export default function Navbar() {
 
                     <span className="profile-menu-text">
                       <strong>Logout</strong>
-                      <small>Sign out of your account</small>
+                      <small>
+                        Sign out of your account
+                      </small>
                     </span>
                   </button>
+
                 </div>
               )}
+
             </div>
           )}
+
         </div>
       </div>
 
-      {/* Logout Confirmation */}
+      {/* =========================================================
+          LOGOUT CONFIRMATION MODAL
+          ========================================================= */}
+
       {logoutConfirm && (
-        <div className="logout-overlay" onClick={() => setLogoutConfirm(false)}>
-          <div className="logout-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="logout-overlay"
+          onClick={() => setLogoutConfirm(false)}
+        >
+          <div
+            className="logout-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+
             <div className="logout-modal-icon">
               <i className="bi bi-box-arrow-right"></i>
             </div>
@@ -288,11 +463,12 @@ export default function Navbar() {
             <h3>Logout?</h3>
 
             <p>
-              Are you sure you want to logout from your Nexus Technologies
-              account?
+              Are you sure you want to logout from your Nexus
+              Technologies account?
             </p>
 
             <div className="logout-modal-actions">
+
               <button
                 type="button"
                 className="logout-cancel-btn"
@@ -308,10 +484,13 @@ export default function Navbar() {
               >
                 Logout
               </button>
+
             </div>
+
           </div>
         </div>
       )}
+
     </nav>
   );
 }

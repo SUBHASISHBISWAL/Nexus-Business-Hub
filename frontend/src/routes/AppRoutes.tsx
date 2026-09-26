@@ -52,138 +52,72 @@ import AdminOTP from "../pages/Admin/AdminOTP/AdminOTP";
 
 import AdminProtectedRoute from "./AdminProtectedRoute";
 
+import Profile from "../pages/Profile/Profile";
 
 function AppRoutes() {
   return (
     <Routes>
-
       {/* ==================== LOGIN / REGISTER ==================== */}
 
-      <Route
-        path="/login"
-        element={<Auth />}
-      />
+      <Route path="/login" element={<Auth />} />
 
-      <Route
-        path="/register"
-        element={<Auth />}
-      />
-
+      <Route path="/register" element={<Auth />} />
 
       {/* ==================== MAIN ==================== */}
 
-      <Route
-        path="/"
-        element={<Home />}
-      />
+      <Route path="/" element={<Home />} />
 
-      <Route
-        path="/products"
-        element={<ProductList />}
-      />
+      <Route path="/products" element={<ProductList />} />
 
-      <Route
-        path="/products/:id"
-        element={<ProductDetails />}
-      />
+      <Route path="/products/:id" element={<ProductDetails />} />
 
-      <Route
-        path="/about"
-        element={<About />}
-      />
+      <Route path="/about" element={<About />} />
 
+      <Route path="/profile" element={<Profile />} />
 
       {/* ==================== SHOPPING ==================== */}
 
-      <Route
-        path="/cart"
-        element={<Cart />}
-      />
+      <Route path="/cart" element={<Cart />} />
 
-      <Route
-        path="/wishlist"
-        element={<Wishlist />}
-      />
-
+      <Route path="/wishlist" element={<Wishlist />} />
 
       {/* ==================== CHECKOUT ==================== */}
 
-      <Route
-        path="/checkout"
-        element={<Checkout />}
-      />
+      <Route path="/checkout" element={<Checkout />} />
 
-      <Route
-        path="/payment"
-        element={<Payment />}
-      />
-
+      <Route path="/payment" element={<Payment />} />
 
       {/* ==================== CUSTOMER ORDERS ==================== */}
 
-      <Route
-        path="/orders"
-        element={<Orders />}
-      />
+      <Route path="/orders" element={<Orders />} />
 
-      <Route
-        path="/orders/:id"
-        element={<CustomerOrderDetails />}
-      />
+      <Route path="/orders/:id" element={<CustomerOrderDetails />} />
 
-      <Route
-        path="/orders/:id/tracking"
-        element={<OrderTracking />}
-      />
+      <Route path="/orders/:id/tracking" element={<OrderTracking />} />
 
-      <Route
-        path="/order-history"
-        element={<OrderHistory />}
-      />
-
+      <Route path="/order-history" element={<OrderHistory />} />
 
       {/* ==================== SUPPORT ==================== */}
 
-      <Route
-        path="/support"
-        element={<Support />}
-      />
+      <Route path="/support" element={<Support />} />
 
-      <Route
-        path="/support/create-ticket"
-        element={<CreateTicket />}
-      />
+      <Route path="/support/create-ticket" element={<CreateTicket />} />
 
-      <Route
-        path="/support/tickets"
-        element={<SupportTickets />}
-      />
+      <Route path="/support/tickets" element={<SupportTickets />} />
 
-      <Route
-        path="/support/tickets/:id"
-        element={<SupportTicketDetails />}
-      />
-
+      <Route path="/support/tickets/:id" element={<SupportTicketDetails />} />
 
       {/* ==================== ADMIN AUTH ==================== */}
 
       {/* Admin Login */}
-      <Route
-        path="/admin/login"
-        element={<AdminLogin />}
-      />
+      <Route path="/admin/login" element={<AdminLogin />} />
 
       {/* Admin OTP Verification */}
-      <Route
-        path="/admin/verify-otp"
-        element={<AdminOTP />}
-      />
-
+      <Route path="/admin/verify-otp" element={<AdminOTP />} />
 
       {/* ==================== PROTECTED ADMIN ==================== */}
 
       <Route element={<AdminProtectedRoute />}>
-
         {/* ==================== ADMIN DASHBOARD ==================== */}
 
         <Route
@@ -194,7 +128,6 @@ function AppRoutes() {
             </AdminLayout>
           }
         />
-
 
         {/* ==================== ADMIN PRODUCTS ==================== */}
 
@@ -237,7 +170,6 @@ function AppRoutes() {
           }
         />
 
-
         {/* ==================== ADMIN ORDERS ==================== */}
 
         <Route
@@ -258,7 +190,6 @@ function AppRoutes() {
             </AdminLayout>
           }
         />
-
 
         {/* ==================== ADMIN SHIPMENTS ==================== */}
 
@@ -281,7 +212,6 @@ function AppRoutes() {
           }
         />
 
-
         {/* ==================== ADMIN TICKETS ==================== */}
 
         <Route
@@ -303,7 +233,6 @@ function AppRoutes() {
           }
         />
 
-
         {/* ==================== ADMIN SETTINGS ==================== */}
 
         <Route
@@ -314,9 +243,7 @@ function AppRoutes() {
             </AdminLayout>
           }
         />
-
       </Route>
-
     </Routes>
   );
 }

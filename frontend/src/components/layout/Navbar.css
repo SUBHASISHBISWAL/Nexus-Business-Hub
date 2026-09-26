@@ -847,3 +847,366 @@
     padding: 25px 20px;
   }
 }
+/* =========================================================
+   ENTERPRISE PROFILE MENU
+   ========================================================= */
+
+.profile-wrapper {
+  position: relative;
+}
+
+.user-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid #dbe3ed;
+  border-radius: 50%;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.user-btn:hover,
+.user-btn.profile-active {
+  border-color: #b9d7fb;
+  background: #f8fbff;
+  box-shadow: 0 0 0 3px rgba(8, 125, 245, 0.08);
+}
+
+.user-avatar-letter {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #eaf3ff 0%,
+    #cfe5ff 100%
+  );
+
+  color: #087df5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  border: 1px solid #bfdbfe;
+
+  box-shadow:
+    0 2px 6px rgba(8, 125, 245, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  transition: all 0.18s ease;
+}
+
+.user-chevron {
+  display: none;
+}
+
+/* =========================================================
+   PROFILE DROPDOWN
+   ========================================================= */
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 350px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.12),
+    0 5px 14px rgba(15, 23, 42, 0.06);
+  z-index: 1050;
+  animation: profileDropdownIn 0.16s ease-out;
+}
+
+@keyframes profileDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   PROFILE HEADER
+   ========================================================= */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px;
+}
+
+.profile-avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #eaf3ff 0%,
+    #cfe5ff 100%
+  );
+
+  color: #087df5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  border: 1px solid #bfdbfe;
+
+  box-shadow:
+    0 3px 10px rgba(8, 125, 245, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.profile-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-info strong {
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.profile-info span {
+  color: #64748b;
+  font-size: 0.76rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-info small {
+  color: #94a3b8;
+  font-size: 0.69rem;
+}
+
+/* =========================================================
+   SECTION LABEL
+   ========================================================= */
+
+.profile-section-label {
+  padding: 7px 12px 5px;
+  color: #94a3b8;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+/* =========================================================
+   MENU ITEMS
+   ========================================================= */
+
+.profile-menu-item {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.profile-menu-item:hover {
+  background: #f5f9ff;
+}
+
+.profile-menu-item:active {
+  transform: scale(0.99);
+}
+
+.profile-menu-icon {
+  width: 35px;
+  height: 35px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.92rem;
+}
+
+.profile-menu-text {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-menu-text strong {
+  color: #1e293b;
+  font-size: 0.83rem;
+  font-weight: 650;
+}
+
+.profile-menu-text small {
+  color: #94a3b8;
+  font-size: 0.69rem;
+}
+
+.menu-arrow {
+  color: #cbd5e1;
+  font-size: 0.7rem;
+}
+
+/* =========================================================
+   WISHLIST COUNT
+   ========================================================= */
+
+.wishlist-count {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #087df5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.profile-divider {
+  height: 1px;
+  margin: 6px 4px;
+  background: #eef2f7;
+}
+
+/* =========================================================
+   SECURITY STATUS
+   ========================================================= */
+
+.profile-security {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.security-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.security-content {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.security-content strong {
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.security-content small {
+  color: #94a3b8;
+  font-size: 0.65rem;
+}
+
+.security-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #059669;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.security-status span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+.logout-item {
+  margin-top: 2px;
+}
+
+.logout-item .profile-menu-icon {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.logout-item .profile-menu-text strong {
+  color: #b91c1c;
+}
+
+.logout-item:hover {
+  background: #fef2f2;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 576px) {
+  .profile-dropdown {
+    position: fixed;
+    top: 70px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+  }
+}

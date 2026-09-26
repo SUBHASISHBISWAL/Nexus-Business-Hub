@@ -229,6 +229,7 @@
 }
 
 /* Floating telemetry pill */
+
 .visual-floating-pill {
   position: absolute;
   top: -12px;
@@ -539,7 +540,11 @@
   right: 0;
   width: 400px;
   height: 100%;
-  background: radial-gradient(circle at top right, rgba(8, 125, 245, 0.25), transparent 70%);
+  background: radial-gradient(
+    circle at top right,
+    rgba(8, 125, 245, 0.25),
+    transparent 70%
+  );
   pointer-events: none;
 }
 
