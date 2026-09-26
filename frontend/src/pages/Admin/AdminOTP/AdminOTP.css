@@ -1,0 +1,1069 @@
+
+/* =========================================================
+   NEXUS ADMIN OTP
+   Enterprise Authentication Experience
+========================================================= */
+
+.admin-otp-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(37, 99, 235, 0.08),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(14, 165, 233, 0.08),
+      transparent 30%
+    ),
+    #f4f7fb;
+}
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.admin-otp-background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.admin-otp-orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.35;
+  animation: adminOtpOrbFloat 10s ease-in-out infinite;
+}
+
+.otp-orb-one {
+  width: 220px;
+  height: 220px;
+  top: -80px;
+  left: -60px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(37, 99, 235, 0.16),
+      transparent 70%
+    );
+}
+
+.otp-orb-two {
+  width: 280px;
+  height: 280px;
+  right: -100px;
+  bottom: -100px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(14, 165, 233, 0.13),
+      transparent 70%
+    );
+
+  animation-delay: -3s;
+}
+
+.otp-orb-three {
+  width: 160px;
+  height: 160px;
+  top: 45%;
+  left: 48%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(59, 130, 246, 0.06),
+      transparent 70%
+    );
+
+  animation-delay: -6s;
+}
+
+@keyframes adminOtpOrbFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(12px, -18px, 0);
+  }
+}
+
+.admin-otp-grid-line {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  top: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(37, 99, 235, 0.06),
+      transparent
+    );
+}
+
+.otp-line-one {
+  left: 18%;
+}
+
+.otp-line-two {
+  right: 18%;
+}
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
+
+.admin-otp-container {
+  width: min(940px, 92vw);
+  height: 570px;
+
+  display: grid;
+  grid-template-columns: 30% 70%;
+
+  position: relative;
+  overflow: hidden;
+
+  border-radius: 24px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 30px 80px rgba(15, 23, 42, 0.16),
+    0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+/* =========================================================
+   BRAND PANEL
+========================================================= */
+
+.admin-otp-brand {
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 40px 34px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0b1f3a 0%,
+      #0d2b52 48%,
+      #123b68 100%
+    );
+}
+
+.otp-brand-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.otp-brand-glow-one {
+  width: 220px;
+  height: 220px;
+
+  top: -100px;
+  right: -100px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(59, 130, 246, 0.25),
+      transparent 70%
+    );
+}
+
+.otp-brand-glow-two {
+  width: 180px;
+  height: 180px;
+
+  left: -100px;
+  bottom: -90px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(14, 165, 233, 0.18),
+      transparent 70%
+    );
+}
+
+/* =========================================================
+   NETWORK DECORATION
+========================================================= */
+
+.otp-brand-network {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.42;
+}
+
+.otp-network-node {
+  position: absolute;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.7);
+
+  box-shadow:
+    0 0 12px rgba(96, 165, 250, 0.7);
+
+  animation:
+    otpNetworkPulse 3s ease-in-out infinite;
+}
+
+.otp-node-one {
+  top: 18%;
+  right: 18%;
+}
+
+.otp-node-two {
+  top: 34%;
+  right: 8%;
+
+  animation-delay: -1s;
+}
+
+.otp-node-three {
+  bottom: 25%;
+  left: 12%;
+
+  animation-delay: -2s;
+}
+
+.otp-node-four {
+  bottom: 12%;
+  right: 25%;
+
+  animation-delay: -1.5s;
+}
+
+.otp-network-line {
+  position: absolute;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(147, 197, 253, 0.3),
+      transparent
+    );
+
+  transform-origin: left center;
+}
+
+.otp-network-line-one {
+  width: 130px;
+  top: 22%;
+  right: 15%;
+
+  transform: rotate(35deg);
+}
+
+.otp-network-line-two {
+  width: 100px;
+  top: 40%;
+  right: 8%;
+
+  transform: rotate(110deg);
+}
+
+.otp-network-line-three {
+  width: 150px;
+  bottom: 21%;
+  left: 10%;
+
+  transform: rotate(-25deg);
+}
+
+@keyframes otpNetworkPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* =========================================================
+   BRAND CONTENT
+========================================================= */
+
+.admin-otp-brand-content {
+  position: relative;
+  z-index: 2;
+
+  max-width: 100%;
+
+  margin: auto 0;
+
+  animation:
+    adminOtpBrandEnter
+    0.75s
+    cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes adminOtpBrandEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+
+  60% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.admin-otp-brand-icon {
+  width: 56px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 20px;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.17),
+      rgba(255, 255, 255, 0.07)
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.16);
+}
+
+.admin-otp-brand-icon i {
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.admin-otp-eyebrow {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1.8px;
+
+  color: rgba(191, 219, 254, 0.82);
+}
+
+.admin-otp-brand h1 {
+  max-width: 330px;
+
+  margin: 0 0 13px;
+
+  font-size: 27px;
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: -0.6px;
+
+  color: #ffffff;
+}
+
+.admin-otp-brand p {
+  max-width: 330px;
+
+  margin: 0;
+
+  font-size: 12.5px;
+  line-height: 1.7;
+
+  color: rgba(226, 232, 240, 0.76);
+}
+
+/* =========================================================
+   SECURITY ITEMS
+========================================================= */
+
+.admin-otp-security {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  margin-top: 18px;
+}
+
+.admin-otp-security-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.09);
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.admin-otp-security-icon i {
+  font-size: 15px;
+  color: #bfdbfe;
+}
+
+.admin-otp-security-text {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.admin-otp-security-text strong {
+  font-size: 11.5px;
+  font-weight: 600;
+
+  color: #ffffff;
+}
+
+.admin-otp-security-text span {
+  font-size: 9.5px;
+
+  color: rgba(226, 232, 240, 0.62);
+}
+
+/* =========================================================
+   BRAND FOOTER
+========================================================= */
+
+.admin-otp-brand-footer {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  font-size: 9px;
+
+  color: rgba(191, 219, 254, 0.62);
+}
+
+.admin-otp-brand-footer span {
+  width: 18px;
+  height: 1px;
+
+  background: rgba(147, 197, 253, 0.45);
+}
+
+/* =========================================================
+   OTP FORM PANEL
+========================================================= */
+
+.admin-otp-card {
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+
+  padding: 38px 58px;
+
+  background: #ffffff;
+}
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.admin-otp-back-btn {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 27px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-family: inherit;
+
+  font-size: 10.5px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-otp-back-btn:hover {
+  color: #2563eb;
+
+  transform: translateX(-2px);
+}
+
+.admin-otp-back-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-otp-back-btn i {
+  font-size: 12px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.admin-otp-header {
+  margin-bottom: 22px;
+}
+
+.admin-otp-icon {
+  width: 39px;
+  height: 39px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 12px;
+
+  border-radius: 11px;
+
+  background: #eff6ff;
+
+  color: #2563eb;
+}
+
+.admin-otp-icon i {
+  font-size: 17px;
+}
+
+.admin-otp-small-title {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1.1px;
+
+  color: #2563eb;
+}
+
+.admin-otp-header h2 {
+  margin: 0 0 7px;
+
+  font-size: 25px;
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: -0.5px;
+
+  color: #0f172a;
+}
+
+.admin-otp-header p {
+  max-width: 450px;
+
+  margin: 0;
+
+  font-size: 12px;
+  line-height: 1.55;
+
+  color: #64748b;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.admin-otp-form-group {
+  width: 100%;
+
+  margin-bottom: 18px;
+}
+
+.admin-otp-form-group label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  color: #334155;
+}
+
+.admin-otp-input-wrapper {
+  width: 100%;
+  height: 48px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  border: 1px solid #dbe3ee;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-otp-input-wrapper:hover {
+  border-color: #c7d2e0;
+}
+
+.admin-otp-input-wrapper:focus-within {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.admin-otp-input-wrapper > i {
+  width: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-size: 14px;
+
+  color: #94a3b8;
+
+  transition: color 0.2s ease;
+}
+
+.admin-otp-input-wrapper:focus-within > i {
+  color: #2563eb;
+}
+
+.admin-otp-input-wrapper input {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+
+  padding: 0 15px 0 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-family: inherit;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  letter-spacing: 6px;
+
+  color: #0f172a;
+
+  text-align: left;
+}
+
+.admin-otp-input-wrapper input::placeholder {
+  color: #a3afbf;
+
+  font-size: 11px;
+  font-weight: 400;
+
+  letter-spacing: 0;
+}
+
+.admin-otp-helper {
+  display: block;
+
+  margin-top: 6px;
+
+  font-size: 9.5px;
+
+  line-height: 1.4;
+
+  color: #94a3b8;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.admin-otp-error {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 15px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #f2d3d3;
+
+  border-radius: 8px;
+
+  background: #fff6f6;
+
+  color: #c34a4a;
+
+  font-size: 10.5px;
+}
+
+.admin-otp-error i {
+  font-size: 13px;
+}
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.admin-otp-submit {
+  width: 100%;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #1d4ed8
+    );
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 18px rgba(37, 99, 235, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.admin-otp-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 11px 24px rgba(37, 99, 235, 0.24);
+}
+
+.admin-otp-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.admin-otp-submit:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.8;
+}
+
+.admin-otp-submit i {
+  font-size: 14px;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.admin-otp-submit:hover:not(:disabled) i {
+  transform: translateX(3px);
+}
+
+/* =========================================================
+   SPINNER
+========================================================= */
+
+.admin-otp-spinner {
+  width: 14px;
+  height: 14px;
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
+
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation:
+    adminOtpSpin
+    0.7s
+    linear
+    infinite;
+}
+
+@keyframes adminOtpSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.admin-otp-footer {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 7px;
+
+  margin-top: 16px;
+  padding-top: 15px;
+
+  border-top: 1px solid #edf1f5;
+
+  color: #94a3b8;
+
+  font-size: 9.5px;
+
+  line-height: 1.5;
+}
+
+.admin-otp-footer i {
+  margin-top: 1px;
+
+  color: #16a34a;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+  .admin-otp-container {
+    width: min(880px, 94vw);
+  }
+
+  .admin-otp-card {
+    padding-left: 42px;
+    padding-right: 42px;
+  }
+
+  .admin-otp-brand {
+    padding-left: 27px;
+    padding-right: 27px;
+  }
+}
+
+/* =========================================================
+   TABLET / MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .admin-otp-page {
+    min-height: 100vh;
+
+    padding: 15px;
+
+    align-items: flex-start;
+
+    overflow-y: auto;
+  }
+
+  .admin-otp-container {
+    width: 100%;
+    max-width: 520px;
+
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 20px;
+  }
+
+  .admin-otp-brand {
+    width: 100%;
+
+    min-height: 220px;
+
+    padding: 27px 26px;
+  }
+
+  .admin-otp-brand h1 {
+    max-width: 100%;
+
+    font-size: 23px;
+  }
+
+  .admin-otp-brand p {
+    max-width: 100%;
+
+    font-size: 11.5px;
+  }
+
+  .admin-otp-security {
+    display: none;
+  }
+
+  .admin-otp-card {
+    width: 100%;
+
+    padding: 30px 26px;
+  }
+
+  .admin-otp-header h2 {
+    font-size: 23px;
+  }
+
+  .admin-otp-header p {
+    font-size: 11px;
+  }
+
+  .admin-otp-input-wrapper {
+    height: 43px;
+  }
+
+  .admin-otp-submit {
+    height: 43px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .admin-otp-page {
+    padding: 10px;
+  }
+
+  .admin-otp-container {
+    border-radius: 17px;
+  }
+
+  .admin-otp-brand {
+    min-height: 205px;
+
+    padding: 23px 21px;
+  }
+
+  .admin-otp-brand-icon {
+    width: 48px;
+    height: 48px;
+
+    margin-bottom: 14px;
+  }
+
+  .admin-otp-brand-icon i {
+    font-size: 21px;
+  }
+
+  .admin-otp-brand h1 {
+    font-size: 21px;
+  }
+
+  .admin-otp-brand p {
+    font-size: 11px;
+  }
+
+  .admin-otp-card {
+    padding: 27px 21px;
+  }
+
+  .admin-otp-header h2 {
+    font-size: 21px;
+  }
+
+  .admin-otp-header p {
+    font-size: 10.5px;
+  }
+
+  .admin-otp-input-wrapper input {
+    font-size: 16px;
+    letter-spacing: 5px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-otp-orb,
+  .otp-network-node,
+  .admin-otp-brand-content,
+  .admin-otp-submit,
+  .admin-otp-back-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}

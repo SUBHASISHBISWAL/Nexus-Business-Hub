@@ -7,7 +7,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-
+import "@fontsource/material-symbols-outlined";
 import App from "./App";
 
 createRoot(document.getElementById("root")!).render(

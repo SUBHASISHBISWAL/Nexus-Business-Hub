@@ -1,0 +1,325 @@
+.nx-orders-page {
+  min-height: 100vh;
+  padding: 45px 0 70px;
+  background: #f6f8fc;
+  color: #10233f;
+}
+
+.nx-orders-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.nx-orders-header > div > span {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #0875c9;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.nx-orders-header h1 {
+  margin: 0;
+  color: #10233f;
+  font-size: 32px;
+  font-weight: 750;
+}
+
+.nx-orders-header p {
+  margin: 8px 0 0;
+  color: #667085;
+  font-size: 13px;
+}
+
+.nx-orders-shopping {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid #d5e1eb;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0875c9;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.nx-orders-shopping:hover {
+  border-color: #0875c9;
+  background: #f7fbff;
+}
+
+.nx-orders-list {
+  display: grid;
+  gap: 16px;
+}
+
+.nx-order-card {
+  overflow: hidden;
+  border: 1px solid #e1e7ee;
+  border-radius: 9px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgba(16, 35, 63, 0.04);
+}
+
+.nx-order-top {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 17px 20px;
+  border-bottom: 1px solid #edf0f4;
+  background: #fbfcfe;
+}
+
+.nx-order-id span,
+.nx-order-date span {
+  display: block;
+  margin-bottom: 5px;
+  color: #98a2b3;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.nx-order-id strong,
+.nx-order-date strong {
+  color: #344054;
+  font-size: 12px;
+}
+
+.nx-order-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  background: #fff7e8;
+  color: #b7791f;
+  font-size: 11px;
+}
+
+.nx-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+}
+
+.nx-status-dot.delivered {
+  background: #16a34a;
+}
+
+.nx-status-dot.shipped {
+  background: #0875c9;
+}
+
+.nx-order-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  padding: 20px;
+}
+
+.nx-order-info {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+}
+
+.nx-order-info-item span {
+  display: block;
+  margin-bottom: 5px;
+  color: #98a2b3;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+}
+
+.nx-order-info-item strong {
+  color: #344054;
+  font-size: 13px;
+}
+
+.nx-paid {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #159447 !important;
+}
+
+.nx-paid i {
+  font-size: 11px;
+}
+
+.nx-order-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.nx-order-actions button {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  border: 1px solid #d7e0e8;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #344054;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.nx-order-actions button:hover {
+  border-color: #0875c9;
+  color: #0875c9;
+}
+
+.nx-order-actions .nx-track-button {
+  border-color: #0875c9;
+  background: #0875c9;
+  color: #ffffff;
+}
+
+.nx-order-actions .nx-track-button:hover {
+  background: #075b9d;
+  color: #ffffff;
+}
+
+.nx-orders-help {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 25px;
+  padding: 18px 20px;
+  border: 1px solid #dce8f4;
+  border-radius: 8px;
+  background: #f7fbff;
+}
+
+.nx-orders-help-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: #e7f3fc;
+  color: #0875c9;
+  font-size: 18px;
+}
+
+.nx-orders-help strong {
+  color: #10233f;
+  font-size: 12px;
+}
+
+.nx-orders-help p {
+  margin: 4px 0 0;
+  color: #7a8699;
+  font-size: 11px;
+}
+
+.nx-orders-help button {
+  margin-left: auto;
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid #0875c9;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #0875c9;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.nx-orders-help button:hover {
+  background: #0875c9;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .nx-orders-page {
+    padding: 30px 0 50px;
+  }
+
+  .nx-orders-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-orders-shopping {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nx-order-top {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .nx-order-status {
+    width: fit-content;
+  }
+
+  .nx-order-body {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-order-info {
+    width: 100%;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  .nx-order-actions {
+    width: 100%;
+  }
+
+  .nx-order-actions button {
+    flex: 1;
+  }
+
+  .nx-orders-help {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .nx-orders-help button {
+    width: 100%;
+    margin-left: 54px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-orders-header h1 {
+    font-size: 26px;
+  }
+
+  .nx-order-info {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-order-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .nx-orders-help button {
+    margin-left: 0;
+  }
+}

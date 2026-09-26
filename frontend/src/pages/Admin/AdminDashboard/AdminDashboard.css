@@ -1,0 +1,744 @@
+.nx-admin-dashboard {
+  width: 100%;
+}
+
+.nx-admin-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.nx-admin-page-header h1 {
+  margin: 0;
+  color: #172033;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.nx-admin-page-header p {
+  margin: 6px 0 0;
+  color: #7c8797;
+  font-size: 13px;
+}
+
+.nx-admin-date-button,
+.nx-admin-card-filter {
+  height: 36px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 12px;
+
+  border: 1px solid #dfe4ea;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #4b5563;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.nx-admin-date-button:hover,
+.nx-admin-card-filter:hover {
+  background: #f8f9fb;
+}
+
+/* STAT CARDS */
+
+.nx-admin-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.nx-admin-stat-card,
+.nx-admin-card {
+  border: 1px solid #e3e7ec;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.025);
+}
+
+.nx-admin-stat-card {
+  min-height: 142px;
+  padding: 18px;
+}
+
+.nx-admin-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nx-admin-stat-title {
+  color: #727d8d;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.nx-admin-stat-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 7px;
+
+  background: #eef3ff;
+  color: #2563eb;
+
+  font-size: 15px;
+}
+
+.nx-admin-stat-value {
+  margin-top: 13px;
+
+  color: #172033;
+
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.nx-admin-stat-footer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 8px;
+
+  color: #929baa;
+
+  font-size: 11px;
+}
+
+.nx-admin-stat-change {
+  color: #159a68;
+  font-weight: 600;
+}
+
+/* COMMON CARD */
+
+.nx-admin-card {
+  padding: 20px;
+}
+
+.nx-admin-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.nx-admin-card-header h2 {
+  margin: 0;
+
+  color: #202a3a;
+
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.nx-admin-card-header p {
+  margin: 5px 0 0;
+
+  color: #8a94a3;
+
+  font-size: 11px;
+}
+
+/* DASHBOARD GRID */
+
+.nx-admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.85fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* SALES */
+
+.nx-admin-sales-card {
+  min-height: 345px;
+}
+
+.nx-admin-sales-chart {
+  height: 245px;
+  display: flex;
+}
+
+.nx-admin-chart-y-axis {
+  width: 48px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 5px 8px 28px 0;
+
+  color: #a1a9b5;
+
+  font-size: 9px;
+  text-align: right;
+}
+
+.nx-admin-chart-area {
+  position: relative;
+  flex: 1;
+}
+
+.nx-admin-chart-lines {
+  position: absolute;
+  inset: 5px 0 28px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.nx-admin-chart-lines span {
+  width: 100%;
+  height: 1px;
+  background: #edf0f3;
+}
+
+.nx-admin-chart-bars {
+  position: absolute;
+  inset: 5px 0 0;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+
+  padding: 0 20px;
+}
+
+.nx-admin-chart-column {
+  height: 100%;
+  flex: 1;
+
+  max-width: 65px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nx-admin-chart-bar {
+  width: 34px;
+  min-height: 12px;
+
+  border-radius: 5px 5px 2px 2px;
+
+  background: #3268df;
+
+  transition:
+    height 0.3s ease,
+    opacity 0.2s ease;
+}
+
+.nx-admin-chart-bar:hover {
+  opacity: 0.8;
+}
+
+.nx-admin-chart-column > span {
+  margin-top: 9px;
+
+  color: #8c96a5;
+
+  font-size: 10px;
+}
+
+/* STATUS */
+
+.nx-admin-more-button {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #8791a0;
+
+  cursor: pointer;
+}
+
+.nx-admin-more-button:hover {
+  background: #f5f7f9;
+  color: #374151;
+}
+
+.nx-admin-status-content {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.nx-admin-status-donut {
+  width: 150px;
+  height: 150px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    conic-gradient(
+      #2563eb 0 53%,
+      #5b8def 53% 75%,
+      #9bb7f4 75% 90%,
+      #dbe5fb 90% 100%
+    );
+
+  position: relative;
+}
+
+.nx-admin-status-donut::after {
+  content: "";
+
+  position: absolute;
+
+  width: 103px;
+  height: 103px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+}
+
+.nx-admin-donut-center {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nx-admin-donut-center strong {
+  color: #172033;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.nx-admin-donut-center span {
+  margin-top: 2px;
+
+  color: #9099a7;
+
+  font-size: 10px;
+}
+
+.nx-admin-status-list {
+  flex: 1;
+}
+
+.nx-admin-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #f0f2f4;
+}
+
+.nx-admin-status-row:last-child {
+  border-bottom: 0;
+}
+
+.nx-admin-status-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #566172;
+
+  font-size: 11px;
+}
+
+.nx-admin-status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.nx-admin-status-dot.delivered {
+  background: #2563eb;
+}
+
+.nx-admin-status-dot.processing {
+  background: #5b8def;
+}
+
+.nx-admin-status-dot.shipped {
+  background: #9bb7f4;
+}
+
+.nx-admin-status-dot.pending {
+  background: #dbe5fb;
+}
+
+.nx-admin-status-value {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.nx-admin-status-value strong {
+  color: #303a4a;
+  font-size: 11px;
+}
+
+.nx-admin-status-value span {
+  color: #9aa3b0;
+  font-size: 10px;
+}
+
+/* RECENT ORDERS */
+
+.nx-admin-orders-card {
+  margin-bottom: 16px;
+}
+
+.nx-admin-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  border: 0;
+  background: transparent;
+
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.nx-admin-view-all:hover {
+  color: #1d4ed8;
+}
+
+.nx-admin-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.nx-admin-table {
+  width: 100%;
+  min-width: 720px;
+
+  border-collapse: collapse;
+}
+
+.nx-admin-table th {
+  padding: 11px 10px;
+
+  border-bottom: 1px solid #e8ebef;
+
+  color: #8b95a3;
+
+  font-size: 10px;
+  font-weight: 600;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.nx-admin-table td {
+  padding: 13px 10px;
+
+  border-bottom: 1px solid #f0f2f4;
+
+  color: #4d5868;
+
+  font-size: 11px;
+}
+
+.nx-admin-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.nx-admin-table tbody tr:hover {
+  background: #fafbfc;
+}
+
+.nx-admin-order-number {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.nx-admin-customer {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.nx-admin-customer-avatar {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #eef2f8;
+  color: #506078;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.nx-admin-table td strong {
+  color: #303a4a;
+  font-weight: 600;
+}
+
+.nx-admin-order-date {
+  color: #8d96a4 !important;
+}
+
+.nx-admin-order-status {
+  display: inline-flex;
+
+  padding: 5px 8px;
+
+  border-radius: 5px;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.nx-admin-order-status.processing {
+  background: #fff6e5;
+  color: #b77905;
+}
+
+.nx-admin-order-status.shipped {
+  background: #edf4ff;
+  color: #2563eb;
+}
+
+.nx-admin-order-status.delivered {
+  background: #eaf8f1;
+  color: #16855a;
+}
+
+.nx-admin-order-status.placed {
+  background: #f2f4f7;
+  color: #687386;
+}
+
+.nx-admin-row-action {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e1e5ea;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #687386;
+
+  cursor: pointer;
+}
+
+.nx-admin-row-action:hover {
+  border-color: #b8c8e8;
+  color: #2563eb;
+}
+
+/* BOTTOM GRID */
+
+.nx-admin-bottom-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 16px;
+}
+
+.nx-admin-summary-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-admin-summary-list > div {
+  min-height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #f0f2f4;
+}
+
+.nx-admin-summary-list > div:last-child {
+  border-bottom: 0;
+}
+
+.nx-admin-summary-list span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #697485;
+
+  font-size: 11px;
+}
+
+.nx-admin-summary-list span i {
+  color: #60718d;
+  font-size: 14px;
+}
+
+.nx-admin-summary-list strong {
+  color: #273143;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.nx-admin-product-summary-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-admin-product-summary-item {
+  min-height: 54px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  border-bottom: 1px solid #f0f2f4;
+}
+
+.nx-admin-product-summary-item:last-child {
+  border-bottom: 0;
+}
+
+.nx-admin-product-number {
+  width: 28px;
+
+  color: #9aa3b0;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.nx-admin-product-info {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-admin-product-info strong {
+  color: #374151;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.nx-admin-product-info span {
+  margin-top: 3px;
+
+  color: #9aa3b0;
+
+  font-size: 9px;
+}
+
+.nx-admin-product-summary-item > strong {
+  color: #344054;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .nx-admin-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nx-admin-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .nx-admin-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .nx-admin-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-admin-date-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nx-admin-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-admin-card {
+    padding: 16px;
+  }
+
+  .nx-admin-status-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nx-admin-status-donut {
+    margin: 0 auto;
+  }
+
+  .nx-admin-sales-chart {
+    height: 220px;
+  }
+
+  .nx-admin-chart-bars {
+    padding: 0 5px;
+  }
+
+  .nx-admin-chart-bar {
+    width: 24px;
+  }
+}

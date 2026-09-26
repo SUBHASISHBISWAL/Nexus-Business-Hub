@@ -1,0 +1,258 @@
+.nx-add-product-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+.nx-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.nx-page-header h1 {
+  margin: 8px 0 6px;
+  color: #111827;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.nx-page-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.nx-back-button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-back-button:hover {
+  color: #1d4ed8;
+}
+
+.nx-success-message {
+  margin-bottom: 20px;
+  padding: 13px 16px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nx-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.nx-form-card {
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.nx-full-width {
+  grid-column: 1 / -1;
+}
+
+.nx-form-card-header {
+  margin-bottom: 20px;
+}
+
+.nx-form-card-header h2 {
+  margin: 0 0 5px;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.nx-form-card-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.nx-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.nx-single-column {
+  grid-template-columns: 1fr;
+}
+
+.nx-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.nx-field label {
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.nx-field label span {
+  color: #dc2626;
+}
+
+.nx-field input,
+.nx-field select,
+.nx-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #111827;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.nx-field input,
+.nx-field select {
+  height: 42px;
+  padding: 0 12px;
+}
+
+.nx-field textarea {
+  padding: 11px 12px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.nx-field input::placeholder,
+.nx-field textarea::placeholder {
+  color: #9ca3af;
+}
+
+.nx-field input:focus,
+.nx-field select:focus,
+.nx-field textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.nx-field small {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.nx-input-prefix {
+  position: relative;
+}
+
+.nx-input-prefix span {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.nx-input-prefix input {
+  padding-left: 30px;
+}
+
+.nx-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.nx-cancel-button,
+.nx-save-button {
+  min-width: 130px;
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.nx-cancel-button {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.nx-cancel-button:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.nx-save-button {
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nx-save-button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+@media (max-width: 900px) {
+  .nx-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-full-width {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .nx-add-product-page {
+    padding-bottom: 24px;
+  }
+
+  .nx-page-header h1 {
+    font-size: 24px;
+  }
+
+  .nx-form-card {
+    padding: 18px;
+  }
+
+  .nx-fields-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .nx-cancel-button,
+  .nx-save-button {
+    width: 100%;
+  }
+}

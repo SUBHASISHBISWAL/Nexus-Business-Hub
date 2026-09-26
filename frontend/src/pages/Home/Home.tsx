@@ -63,6 +63,7 @@ function Home() {
             {/* Right Column: Hardware / System Visual Card */}
             <div className="col-lg-6 mt-4 mt-lg-0">
               <div className="hero-visual-card">
+
                 {/* Floating Telemetry Pill */}
                 <div className="visual-floating-pill">
                   <i className="bi bi-shield-check text-primary"></i>
@@ -70,7 +71,10 @@ function Home() {
                 </div>
 
                 <div className="visual-top">
-                  <span className="visual-title">ENTERPRISE EXPANSION</span>
+                  <span className="visual-title">
+                    ENTERPRISE EXPANSION
+                  </span>
+
                   <span className="visual-badge">
                     <span className="visual-badge-dot"></span>
                     SYSTEM ACTIVE
@@ -83,9 +87,11 @@ function Home() {
                     alt="Nexus Enterprise Platform Hardware Architecture"
                     className="visual-image"
                   />
+
                   <h3 className="visual-platform-title">
                     Nexus Enterprise Platform
                   </h3>
+
                   <p className="visual-platform-desc">
                     Mission-critical business infrastructure
                   </p>
@@ -95,6 +101,7 @@ function Home() {
                   <span className="visual-firmware">
                     NexusOS v4.19-LTS
                   </span>
+
                   <span className="visual-status-ready">
                     READY TO DEPLOY
                   </span>
@@ -146,9 +153,16 @@ function Home() {
           ========================================================= */}
       <section id="trust" className="trust-section">
         <div className="container">
+
           <div className="section-header text-center mx-auto">
-            <div className="section-kicker">ENTERPRISE ASSURANCE</div>
-            <h2 className="section-title">Built for Mission-Critical Reliability</h2>
+            <div className="section-kicker">
+              ENTERPRISE ASSURANCE
+            </div>
+
+            <h2 className="section-title">
+              Built for Mission-Critical Reliability
+            </h2>
+
             <p className="section-desc mx-auto">
               Our hardware and software systems adhere to strict industrial standards,
               guaranteeing uptime, security, and continuous deployment capabilities.
@@ -156,12 +170,17 @@ function Home() {
           </div>
 
           <div className="row g-4">
+
             <div className="col-lg-3 col-sm-6">
               <div className="trust-card">
                 <div className="trust-icon-box">
                   <i className="bi bi-shield-check"></i>
                 </div>
-                <h3 className="trust-title">ISO 27001 Certified</h3>
+
+                <h3 className="trust-title">
+                  ISO 27001 Certified
+                </h3>
+
                 <p className="trust-detail">
                   Cryptographic grade build with hardware root-of-trust and secure boot verification.
                 </p>
@@ -173,7 +192,11 @@ function Home() {
                 <div className="trust-icon-box">
                   <i className="bi bi-activity"></i>
                 </div>
-                <h3 className="trust-title">99.99% Reliability</h3>
+
+                <h3 className="trust-title">
+                  99.99% Reliability
+                </h3>
+
                 <p className="trust-detail">
                   Hardware uptime SLA backed by redundant power architecture and failover routing.
                 </p>
@@ -185,7 +208,11 @@ function Home() {
                 <div className="trust-icon-box">
                   <i className="bi bi-award"></i>
                 </div>
-                <h3 className="trust-title">3-Yr Enterprise Warranty</h3>
+
+                <h3 className="trust-title">
+                  3-Yr Enterprise Warranty
+                </h3>
+
                 <p className="trust-detail">
                   Hot-swap direct replacement with expedited global dispatch and telemetry diagnosis.
                 </p>
@@ -197,12 +224,17 @@ function Home() {
                 <div className="trust-icon-box">
                   <i className="bi bi-headset"></i>
                 </div>
-                <h3 className="trust-title">Dedicated Solutions Eng.</h3>
+
+                <h3 className="trust-title">
+                  Dedicated Solutions Eng.
+                </h3>
+
                 <p className="trust-detail">
                   Direct phone &amp; lab access for bespoke architectural integrations and firmware builds.
                 </p>
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -212,9 +244,16 @@ function Home() {
           ========================================================= */}
       <section id="categories" className="categories-section">
         <div className="container">
+
           <div className="section-header">
-            <div className="section-kicker">ARCHITECTURAL LINES</div>
-            <h2 className="section-title">Engineered Product Categories</h2>
+            <div className="section-kicker">
+              ARCHITECTURAL LINES
+            </div>
+
+            <h2 className="section-title">
+              Engineered Product Categories
+            </h2>
+
             <p className="section-desc">
               High-availability hardware, synchronised operating systems, and industrial electronics.
             </p>
@@ -224,22 +263,30 @@ function Home() {
             {productCategories.map((category) => (
               <div key={category.id} className="col-lg-3 col-sm-6">
                 <Link to={category.path} className="category-card">
+
                   <div className="category-icon-bar">
                     <div className="category-icon-box">
                       <i className={`bi ${category.icon}`}></i>
                     </div>
+
                     <span className="category-count-badge">
                       {category.count} Products
                     </span>
                   </div>
 
-                  <h3 className="category-name">{category.name}</h3>
-                  <p className="category-desc">{category.description}</p>
+                  <h3 className="category-name">
+                    {category.name}
+                  </h3>
+
+                  <p className="category-desc">
+                    {category.description}
+                  </p>
 
                   <span className="category-link">
                     Explore Category
                     <i className="bi bi-arrow-right"></i>
                   </span>
+
                 </Link>
               </div>
             ))}
@@ -252,10 +299,16 @@ function Home() {
           ========================================================= */}
       <section className="featured-section">
         <div className="container">
+
           <div className="featured-header-row">
             <div>
-              <div className="section-kicker">PRODUCTION READY</div>
-              <h2 className="section-title mb-0">Featured Enterprise Nodes</h2>
+              <div className="section-kicker">
+                PRODUCTION READY
+              </div>
+
+              <h2 className="section-title mb-0">
+                Featured Enterprise Nodes
+              </h2>
             </div>
 
             <Link to="/products" className="view-all-link">
@@ -276,6 +329,7 @@ function Home() {
               />
             ))}
           </div>
+
         </div>
       </section>
 
@@ -284,13 +338,17 @@ function Home() {
           ========================================================= */}
       <section id="contact" className="cta-section">
         <div className="container">
+
           <div className="cta-panel">
+
             <span className="cta-kicker">
               COMMERCIAL PROCUREMENT &amp; LAB ACCESS
             </span>
+
             <h2 className="cta-heading">
               Accelerate Your Enterprise Infrastructure
             </h2>
+
             <p className="cta-description">
               Speak directly with a Nexus Solutions Architect to customize hardware
               topologies, request custom firmware builds, or schedule an on-premise
@@ -298,6 +356,7 @@ function Home() {
             </p>
 
             <div className="cta-actions">
+
               <Link to="/products" className="btn-cta-white">
                 Explore Products
                 <i className="bi bi-arrow-right"></i>
@@ -310,8 +369,10 @@ function Home() {
                 <i className="bi bi-envelope"></i>
                 Contact Sales
               </a>
+
             </div>
           </div>
+
         </div>
       </section>
 
