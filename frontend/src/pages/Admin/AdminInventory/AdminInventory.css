@@ -1,0 +1,773 @@
+.nx-admin-inventory-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* =========================
+   Breadcrumb
+========================= */
+
+.nx-admin-inventory-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.nx-admin-inventory-breadcrumb i {
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+.nx-admin-inventory-breadcrumb-current {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* =========================
+   Header
+========================= */
+
+.nx-admin-inventory-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.nx-admin-inventory-header h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #111827;
+}
+
+.nx-admin-inventory-header p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+.nx-admin-inventory-export-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.nx-admin-inventory-export-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.nx-admin-inventory-export-btn i {
+  font-size: 14px;
+}
+
+/* =========================
+   Summary Cards
+========================= */
+
+.nx-admin-inventory-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.nx-admin-inventory-summary-card {
+  min-width: 0;
+  padding: 18px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.nx-admin-inventory-summary-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.nx-admin-inventory-summary-card strong {
+  display: block;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================
+   Main Card
+========================= */
+
+.nx-admin-inventory-card {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.nx-admin-inventory-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nx-admin-inventory-card-header h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #111827;
+}
+
+.nx-admin-inventory-card-header span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.nx-admin-inventory-count {
+  flex-shrink: 0;
+  font-size: 12px !important;
+  font-weight: 600;
+  color: #6b7280 !important;
+}
+
+/* =========================
+   Filters
+========================= */
+
+.nx-admin-inventory-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nx-admin-inventory-search {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+}
+
+.nx-admin-inventory-search i {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  z-index: 1;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.nx-admin-inventory-search input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px 0 34px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  outline: none;
+  background: #ffffff;
+  color: #111827;
+  font-size: 13px;
+  box-sizing: border-box;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.nx-admin-inventory-search input::placeholder {
+  color: #9ca3af;
+}
+
+.nx-admin-inventory-search input:focus {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+}
+
+.nx-admin-inventory-filter-select {
+  width: 150px;
+  height: 40px;
+  padding: 0 30px 0 11px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  outline: none;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.nx-admin-inventory-filter-select:focus {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+}
+
+.nx-admin-inventory-clear-btn {
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nx-admin-inventory-clear-btn:hover {
+  background: #f9fafb;
+}
+
+/* =========================
+   Table
+   No Horizontal Scroll
+========================= */
+
+.nx-admin-inventory-table-wrap {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.nx-admin-inventory-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+/* Column widths */
+
+.nx-admin-inventory-table th:nth-child(1) {
+  width: 15%;
+}
+
+.nx-admin-inventory-table th:nth-child(2) {
+  width: 9%;
+}
+
+.nx-admin-inventory-table th:nth-child(3) {
+  width: 9%;
+}
+
+.nx-admin-inventory-table th:nth-child(4) {
+  width: 12%;
+}
+
+.nx-admin-inventory-table th:nth-child(5) {
+  width: 7%;
+}
+
+.nx-admin-inventory-table th:nth-child(6) {
+  width: 7%;
+}
+
+.nx-admin-inventory-table th:nth-child(7) {
+  width: 7%;
+}
+
+.nx-admin-inventory-table th:nth-child(8) {
+  width: 8%;
+}
+
+.nx-admin-inventory-table th:nth-child(9) {
+  width: 9%;
+}
+
+.nx-admin-inventory-table th:nth-child(10) {
+  width: 9%;
+}
+
+.nx-admin-inventory-table th:nth-child(11) {
+  width: 8%;
+}
+
+.nx-admin-inventory-table th,
+.nx-admin-inventory-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nx-admin-inventory-table th {
+  height: 46px;
+  padding: 0 10px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nx-admin-inventory-table td {
+  height: 58px;
+  padding: 12px 10px;
+  border-bottom: 1px solid #f0f1f3;
+  color: #374151;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.nx-admin-inventory-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.nx-admin-inventory-table tbody tr:hover {
+  background: #fafafa;
+}
+
+/* =========================
+   Product
+========================= */
+
+.nx-admin-inventory-product {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.nx-admin-inventory-product strong {
+  display: block;
+  overflow: hidden;
+  color: #111827;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-admin-inventory-product span {
+  display: block;
+  overflow: hidden;
+  color: #9ca3af;
+  font-size: 10px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-admin-inventory-sku {
+  display: block;
+  overflow: hidden;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-admin-inventory-category {
+  display: block;
+  overflow: hidden;
+  color: #4b5563;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-admin-inventory-warehouse {
+  display: block;
+  overflow: hidden;
+  color: #4b5563;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================
+   Stock Values
+========================= */
+
+.nx-admin-inventory-total {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nx-admin-inventory-reserved {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.nx-admin-inventory-available {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nx-admin-inventory-available.low {
+  color: #b45309;
+}
+
+.nx-admin-inventory-available.zero {
+  color: #dc2626;
+}
+
+.nx-admin-inventory-reorder {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* =========================
+   Status
+========================= */
+
+.nx-inventory-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  max-width: 100%;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nx-inventory-status.in-stock {
+  background: #ecfdf3;
+  color: #15803d;
+}
+
+.nx-inventory-status.low-stock {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.nx-inventory-status.out-of-stock {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.nx-admin-inventory-date {
+  display: block;
+  overflow: hidden;
+  color: #6b7280;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================
+   Action
+========================= */
+
+.nx-admin-inventory-view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nx-admin-inventory-view-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* =========================
+   Empty State
+========================= */
+
+.nx-admin-inventory-empty {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.nx-admin-inventory-empty > i {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 28px;
+  color: #9ca3af;
+}
+
+.nx-admin-inventory-empty h3 {
+  margin: 0 0 6px;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.nx-admin-inventory-empty p {
+  margin: 0 0 16px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.nx-admin-inventory-empty button {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-inventory-empty button:hover {
+  background: #f9fafb;
+}
+
+/* =========================
+   Footer / Pagination
+========================= */
+
+.nx-admin-inventory-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.nx-admin-inventory-table-footer > span {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.nx-admin-inventory-table-footer > span strong {
+  color: #374151;
+  font-weight: 600;
+}
+
+.nx-admin-inventory-pagination {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nx-admin-inventory-pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-inventory-pagination button:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+.nx-admin-inventory-pagination button.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nx-admin-inventory-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1100px) {
+  .nx-admin-inventory-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nx-admin-inventory-filters {
+    flex-wrap: wrap;
+  }
+
+  .nx-admin-inventory-search {
+    flex: 1 1 100%;
+  }
+
+  .nx-admin-inventory-filter-select {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .nx-admin-inventory-table {
+    table-layout: fixed;
+  }
+
+  .nx-admin-inventory-table th,
+  .nx-admin-inventory-table td {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+@media (max-width: 700px) {
+  .nx-admin-inventory-page {
+    padding-bottom: 24px;
+  }
+
+  .nx-admin-inventory-header {
+    align-items: stretch;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .nx-admin-inventory-header h1 {
+    font-size: 24px;
+  }
+
+  .nx-admin-inventory-export-btn {
+    width: fit-content;
+  }
+
+  .nx-admin-inventory-summary-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .nx-admin-inventory-summary-card {
+    padding: 16px;
+  }
+
+  .nx-admin-inventory-summary-card strong {
+    font-size: 20px;
+  }
+
+  .nx-admin-inventory-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .nx-admin-inventory-filters {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 14px 16px;
+  }
+
+  .nx-admin-inventory-search {
+    min-width: 0;
+  }
+
+  .nx-admin-inventory-filter-select,
+  .nx-admin-inventory-clear-btn {
+    width: 100%;
+    flex: none;
+  }
+
+  /*
+    On small screens the table remains inside
+    the available width and text is truncated.
+  */
+
+  .nx-admin-inventory-table th,
+  .nx-admin-inventory-table td {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 10px;
+  }
+
+  .nx-admin-inventory-table th {
+    font-size: 8px;
+  }
+
+  .nx-admin-inventory-product strong {
+    font-size: 10px;
+  }
+
+  .nx-admin-inventory-product span,
+  .nx-admin-inventory-sku,
+  .nx-admin-inventory-category,
+  .nx-admin-inventory-warehouse,
+  .nx-admin-inventory-date {
+    font-size: 9px;
+  }
+
+  .nx-admin-inventory-table-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-admin-inventory-pagination {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-admin-inventory-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-admin-inventory-breadcrumb {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .nx-admin-inventory-breadcrumb span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nx-admin-inventory-table th,
+  .nx-admin-inventory-table td {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .nx-admin-inventory-view-btn {
+    min-width: 42px;
+    padding: 0 6px;
+  }
+}

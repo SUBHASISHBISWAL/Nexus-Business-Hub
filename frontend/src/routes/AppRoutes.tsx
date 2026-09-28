@@ -52,8 +52,14 @@ import AdminOTP from "../pages/Admin/AdminOTP/AdminOTP";
 
 import AdminProtectedRoute from "./AdminProtectedRoute";
 import AdminNotifications from "../pages/Admin/AdminNotifications/AdminNotifications";
-import AdminAdministrators from "../pages/Admin/AdminAdministrators/AdminAdministrators";
 
+import AdminAdministrators from "../pages/Admin/AdminAdministrators/AdminAdministrators";
+import AdminPayments from "../pages/Admin/AdminPayments/AdminPayments";
+
+import PaymentDetails from "../pages/Admin/AdminPayments/PaymentDetails/PaymentDetails";
+import AdminCustomers from "../pages/Admin/AdminCustomers/AdminCustomers";
+import CustomerDetails from "../pages/Admin/AdminCustomers/CustomerDetails/CustomerDetails";
+import AdminInventory from "../pages/Admin/AdminInventory/AdminInventory";
 
 import Profile from "../pages/Profile/Profile";
 import Settings from "../pages/Settings/Settings";
@@ -267,6 +273,51 @@ function AppRoutes() {
         element={
           <AdminLayout>
             <AdminNotifications />
+          </AdminLayout>
+        }
+      />
+
+      <Route
+        path="/admin/payments"
+        element={
+          <AdminLayout>
+            <AdminPayments />
+          </AdminLayout>
+        }
+      />
+
+      <Route
+        path="/admin/payments/:paymentId"
+        element={
+          <AdminLayout>
+            <PaymentDetails />
+          </AdminLayout>
+        }
+      />
+
+      <Route
+        path="/admin/customers"
+        element={
+          <AdminLayout>
+            <AdminCustomers />
+          </AdminLayout>
+        }
+      />
+
+      <Route
+        path="/admin/customers/:customerId"
+        element={
+          <AdminLayout>
+            <CustomerDetails />
+          </AdminLayout>
+        }
+      />
+
+      <Route
+        path="/admin/inventory"
+        element={
+          <AdminLayout>
+            <AdminInventory />
           </AdminLayout>
         }
       />

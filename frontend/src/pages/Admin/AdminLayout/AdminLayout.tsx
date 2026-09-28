@@ -8,12 +8,7 @@ type AdminLayoutProps = {
   children: ReactNode;
 };
 
-type Section =
-  | "overview"
-  | "commerce"
-  | "operations"
-  | "administration"
-  | "";
+type Section = "overview" | "commerce" | "operations" | "administration" | "";
 
 function AdminLayout({ children }: AdminLayoutProps) {
   const navigate = useNavigate();
@@ -21,29 +16,19 @@ function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
-  const [openSection, setOpenSection] =
-    useState<Section>("overview");
+  const [openSection, setOpenSection] = useState<Section>("overview");
 
   // Sidebar hide/show state
-  const [sidebarCollapsed, setSidebarCollapsed] =
-    useState(() => {
-      return (
-        localStorage.getItem(
-          "nexus-admin-sidebar-collapsed"
-        ) === "true"
-      );
-    });
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem("nexus-admin-sidebar-collapsed") === "true";
+  });
 
   const closeSidebar = () => {
     setSidebarOpen(false);
   };
 
-  const toggleSection = (
-    section: Exclude<Section, "">
-  ) => {
-    setOpenSection((previous) =>
-      previous === section ? "" : section
-    );
+  const toggleSection = (section: Exclude<Section, "">) => {
+    setOpenSection((previous) => (previous === section ? "" : section));
   };
 
   // Hide / Show sidebar
@@ -51,10 +36,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
     setSidebarCollapsed((previous) => {
       const next = !previous;
 
-      localStorage.setItem(
-        "nexus-admin-sidebar-collapsed",
-        String(next)
-      );
+      localStorage.setItem("nexus-admin-sidebar-collapsed", String(next));
 
       return next;
     });
@@ -72,7 +54,6 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="nx-admin-layout">
-
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <button
@@ -86,30 +67,17 @@ function AdminLayout({ children }: AdminLayoutProps) {
       {/* ================= SIDEBAR ================= */}
       <aside
         className={`nx-admin-sidebar ${
-          sidebarOpen
-            ? "nx-admin-sidebar-open"
-            : ""
-        } ${
-          sidebarCollapsed
-            ? "is-collapsed"
-            : ""
-        }`}
+          sidebarOpen ? "nx-admin-sidebar-open" : ""
+        } ${sidebarCollapsed ? "is-collapsed" : ""}`}
       >
         {/* Brand */}
         <div className="nx-admin-brand">
-
-          <div className="nx-admin-brand-mark">
-            N
-          </div>
+          <div className="nx-admin-brand-mark">N</div>
 
           <div className="nx-admin-brand-copy">
-            <span className="nx-admin-brand-name">
-              NEXUS
-            </span>
+            <span className="nx-admin-brand-name">NEXUS</span>
 
-            <span className="nx-admin-brand-subtitle">
-              BUSINESS HUB
-            </span>
+            <span className="nx-admin-brand-subtitle">BUSINESS HUB</span>
           </div>
 
           {/* Mobile Close */}
@@ -121,28 +89,19 @@ function AdminLayout({ children }: AdminLayoutProps) {
           >
             <i className="bi bi-x-lg" />
           </button>
-
         </div>
 
         {/* Navigation */}
         <nav className="nx-admin-nav">
-
           {/* ================= OVERVIEW ================= */}
           <div className="nx-admin-nav-section">
-
             <button
               type="button"
               className="nx-admin-nav-section-header"
-              onClick={() =>
-                toggleSection("overview")
-              }
-              aria-expanded={
-                openSection === "overview"
-              }
+              onClick={() => toggleSection("overview")}
+              aria-expanded={openSection === "overview"}
             >
-              <span className="nx-admin-nav-label">
-                Overview
-              </span>
+              <span className="nx-admin-nav-label">Overview</span>
 
               <i
                 className={`bi ${
@@ -155,13 +114,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             {openSection === "overview" && (
               <div className="nx-admin-nav-submenu">
-
                 <NavLink
                   to="/admin/dashboard"
                   className={({ isActive }) =>
-                    `nx-admin-nav-item ${
-                      isActive ? "active" : ""
-                    }`
+                    `nx-admin-nav-item ${isActive ? "active" : ""}`
                   }
                   onClick={closeSidebar}
                 >
@@ -169,32 +125,21 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     <i className="bi bi-grid-1x2" />
                   </span>
 
-                  <span className="nx-admin-nav-text">
-                    Dashboard
-                  </span>
+                  <span className="nx-admin-nav-text">Dashboard</span>
                 </NavLink>
-
               </div>
             )}
-
           </div>
 
           {/* ================= COMMERCE ================= */}
           <div className="nx-admin-nav-section">
-
             <button
               type="button"
               className="nx-admin-nav-section-header"
-              onClick={() =>
-                toggleSection("commerce")
-              }
-              aria-expanded={
-                openSection === "commerce"
-              }
+              onClick={() => toggleSection("commerce")}
+              aria-expanded={openSection === "commerce"}
             >
-              <span className="nx-admin-nav-label">
-                Commerce
-              </span>
+              <span className="nx-admin-nav-label">Commerce</span>
 
               <i
                 className={`bi ${
@@ -207,13 +152,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             {openSection === "commerce" && (
               <div className="nx-admin-nav-submenu">
-
                 <NavLink
                   to="/admin/products"
                   className={({ isActive }) =>
-                    `nx-admin-nav-item ${
-                      isActive ? "active" : ""
-                    }`
+                    `nx-admin-nav-item ${isActive ? "active" : ""}`
                   }
                   onClick={closeSidebar}
                 >
@@ -221,17 +163,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     <i className="bi bi-box-seam" />
                   </span>
 
-                  <span className="nx-admin-nav-text">
-                    Products
-                  </span>
+                  <span className="nx-admin-nav-text">Products</span>
                 </NavLink>
 
                 <NavLink
                   to="/admin/orders"
                   className={({ isActive }) =>
-                    `nx-admin-nav-item ${
-                      isActive ? "active" : ""
-                    }`
+                    `nx-admin-nav-item ${isActive ? "active" : ""}`
                   }
                   onClick={closeSidebar}
                 >
@@ -239,50 +177,35 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     <i className="bi bi-receipt" />
                   </span>
 
-                  <span className="nx-admin-nav-text">
-                    Orders
-                  </span>
+                  <span className="nx-admin-nav-text">Orders</span>
                 </NavLink>
 
                 <NavLink
-                  to="/admin/payments"
+                  to="/admin/customers"
                   className={({ isActive }) =>
-                    `nx-admin-nav-item ${
-                      isActive ? "active" : ""
-                    }`
+                    `nx-admin-nav-item ${isActive ? "active" : ""}`
                   }
                   onClick={closeSidebar}
                 >
                   <span className="nx-admin-nav-icon">
-                    <i className="bi bi-credit-card" />
+                    <i className="bi bi-people" />
                   </span>
 
-                  <span className="nx-admin-nav-text">
-                    Payments
-                  </span>
+                  <span className="nx-admin-nav-text">Customers</span>
                 </NavLink>
-
               </div>
             )}
-
           </div>
 
           {/* ================= OPERATIONS ================= */}
           <div className="nx-admin-nav-section">
-
             <button
               type="button"
               className="nx-admin-nav-section-header"
-              onClick={() =>
-                toggleSection("operations")
-              }
-              aria-expanded={
-                openSection === "operations"
-              }
+              onClick={() => toggleSection("operations")}
+              aria-expanded={openSection === "operations"}
             >
-              <span className="nx-admin-nav-label">
-                Operations
-              </span>
+              <span className="nx-admin-nav-label">Operations</span>
 
               <i
                 className={`bi ${
@@ -295,13 +218,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             {openSection === "operations" && (
               <div className="nx-admin-nav-submenu">
-
                 <NavLink
                   to="/admin/shipments"
                   className={({ isActive }) =>
-                    `nx-admin-nav-item ${
-                      isActive ? "active" : ""
-                    }`
+                    `nx-admin-nav-item ${isActive ? "active" : ""}`
                   }
                   onClick={closeSidebar}
                 >
@@ -309,17 +229,27 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     <i className="bi bi-truck" />
                   </span>
 
-                  <span className="nx-admin-nav-text">
-                    Shipments
+                  <span className="nx-admin-nav-text">Shipments</span>
+                </NavLink>
+
+                <NavLink
+                  to="/admin/inventory"
+                  className={({ isActive }) =>
+                    `nx-admin-nav-item ${isActive ? "active" : ""}`
+                  }
+                  onClick={closeSidebar}
+                >
+                  <span className="nx-admin-nav-icon">
+                    <i className="bi bi-boxes" />
                   </span>
+
+                  <span className="nx-admin-nav-text">Inventory</span>
                 </NavLink>
 
                 <NavLink
                   to="/admin/tickets"
                   className={({ isActive }) =>
-                    `nx-admin-nav-item ${
-                      isActive ? "active" : ""
-                    }`
+                    `nx-admin-nav-item ${isActive ? "active" : ""}`
                   }
                   onClick={closeSidebar}
                 >
@@ -327,32 +257,21 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     <i className="bi bi-headset" />
                   </span>
 
-                  <span className="nx-admin-nav-text">
-                    Support
-                  </span>
+                  <span className="nx-admin-nav-text">Support</span>
                 </NavLink>
-
               </div>
             )}
-
           </div>
 
           {/* ================= ADMINISTRATION ================= */}
           <div className="nx-admin-nav-section">
-
             <button
               type="button"
               className="nx-admin-nav-section-header"
-              onClick={() =>
-                toggleSection("administration")
-              }
-              aria-expanded={
-                openSection === "administration"
-              }
+              onClick={() => toggleSection("administration")}
+              aria-expanded={openSection === "administration"}
             >
-              <span className="nx-admin-nav-label">
-                Administration
-              </span>
+              <span className="nx-admin-nav-label">Administration</span>
 
               <i
                 className={`bi ${
@@ -365,13 +284,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             {openSection === "administration" && (
               <div className="nx-admin-nav-submenu">
-
                 <NavLink
                   to="/admin/administrators"
                   className={({ isActive }) =>
-                    `nx-admin-nav-item ${
-                      isActive ? "active" : ""
-                    }`
+                    `nx-admin-nav-item ${isActive ? "active" : ""}`
                   }
                   onClick={closeSidebar}
                 >
@@ -379,27 +295,19 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     <i className="bi bi-people" />
                   </span>
 
-                  <span className="nx-admin-nav-text">
-                    Administrators
-                  </span>
+                  <span className="nx-admin-nav-text">Administrators</span>
                 </NavLink>
-
               </div>
             )}
-
           </div>
-
         </nav>
 
         {/* ================= SIDEBAR BOTTOM ================= */}
         <div className="nx-admin-sidebar-bottom">
-
           <NavLink
             to="/admin/settings"
             className={({ isActive }) =>
-              `nx-admin-nav-item ${
-                isActive ? "active" : ""
-              }`
+              `nx-admin-nav-item ${isActive ? "active" : ""}`
             }
             onClick={closeSidebar}
           >
@@ -407,9 +315,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
               <i className="bi bi-gear" />
             </span>
 
-            <span className="nx-admin-nav-text">
-              Settings
-            </span>
+            <span className="nx-admin-nav-text">Settings</span>
           </NavLink>
 
           <button
@@ -421,36 +327,25 @@ function AdminLayout({ children }: AdminLayoutProps) {
               <i className="bi bi-box-arrow-right" />
             </span>
 
-            <span>
-              Logout
-            </span>
+            <span>Logout</span>
           </button>
-
         </div>
-
       </aside>
 
       {/* ================= MAIN ================= */}
       <div
         className={`nx-admin-main ${
-          sidebarCollapsed
-            ? "is-sidebar-collapsed"
-            : ""
+          sidebarCollapsed ? "is-sidebar-collapsed" : ""
         }`}
       >
-
         {/* ================= TOPBAR ================= */}
         <header className="nx-admin-topbar">
-
           <div className="nx-admin-topbar-left">
-
             {/* Mobile Menu */}
             <button
               type="button"
               className="nx-admin-menu-button"
-              onClick={() =>
-                setSidebarOpen(true)
-              }
+              onClick={() => setSidebarOpen(true)}
               aria-label="Open navigation"
             >
               <i className="bi bi-list" />
@@ -461,16 +356,8 @@ function AdminLayout({ children }: AdminLayoutProps) {
               type="button"
               className="nx-admin-sidebar-toggle"
               onClick={toggleSidebar}
-              aria-label={
-                sidebarCollapsed
-                  ? "Show sidebar"
-                  : "Hide sidebar"
-              }
-              title={
-                sidebarCollapsed
-                  ? "Show sidebar"
-                  : "Hide sidebar"
-              }
+              aria-label={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
+              title={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
             >
               <i
                 className={`bi ${
@@ -483,21 +370,17 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Global Search */}
             <AdminGlobalSearch />
-
           </div>
 
           {/* ================= TOPBAR RIGHT ================= */}
           <div className="nx-admin-topbar-right">
-
             {/* Notifications */}
             <button
               type="button"
               className="nx-admin-icon-button"
               aria-label="Notifications"
               title="Notifications"
-              onClick={() =>
-                navigate("/admin/notifications")
-              }
+              onClick={() => navigate("/admin/notifications")}
             >
               <i className="bi bi-bell" />
 
@@ -508,58 +391,37 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Profile */}
             <div className="nx-admin-profile-wrapper">
-
               <button
                 type="button"
                 className="nx-admin-profile"
-                onClick={() =>
-                  setProfileOpen(
-                    (previous) => !previous
-                  )
-                }
+                onClick={() => setProfileOpen((previous) => !previous)}
                 aria-expanded={profileOpen}
               >
-
-                <div className="nx-admin-avatar">
-                  A
-                </div>
+                <div className="nx-admin-avatar">A</div>
 
                 <div className="nx-admin-profile-info">
+                  <strong>Admin</strong>
 
-                  <strong>
-                    Admin
-                  </strong>
-
-                  <span>
-                    Administrator
-                  </span>
-
+                  <span>Administrator</span>
                 </div>
 
                 <i
-                  className={`bi bi-chevron-down ${
-                    profileOpen ? "open" : ""
-                  }`}
+                  className={`bi bi-chevron-down ${profileOpen ? "open" : ""}`}
                 />
-
               </button>
 
               {/* Profile Dropdown */}
               {profileOpen && (
                 <div className="nx-admin-profile-menu">
-
                   <button
                     type="button"
                     onClick={() => {
                       setProfileOpen(false);
 
-                      navigate(
-                        "/admin/administrators"
-                      );
+                      navigate("/admin/administrators");
                     }}
                   >
                     <i className="bi bi-people" />
-
                     Administrators
                   </button>
 
@@ -568,13 +430,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     onClick={() => {
                       setProfileOpen(false);
 
-                      navigate(
-                        "/admin/settings"
-                      );
+                      navigate("/admin/settings");
                     }}
                   >
                     <i className="bi bi-gear" />
-
                     Settings
                   </button>
 
@@ -586,26 +445,17 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     onClick={handleLogout}
                   >
                     <i className="bi bi-box-arrow-right" />
-
                     Logout
                   </button>
-
                 </div>
               )}
-
             </div>
-
           </div>
-
         </header>
 
         {/* ================= PAGE CONTENT ================= */}
-        <main className="nx-admin-content">
-          {children}
-        </main>
-
+        <main className="nx-admin-content">{children}</main>
       </div>
-
     </div>
   );
 }

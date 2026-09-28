@@ -1,0 +1,663 @@
+.nx-admin-customers-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* ================= BREADCRUMB ================= */
+
+.nx-admin-customers-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.nx-admin-customers-breadcrumb i {
+  color: #9ca3af;
+  font-size: 9px;
+}
+
+.nx-admin-customers-breadcrumb-current {
+  color: #374151;
+  font-weight: 500;
+}
+
+/* ================= HEADER ================= */
+
+.nx-admin-customers-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.nx-admin-customers-header h1 {
+  margin: 0 0 6px;
+  color: #111827;
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 700;
+}
+
+.nx-admin-customers-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.nx-admin-customers-export-btn {
+  height: 40px;
+  padding: 0 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-customers-export-btn:hover {
+  background: #f9fafb;
+}
+
+.nx-admin-customers-export-btn i {
+  font-size: 13px;
+}
+
+/* ================= SUMMARY ================= */
+
+.nx-admin-customers-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.nx-admin-customers-summary-card {
+  min-width: 0;
+  padding: 18px 20px;
+  box-sizing: border-box;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.nx-admin-customers-summary-icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  font-size: 15px;
+}
+
+.nx-admin-customers-summary-icon.blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.nx-admin-customers-summary-icon.green {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.nx-admin-customers-summary-icon.orange {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.nx-admin-customers-summary-icon.purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.nx-admin-customers-summary-card > div:last-child {
+  min-width: 0;
+}
+
+.nx-admin-customers-summary-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.nx-admin-customers-summary-card strong {
+  display: block;
+  overflow: hidden;
+  color: #111827;
+  font-size: 22px;
+  line-height: 27px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nx-admin-customers-summary-card small {
+  display: block;
+  margin-top: 3px;
+  color: #9ca3af;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+/* ================= MAIN CARD ================= */
+
+.nx-admin-customers-card {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+/* ================= CARD HEADER ================= */
+
+.nx-admin-customers-card-header {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nx-admin-customers-card-header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: 600;
+}
+
+.nx-admin-customers-count {
+  display: block;
+  margin-top: 3px;
+  color: #9ca3af;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 400;
+}
+
+/* ================= FILTERS ================= */
+
+.nx-admin-customers-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nx-admin-customers-search {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+
+.nx-admin-customers-search i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  color: #6b7280;
+  font-size: 13px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.nx-admin-customers-search input {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 12px 0 36px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  outline: none;
+  color: #111827;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.nx-admin-customers-search input::placeholder {
+  color: #9ca3af;
+}
+
+.nx-admin-customers-search input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.nx-admin-customers-filter-select {
+  width: 150px;
+  height: 40px;
+  flex: 0 0 150px;
+  padding: 0 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.nx-admin-customers-filter-select:focus {
+  border-color: #2563eb;
+}
+
+.nx-admin-customers-clear-btn {
+  height: 40px;
+  padding: 0 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-customers-clear-btn:hover {
+  background: #f9fafb;
+}
+
+.nx-admin-customers-clear-btn i {
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+/* ================= TABLE ================= */
+
+.nx-admin-customers-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.nx-admin-customers-table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+}
+
+.nx-admin-customers-table th {
+  height: 46px;
+  padding: 0 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.nx-admin-customers-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+  font-size: 13px;
+  line-height: 18px;
+  vertical-align: middle;
+}
+
+.nx-admin-customers-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.nx-admin-customers-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ================= CUSTOMER ================= */
+
+.nx-admin-customers-customer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.nx-admin-customers-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.nx-admin-customers-customer-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.nx-admin-customers-customer-info strong {
+  overflow: hidden;
+  color: #111827;
+  font-size: 13px;
+  line-height: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nx-admin-customers-customer-info span {
+  overflow: hidden;
+  color: #9ca3af;
+  font-size: 11px;
+  line-height: 15px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ================= CUSTOMER ID ================= */
+
+.nx-admin-customers-id {
+  color: #2563eb;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ================= TYPE ================= */
+
+.nx-admin-customers-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.nx-admin-customers-type i {
+  font-size: 12px;
+}
+
+/* ================= CONTACT ================= */
+
+.nx-admin-customers-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.nx-admin-customers-contact span {
+  color: #374151;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ================= ORDERS ================= */
+
+.nx-admin-customers-orders {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ================= TOTAL SPENT ================= */
+
+.nx-admin-customers-spent {
+  color: #111827 !important;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ================= DATE ================= */
+
+.nx-admin-customers-date {
+  color: #6b7280;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ================= STATUS ================= */
+
+.nx-customer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 25px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nx-customer-status-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+}
+
+.nx-customer-status.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.nx-customer-status.active .nx-customer-status-dot {
+  background: #22c55e;
+}
+
+.nx-customer-status.inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.nx-customer-status.inactive .nx-customer-status-dot {
+  background: #9ca3af;
+}
+
+/* ================= VIEW BUTTON ================= */
+
+.nx-admin-customers-view-btn {
+  height: 32px;
+  padding: 0 11px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-customers-view-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.nx-admin-customers-view-btn i {
+  margin-left: 5px;
+  font-size: 10px;
+}
+
+/* ================= EMPTY ================= */
+
+.nx-admin-customers-empty {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.nx-admin-customers-empty-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-size: 18px;
+}
+
+.nx-admin-customers-empty h3 {
+  margin: 0 0 6px;
+  color: #111827;
+  font-size: 17px;
+  line-height: 22px;
+}
+
+.nx-admin-customers-empty p {
+  margin: 0 0 18px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.nx-admin-customers-empty button {
+  height: 38px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ================= PAGINATION ================= */
+
+.nx-admin-customers-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.nx-admin-customers-table-footer > span {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.nx-admin-customers-pagination {
+  display: flex;
+  gap: 5px;
+}
+
+.nx-admin-customers-pagination button {
+  min-width: 34px;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.nx-admin-customers-pagination button:hover:not(:disabled) {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.nx-admin-customers-pagination button.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nx-admin-customers-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1000px) {
+  .nx-admin-customers-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nx-admin-customers-filters {
+    flex-wrap: wrap;
+  }
+
+  .nx-admin-customers-search {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .nx-admin-customers-page {
+    padding-bottom: 30px;
+  }
+
+  .nx-admin-customers-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-admin-customers-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-admin-customers-header h1 {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .nx-admin-customers-export-btn {
+    width: 100%;
+  }
+
+  .nx-admin-customers-filter-select {
+    width: calc(50% - 6px);
+    flex: 0 0 calc(50% - 6px);
+  }
+
+  .nx-admin-customers-clear-btn {
+    width: 100%;
+  }
+
+  .nx-admin-customers-table-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-admin-customers-pagination {
+    width: 100%;
+    overflow-x: auto;
+  }
+}
