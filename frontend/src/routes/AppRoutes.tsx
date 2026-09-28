@@ -60,6 +60,8 @@ import PaymentDetails from "../pages/Admin/AdminPayments/PaymentDetails/PaymentD
 import AdminCustomers from "../pages/Admin/AdminCustomers/AdminCustomers";
 import CustomerDetails from "../pages/Admin/AdminCustomers/CustomerDetails/CustomerDetails";
 import AdminInventory from "../pages/Admin/AdminInventory/AdminInventory";
+import AdminReturns from "../pages/Admin/AdminReturns/AdminReturns";
+import AdminReturnDetails from "../pages/Admin/AdminReturnDetails/AdminReturnDetails";
 
 import Profile from "../pages/Profile/Profile";
 import Settings from "../pages/Settings/Settings";
@@ -318,6 +320,24 @@ function AppRoutes() {
         element={
           <AdminLayout>
             <AdminInventory />
+          </AdminLayout>
+        }
+      />
+
+      <Route
+        path="/admin/returns"
+        element={
+          <AdminLayout>
+            <AdminReturns />
+          </AdminLayout>
+        }
+      />
+
+      <Route
+        path="/admin/returns/:returnId"
+        element={
+          <AdminLayout>
+            <AdminReturnDetails />
           </AdminLayout>
         }
       />

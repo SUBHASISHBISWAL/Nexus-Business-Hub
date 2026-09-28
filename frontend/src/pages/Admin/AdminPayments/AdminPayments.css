@@ -2,11 +2,15 @@
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 28px 30px 40px;
+  padding: 28px 0px 40px;
   color: #0f172a;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
-/* Breadcrumb */
+/* =========================================================
+   BREADCRUMB
+========================================================= */
 
 .nx-admin-payments-breadcrumb {
   display: flex;
@@ -27,7 +31,9 @@
   font-weight: 600;
 }
 
-/* Header */
+/* =========================================================
+   PAGE HEADER
+========================================================= */
 
 .nx-admin-payments-header {
   display: flex;
@@ -60,9 +66,10 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  flex-shrink: 0;
   border: 1px solid #dbe2ea;
   border-radius: 8px;
-  background: #ffffff;
+  background: #fff;
   color: #334155;
   font-size: 12.5px;
   font-weight: 600;
@@ -79,7 +86,9 @@
   font-size: 13px;
 }
 
-/* Summary */
+/* =========================================================
+   SUMMARY CARDS
+========================================================= */
 
 .nx-admin-payments-summary-grid {
   display: grid;
@@ -94,7 +103,9 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background: #ffffff;
+  min-width: 0;
+  box-sizing: border-box;
+  background: #fff;
   border: 1px solid #e5eaf0;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.025);
@@ -131,39 +142,61 @@
   color: #7c3aed;
 }
 
+.nx-admin-payments-summary-card > div:last-child {
+  min-width: 0;
+}
+
 .nx-admin-payments-summary-card span {
   display: block;
   margin-bottom: 5px;
+  overflow: hidden;
   color: #64748b;
   font-size: 11.5px;
   font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nx-admin-payments-summary-card strong {
   display: block;
-  color: #0f172a;
+  overflow: hidden;
   font-size: 19px;
   line-height: 1.2;
   font-weight: 700;
   letter-spacing: -0.2px;
+  color: #0f172a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nx-admin-payments-summary-card small {
   display: block;
   margin-top: 4px;
+  overflow: hidden;
   color: #94a3b8;
   font-size: 10.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Main card */
+/* =========================================================
+   MAIN CARD
+========================================================= */
 
 .nx-admin-payments-card {
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
-  background: #ffffff;
+  box-sizing: border-box;
+  background: #fff;
   border: 1px solid #e5eaf0;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.025);
 }
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
 
 .nx-admin-payments-card-header {
   min-height: 82px;
@@ -172,7 +205,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  box-sizing: border-box;
   border-bottom: 1px solid #edf0f4;
+}
+
+.nx-admin-payments-card-header > div {
+  min-width: 0;
 }
 
 .nx-admin-payments-card-header h2 {
@@ -190,6 +228,7 @@
 }
 
 .nx-admin-payments-count {
+  flex-shrink: 0;
   padding: 5px 9px;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
@@ -200,20 +239,26 @@
   white-space: nowrap;
 }
 
-/* Filters */
+/* =========================================================
+   FILTERS
+========================================================= */
 
 .nx-admin-payments-filters {
+  width: 100%;
+  min-width: 0;
   padding: 15px 22px;
   display: flex;
   align-items: center;
   gap: 10px;
+  box-sizing: border-box;
   border-bottom: 1px solid #edf0f4;
   background: #fcfdff;
 }
 
 .nx-admin-payments-search {
-  position: relative;
   width: min(390px, 100%);
+  min-width: 0;
+  position: relative;
 }
 
 .nx-admin-payments-search > i {
@@ -227,19 +272,17 @@
   pointer-events: none;
 }
 
-/* IMPORTANT: no ::before / ::after search icon */
-
 .nx-admin-payments-search input {
   width: 100%;
   height: 36px;
   padding: 0 12px 0 35px;
+  box-sizing: border-box;
   border: 1px solid #dbe2ea;
   border-radius: 7px;
   outline: none;
-  background: #ffffff;
+  background: #fff;
   color: #1e293b;
   font-size: 12px;
-  transition: 0.18s ease;
 }
 
 .nx-admin-payments-search input::placeholder {
@@ -254,11 +297,13 @@
 .nx-admin-payments-filters select {
   height: 36px;
   min-width: 145px;
+  max-width: 180px;
   padding: 0 31px 0 11px;
+  box-sizing: border-box;
   border: 1px solid #dbe2ea;
   border-radius: 7px;
   outline: none;
-  background-color: #ffffff;
+  background: #fff;
   color: #334155;
   font-size: 12px;
   cursor: pointer;
@@ -271,6 +316,7 @@
 
 .nx-admin-payments-clear-btn {
   height: 36px;
+  flex-shrink: 0;
   padding: 0 11px;
   border: 0;
   background: transparent;
@@ -280,22 +326,34 @@
   cursor: pointer;
 }
 
-/* Table */
+.nx-admin-payments-clear-btn:hover {
+  color: #1d4ed8;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
 
 .nx-admin-payments-table-wrap {
   width: 100%;
-  overflow-x: auto;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .nx-admin-payments-table {
   width: 100%;
-  min-width: 1080px;
+  max-width: 100%;
+  min-width: 0;
   border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
 }
 
 .nx-admin-payments-table th {
   height: 43px;
   padding: 0 14px;
+  overflow: hidden;
   text-align: left;
   white-space: nowrap;
   background: #f8fafc;
@@ -305,11 +363,15 @@
   line-height: 1;
   font-weight: 700;
   letter-spacing: 0.45px;
+  text-overflow: ellipsis;
 }
 
 .nx-admin-payments-table td {
   height: 67px;
+  max-width: 0;
   padding: 10px 14px;
+  overflow: hidden;
+  box-sizing: border-box;
   border-bottom: 1px solid #edf0f4;
   color: #334155;
   font-size: 12px;
@@ -324,23 +386,59 @@
   background: #fafcff;
 }
 
-.nx-admin-payments-transaction-link,
-.nx-admin-payments-order-link {
+/* =========================================================
+   TRANSACTION
+========================================================= */
+
+.nx-admin-payments-transaction-link {
+  display: inline-block;
+  max-width: 100%;
   padding: 0;
+  overflow: hidden;
   border: 0;
   background: transparent;
   color: #2563eb;
   font-size: 12px;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   cursor: pointer;
 }
 
-.nx-admin-payments-transaction-link:hover,
+.nx-admin-payments-transaction-link:hover {
+  text-decoration: underline;
+}
+
+/* =========================================================
+   ORDER
+========================================================= */
+
+.nx-admin-payments-order-link {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 .nx-admin-payments-order-link:hover {
   text-decoration: underline;
 }
 
+/* =========================================================
+   CUSTOMER
+========================================================= */
+
 .nx-admin-payments-customer {
+  width: 100%;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -360,26 +458,42 @@
   font-weight: 700;
 }
 
+.nx-admin-payments-customer > div:last-child {
+  min-width: 0;
+  overflow: hidden;
+}
+
 .nx-admin-payments-customer strong {
   display: block;
   margin-bottom: 3px;
+  overflow: hidden;
   color: #1e293b;
   font-size: 12px;
   font-weight: 600;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .nx-admin-payments-customer span {
   display: block;
+  overflow: hidden;
   color: #94a3b8;
   font-size: 10.5px;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* =========================================================
+   PAYMENT METHOD
+========================================================= */
+
 .nx-admin-payments-method {
+  width: 100%;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 8px;
+  overflow: hidden;
   color: #475569;
   white-space: nowrap;
 }
@@ -387,6 +501,7 @@
 .nx-admin-payments-method > span {
   width: 28px;
   height: 28px;
+  flex: 0 0 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -395,23 +510,41 @@
   color: #64748b;
 }
 
-.nx-admin-payments-method i {
-  font-size: 12px;
+.nx-admin-payments-method > span i {
+  font-size: 13px;
 }
 
+.nx-admin-payments-method {
+  text-overflow: ellipsis;
+}
+
+/* =========================================================
+   AMOUNT
+========================================================= */
+
 .nx-admin-payments-amount {
+  display: block;
+  overflow: hidden;
   color: #0f172a;
   font-size: 12px;
   font-weight: 700;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* =========================================================
+   STATUS
+========================================================= */
+
 .nx-payment-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  max-width: 100%;
   min-height: 25px;
   padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  box-sizing: border-box;
   border-radius: 5px;
   font-size: 10.5px;
   font-weight: 600;
@@ -420,6 +553,7 @@
 
 .nx-payment-status i {
   font-size: 9px;
+  flex-shrink: 0;
 }
 
 .nx-payment-status.paid {
@@ -442,36 +576,56 @@
   color: #6d28d9;
 }
 
+/* =========================================================
+   DATE
+========================================================= */
+
 .nx-admin-payments-date {
+  display: block;
+  overflow: hidden;
   color: #64748b;
   font-size: 11px;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* =========================================================
+   VIEW DETAILS
+========================================================= */
+
 .nx-admin-payments-view-btn {
+  max-width: 100%;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 0;
+  overflow: hidden;
   border: 0;
   background: transparent;
   color: #2563eb;
   font-size: 11.5px;
   font-weight: 600;
-  cursor: pointer;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .nx-admin-payments-view-btn i {
+  flex-shrink: 0;
   font-size: 10px;
-  transition: transform 0.15s ease;
+  transition: transform 0.18s ease;
+}
+
+.nx-admin-payments-view-btn:hover {
+  color: #1d4ed8;
 }
 
 .nx-admin-payments-view-btn:hover i {
   transform: translateX(2px);
 }
 
-/* Empty */
+/* =========================================================
+   EMPTY STATE
+========================================================= */
 
 .nx-admin-payments-empty {
   padding: 65px 20px;
@@ -481,7 +635,7 @@
 .nx-admin-payments-empty > div {
   width: 46px;
   height: 46px;
-  margin: 0 auto 13px;
+  margin: 0 auto 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -492,14 +646,14 @@
 }
 
 .nx-admin-payments-empty h3 {
-  margin: 0 0 5px;
-  color: #1e293b;
+  margin: 0;
+  color: #0f172a;
   font-size: 14px;
   font-weight: 700;
 }
 
 .nx-admin-payments-empty p {
-  margin: 0 0 15px;
+  margin: 6px 0 14px;
   color: #94a3b8;
   font-size: 12px;
 }
@@ -509,14 +663,20 @@
   padding: 0 12px;
   border: 1px solid #dbe2ea;
   border-radius: 7px;
-  background: #ffffff;
+  background: #fff;
   color: #334155;
   font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
 }
 
-/* Footer */
+.nx-admin-payments-empty button:hover {
+  background: #f8fafc;
+}
+
+/* =========================================================
+   FOOTER / PAGINATION
+========================================================= */
 
 .nx-admin-payments-table-footer {
   min-height: 58px;
@@ -525,6 +685,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 15px;
+  box-sizing: border-box;
   color: #94a3b8;
   font-size: 11px;
 }
@@ -543,12 +704,14 @@
 .nx-admin-payments-table-footer button {
   width: 29px;
   height: 29px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 29px;
   border: 1px solid #dbe2ea;
   border-radius: 6px;
-  background: #ffffff;
+  background: #fff;
   color: #475569;
   cursor: pointer;
 }
@@ -569,11 +732,43 @@
   font-size: 11px;
 }
 
-/* Responsive */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 1200px) {
   .nx-admin-payments-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nx-admin-payments-table th,
+  .nx-admin-payments-table td {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .nx-admin-payments-table {
+    table-layout: fixed;
+  }
+
+  .nx-admin-payments-table th,
+  .nx-admin-payments-table td {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .nx-admin-payments-method > span {
+    width: 26px;
+    height: 26px;
+    flex-basis: 26px;
+  }
+
+  .nx-admin-payments-avatar {
+    width: 29px;
+    height: 29px;
+    flex-basis: 29px;
   }
 }
 
@@ -610,6 +805,43 @@
 
   .nx-admin-payments-filters select {
     width: 100%;
+    max-width: none;
+  }
+
+  .nx-admin-payments-table-wrap {
+    overflow: hidden;
+  }
+
+  .nx-admin-payments-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .nx-admin-payments-table th,
+  .nx-admin-payments-table td {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .nx-admin-payments-table th {
+    font-size: 9px;
+  }
+
+  .nx-admin-payments-table td {
+    font-size: 11px;
+  }
+
+  .nx-admin-payments-method > span {
+    display: none;
+  }
+
+  .nx-admin-payments-customer {
+    gap: 6px;
+  }
+
+  .nx-admin-payments-avatar {
+    display: none;
   }
 
   .nx-admin-payments-table-footer {
@@ -633,5 +865,41 @@
 
   .nx-admin-payments-summary-card {
     padding: 15px;
+  }
+
+  .nx-admin-payments-card-header {
+    padding: 16px;
+  }
+
+  .nx-admin-payments-filters {
+    padding: 13px 16px;
+  }
+
+  .nx-admin-payments-table-footer {
+    padding: 11px 16px;
+  }
+
+  .nx-admin-payments-table th,
+  .nx-admin-payments-table td {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .nx-admin-payments-table th {
+    font-size: 8.5px;
+    letter-spacing: 0.25px;
+  }
+
+  .nx-admin-payments-table td {
+    font-size: 10px;
+  }
+
+  .nx-admin-payments-view-btn {
+    font-size: 10px;
+    gap: 3px;
+  }
+
+  .nx-admin-payments-view-btn i {
+    display: none;
   }
 }

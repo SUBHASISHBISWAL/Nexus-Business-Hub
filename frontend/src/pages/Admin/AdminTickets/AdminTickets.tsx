@@ -552,31 +552,6 @@ function AdminTickets() {
 
       <section className="nx-ticket-table-card">
 
-        <div className="nx-ticket-table-header">
-          <div>
-            <h2>All Tickets</h2>
-
-            <span>
-              {filteredTickets.length} tickets found
-            </span>
-          </div>
-
-          <div className="nx-ticket-table-meta">
-            Showing{" "}
-            {filteredTickets.length === 0
-              ? 0
-              : (safeCurrentPage - 1) *
-                  ticketsPerPage +
-                1}
-            -
-            {Math.min(
-              safeCurrentPage * ticketsPerPage,
-              filteredTickets.length
-            )}{" "}
-            of {filteredTickets.length}
-          </div>
-        </div>
-
         {paginatedTickets.length > 0 ? (
           <div className="nx-ticket-table-wrapper">
 
