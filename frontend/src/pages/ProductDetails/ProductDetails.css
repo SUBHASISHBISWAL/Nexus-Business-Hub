@@ -1,34 +1,30 @@
-
-/* =========================================================
-   NEXUS BUSINESS HUB
-   PROFESSIONAL PRODUCT DETAILS
-   ========================================================= */
-
 .nx-product-details-page {
   min-height: 100vh;
-  background: #f7f9fc;
-  color: #172033;
-  padding-bottom: 70px;
+  background: #f6f7f9;
+  color: #1f2937;
+  padding-bottom: 56px;
 }
 
-/* =========================================================
-   BREADCRUMB
-   ========================================================= */
+/* =========================
+   Breadcrumb
+========================= */
 
 .nx-details-breadcrumb {
+  max-width: 1320px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+
   display: flex;
   align-items: center;
   gap: 9px;
-  padding-top: 22px;
-  padding-bottom: 22px;
+
   font-size: 13px;
-  color: #7a8496;
+  color: #7b8492;
 }
 
 .nx-details-breadcrumb a {
-  color: #526071;
+  color: #4f6f95;
   text-decoration: none;
-  font-weight: 500;
   transition: color 0.2s ease;
 }
 
@@ -36,37 +32,43 @@
   color: #2563eb;
 }
 
-.nx-details-breadcrumb span:last-child {
+.nx-breadcrumb-current {
   max-width: 420px;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
-  color: #172033;
-  font-weight: 600;
+  text-overflow: ellipsis;
 }
 
-/* =========================================================
-   MAIN PRODUCT CONTAINER
-   ========================================================= */
+/* =========================
+   Main Product Card
+========================= */
+
+.nx-details-breadcrumb,
+.nx-product-details-container {
+  max-width: 1440px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
 
 .nx-product-details-container {
-  max-width: 1280px;
+  max-width: 1320px;
 }
 
-.nx-product-details-grid {
+.nx-product-main-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
-  gap: 58px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 42px;
+
   background: #ffffff;
-  border: 1px solid #e6eaf0;
-  border-radius: 18px;
-  padding: 34px;
-  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.055);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  padding: 26px;
 }
 
-/* =========================================================
-   IMAGE AREA
-   ========================================================= */
+/* =========================
+   Image Section
+========================= */
 
 .nx-details-image-section {
   min-width: 0;
@@ -74,70 +76,87 @@
 
 .nx-details-image-wrap {
   width: 100%;
+  position: relative;
 }
 
 .nx-image-zoom-area {
   position: relative;
+
   width: 100%;
-  height: 510px;
-  overflow: hidden;
+  height: 470px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(
-      circle at center,
-      #ffffff 0%,
-      #f8fafc 65%,
-      #f1f5f9 100%
-    );
-  border: 1px solid #e6eaf0;
-  border-radius: 16px;
-  cursor: crosshair;
+
+  overflow: hidden;
+  cursor: zoom-in;
 }
 
 .nx-details-image {
   width: 100%;
   height: 100%;
+
   object-fit: contain;
-  padding: 42px;
-  user-select: none;
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.3s ease;
+  padding: 28px;
+
+  transition: none;
 }
 
-.nx-image-zoom-area:hover .nx-details-image {
-  transform: scale(1.015);
+.nx-image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+  color: #9ca3af;
 }
 
-/* =========================================================
-   IMAGE ARROWS
-   ========================================================= */
+.nx-image-placeholder i {
+  font-size: 34px;
+}
+
+.nx-image-placeholder span {
+  font-size: 13px;
+}
+
+/* Image Arrows */
 
 .nx-image-arrow {
   position: absolute;
   top: 50%;
-  z-index: 8;
-  width: 38px;
-  height: 38px;
+
+  width: 36px;
+  height: 36px;
+
+  transform: translateY(-50%);
+
+  border: 1px solid #e1e5ea;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.96);
+  color: #374151;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  border: 1px solid #dce2ea;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.94);
-  color: #334155;
-  font-size: 18px;
-  line-height: 1;
+
   cursor: pointer;
-  transform: translateY(-50%);
-  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.1);
+
+  opacity: 0;
   transition:
+    opacity 0.2s ease,
     background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
+    color 0.2s ease;
+}
+
+.nx-image-zoom-area:hover .nx-image-arrow {
+  opacity: 1;
 }
 
 .nx-image-arrow:hover {
@@ -147,404 +166,428 @@
 }
 
 .nx-image-arrow-left {
-  left: 16px;
+  left: 14px;
 }
 
 .nx-image-arrow-right {
-  right: 16px;
+  right: 14px;
 }
 
-/* =========================================================
-   MAGNIFIER
-   ========================================================= */
-
-.nx-image-magnifier {
+.nx-image-expand-icon {
   position: absolute;
-  z-index: 20;
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  background-repeat: no-repeat;
-  background-size: 280%;
-  border: 3px solid #ffffff;
-  box-shadow:
-    0 8px 28px rgba(15, 23, 42, 0.28),
-    0 0 0 1px rgba(37, 99, 235, 0.35);
-}
+  right: 14px;
+  bottom: 14px;
 
-/* =========================================================
-   IMAGE DOTS
-   ========================================================= */
+  width: 34px;
+  height: 34px;
 
-.nx-image-dots {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  margin-top: 15px;
+
+  border-radius: 7px;
+  border: 1px solid #e5e7eb;
+
+  background: rgba(255, 255, 255, 0.95);
+  color: #4b5563;
+
+  pointer-events: none;
 }
 
-.nx-image-dots button {
-  width: 19px;
-  height: 19px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #c2cad5;
-  font-size: 10px;
+.nx-image-counter {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+
+  padding: 5px 9px;
+
+  border-radius: 5px;
+  background: rgba(17, 24, 39, 0.72);
+
+  color: #ffffff;
+  font-size: 11px;
   line-height: 1;
-  cursor: pointer;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
 }
 
-.nx-image-dots button:hover {
-  color: #6b7280;
-  transform: scale(1.08);
-}
-
-.nx-image-dots button.active {
-  color: #2563eb;
-}
-
-/* =========================================================
-   THUMBNAILS
-   ========================================================= */
+/* =========================
+   Thumbnails
+========================= */
 
 .nx-product-thumbnails {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-top: 15px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+
+  margin-top: 12px;
 }
 
 .nx-product-thumbnail {
-  height: 82px;
+  height: 72px;
+
   padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+  border: 1px solid #e2e6eb;
+  border-radius: 7px;
+
   background: #ffffff;
-  border: 1px solid #e1e6ed;
-  border-radius: 10px;
+
   cursor: pointer;
   overflow: hidden;
+
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+    box-shadow 0.2s ease;
 }
 
 .nx-product-thumbnail:hover {
-  border-color: #93b4f7;
-  transform: translateY(-2px);
+  border-color: #9db9dc;
 }
 
 .nx-product-thumbnail.active {
-  border: 2px solid #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb;
 }
 
 .nx-thumbnail-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  pointer-events: none;
 }
 
-/* =========================================================
-   RIGHT PRODUCT CONTENT
-   ========================================================= */
+/* Dots */
+
+.nx-image-dots {
+  display: none;
+}
+
+/* =========================
+   Product Content
+========================= */
 
 .nx-details-content {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  padding: 4px 4px 0;
+
+  padding: 6px 4px;
 }
 
 .nx-details-category {
-  width: fit-content;
-  margin-bottom: 11px;
-  padding: 5px 10px;
-  border: 1px solid #dbe7ff;
-  border-radius: 6px;
-  background: #f3f7ff;
-  color: #2563eb;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
+  display: inline-flex;
+  align-self: flex-start;
 
-/* =========================================================
-   TITLE
-   ========================================================= */
+  margin-bottom: 9px;
+
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
 .nx-details-title-row {
   display: flex;
   align-items: flex-start;
-  gap: 18px;
+  gap: 16px;
 }
 
 .nx-details-title-row h1 {
   flex: 1;
+
   margin: 0;
+
   color: #111827;
-  font-size: clamp(28px, 3vw, 38px);
-  line-height: 1.14;
-  letter-spacing: -0.035em;
-  font-weight: 750;
+
+  font-size: 30px;
+  line-height: 1.25;
+  font-weight: 650;
+
+  letter-spacing: -0.025em;
 }
 
 .nx-details-wishlist {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
+  flex: 0 0 auto;
+
+  width: 40px;
+  height: 40px;
+
+  border: 1px solid #dfe3e8;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #59636f;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2px;
-  border: 1px solid #dce2ea;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #64748b;
+
   cursor: pointer;
+
   transition:
     color 0.2s ease,
     border-color 0.2s ease,
-    background 0.2s ease,
-    transform 0.2s ease;
+    background 0.2s ease;
 }
 
 .nx-details-wishlist:hover {
-  color: #ef4444;
+  color: #dc2626;
   border-color: #fecaca;
   background: #fff7f7;
-  transform: translateY(-1px);
 }
 
 .nx-details-wishlist.liked {
-  color: #ef4444;
+  color: #dc2626;
   border-color: #fecaca;
-  background: #fff5f5;
+  background: #fff7f7;
 }
 
-.nx-details-wishlist .bi {
-  font-size: 18px;
-}
-
-/* =========================================================
-   RATING
-   ========================================================= */
+/* =========================
+   Rating
+========================= */
 
 .nx-details-rating {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 8px;
-  margin-top: 14px;
+
+  margin-top: 13px;
+
   font-size: 13px;
-  color: #7b8494;
+  color: #6b7280;
 }
 
 .nx-rating-stars {
   color: #f59e0b;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 1px;
 }
 
 .nx-details-rating strong {
-  color: #1f2937;
-  font-size: 14px;
+  color: #374151;
+  font-weight: 600;
 }
 
-/* =========================================================
-   PRICE
-   ========================================================= */
+.nx-details-divider {
+  height: 1px;
+  background: #edf0f2;
+
+  margin: 17px 0;
+}
+
+/* =========================
+   Price
+========================= */
 
 .nx-details-price {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 13px;
-  margin-top: 22px;
-  padding-bottom: 19px;
-  border-bottom: 1px solid #edf0f4;
+  gap: 10px;
+
+  margin-bottom: 10px;
 }
 
 .nx-current-price {
   color: #111827;
-  font-size: 31px;
+  font-size: 28px;
   line-height: 1;
-  font-weight: 750;
-  letter-spacing: -0.025em;
+  font-weight: 700;
 }
 
 .nx-old-price {
-  color: #9aa3b1;
+  color: #9ca3af;
   font-size: 15px;
   text-decoration: line-through;
 }
 
-/* =========================================================
-   BADGE + STOCK
-   ========================================================= */
-
-.nx-details-badge {
-  width: fit-content;
-  margin-top: 18px;
-  padding: 6px 9px;
-  border-radius: 5px;
-  background: #fff7ed;
-  color: #c2410c;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-}
-
-.nx-details-stock {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
+.nx-discount {
   color: #15803d;
   font-size: 13px;
   font-weight: 600;
 }
 
-.nx-stock-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+/* =========================
+   Stock
+========================= */
+
+.nx-details-stock-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-bottom: 17px;
 }
 
-/* =========================================================
-   DESCRIPTION
-   ========================================================= */
+.nx-stock-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+  background: #16a34a;
+}
+
+.nx-stock-dot.out {
+  background: #dc2626;
+}
+
+.nx-stock-text {
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.nx-stock-dot.out + .nx-stock-text {
+  color: #dc2626;
+}
+
+.nx-details-badge {
+  padding: 4px 8px;
+
+  border-radius: 4px;
+
+  background: #f3f4f6;
+  color: #4b5563;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================
+   Description
+========================= */
 
 .nx-details-description {
-  margin-top: 21px;
+  margin-bottom: 18px;
 }
 
 .nx-details-description p {
   margin: 0;
-  color: #5d6879;
+
+  color: #5f6875;
+
   font-size: 14px;
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
-/* =========================================================
-   QUICK SPECS
-   ========================================================= */
+/* =========================
+   Quick Specs
+========================= */
 
 .nx-details-quick-spec {
   display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 0;
-  margin-top: 23px;
-  border: 1px solid #e5e9ef;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #fbfcfe;
+  grid-template-columns: 1fr 1fr;
+
+  border-top: 1px solid #edf0f2;
+  border-bottom: 1px solid #edf0f2;
+
+  margin-bottom: 20px;
 }
 
-.nx-details-quick-spec > div {
-  min-width: 0;
-  padding: 13px 15px;
+.nx-quick-spec-item {
+  padding: 12px 0;
 }
 
-.nx-details-quick-spec > div + div {
-  border-left: 1px solid #e5e9ef;
+.nx-quick-spec-item + .nx-quick-spec-item {
+  padding-left: 20px;
+  border-left: 1px solid #edf0f2;
 }
 
-.nx-details-quick-spec span {
+.nx-quick-spec-item span {
   display: block;
-  margin-bottom: 5px;
-  color: #8993a3;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+
+  margin-bottom: 4px;
+
+  color: #8a929d;
+  font-size: 11px;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.nx-details-quick-spec strong {
-  display: block;
-  color: #263143;
-  font-size: 12px;
-  line-height: 1.45;
+.nx-quick-spec-item strong {
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-/* =========================================================
-   PURCHASE AREA
-   ========================================================= */
+/* =========================
+   Purchase
+========================= */
 
 .nx-details-purchase {
   display: grid;
-  grid-template-columns: 112px 1fr 112px;
+  grid-template-columns: 104px 1fr 112px;
   gap: 10px;
-  margin-top: 25px;
+
+  margin-bottom: 18px;
 }
 
 .nx-quantity-control {
-  height: 48px;
+  height: 46px;
+
   display: grid;
-  grid-template-columns: 34px 1fr 34px;
-  align-items: center;
-  border: 1px solid #d9dfe8;
-  border-radius: 8px;
-  background: #ffffff;
+  grid-template-columns: 32px 1fr 32px;
+
+  border: 1px solid #d9dee5;
+  border-radius: 7px;
+
   overflow: hidden;
+  background: #ffffff;
 }
 
 .nx-quantity-control button {
-  height: 100%;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #4b5563;
+  border: 0;
+  background: #ffffff;
+  color: #374151;
+
   font-size: 18px;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
+
+  transition: background 0.2s ease;
 }
 
 .nx-quantity-control button:hover {
-  background: #f1f5f9;
-  color: #2563eb;
+  background: #f3f4f6;
 }
 
 .nx-quantity-control span {
-  text-align: center;
-  color: #172033;
-  font-size: 14px;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-left: 1px solid #edf0f2;
+  border-right: 1px solid #edf0f2;
+
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .nx-add-cart-details,
 .nx-buy-now-details {
-  height: 48px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
-}
+  height: 46px;
 
-.nx-add-cart-details {
+  border-radius: 7px;
+
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.nx-add-cart-details {
   border: 1px solid #2563eb;
   background: #2563eb;
   color: #ffffff;
@@ -552,299 +595,480 @@
 
 .nx-add-cart-details:hover {
   background: #1d4ed8;
-  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.22);
-  transform: translateY(-1px);
+  border-color: #1d4ed8;
 }
 
 .nx-buy-now-details {
-  border: 1px solid #cfd6e0;
+  border: 1px solid #d1d5db;
   background: #ffffff;
-  color: #263143;
+  color: #374151;
 }
 
 .nx-buy-now-details:hover {
-  border-color: #2563eb;
-  background: #f5f8ff;
-  color: #2563eb;
+  border-color: #9ca3af;
+  background: #f9fafb;
 }
 
-/* =========================================================
-   PRODUCT ID
-   ========================================================= */
+.nx-add-cart-details:disabled,
+.nx-buy-now-details:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Product Reference
+========================= */
 
 .nx-product-reference {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 17px;
-  padding-top: 15px;
-  border-top: 1px solid #edf0f4;
+  gap: 8px;
+
+  color: #9aa1aa;
   font-size: 11px;
 }
 
-.nx-product-reference span {
-  color: #98a1af;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
 .nx-product-reference strong {
-  color: #526071;
-  font-weight: 700;
+  color: #69727e;
+  font-weight: 600;
 }
 
-/* =========================================================
-   INFORMATION SECTION
-   ========================================================= */
+/* =========================
+   Information Cards
+========================= */
 
 .nx-product-information {
-  margin-top: 28px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
+
+  margin-top: 20px;
 }
 
 .nx-info-card {
-  min-width: 0;
-  padding: 27px;
-  border: 1px solid #e4e8ee;
-  border-radius: 14px;
   background: #ffffff;
-  box-shadow: 0 5px 20px rgba(15, 23, 42, 0.035);
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  padding: 20px;
 }
 
 .nx-info-title {
   display: flex;
   align-items: flex-start;
-  gap: 13px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid #edf0f4;
+  gap: 11px;
+
+  margin-bottom: 14px;
 }
 
 .nx-info-title > i {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
+  width: 30px;
+  height: 30px;
+
+  flex: 0 0 auto;
+
+  border-radius: 6px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: #eff6ff;
-  color: #2563eb;
-  font-size: 16px;
+
+  font-size: 14px;
 }
 
 .nx-info-title h2 {
-  margin: 0;
-  color: #172033;
-  font-size: 17px;
-  font-weight: 750;
-  letter-spacing: -0.01em;
+  margin: 1px 0 3px;
+
+  color: #1f2937;
+
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 650;
 }
 
 .nx-info-title p {
-  margin: 4px 0 0;
-  color: #8a94a4;
+  margin: 0;
+
+  color: #8a929d;
+
   font-size: 11px;
 }
 
-/* =========================================================
-   SUMMARY
-   ========================================================= */
-
 .nx-summary-text {
-  margin: 19px 0 0;
-  color: #5c6879;
+  margin: 0;
+
+  color: #606975;
+
   font-size: 13px;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
-/* =========================================================
-   FEATURES
-   ========================================================= */
+/* =========================
+   Features
+========================= */
 
 .nx-professional-features {
-  display: grid;
-  gap: 11px;
-  margin-top: 19px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
 }
 
 .nx-professional-feature {
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 10px 11px;
-  border-radius: 8px;
-  transition: background 0.2s ease;
-}
+  gap: 9px;
 
-.nx-professional-feature:hover {
-  background: #f8fafc;
+  color: #59636f;
+
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .nx-feature-icon {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+
+  background: #ecfdf3;
+  color: #16a34a;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: #ecfdf3;
-  color: #16a34a;
+
+  font-size: 11px;
 }
 
-.nx-feature-icon .bi {
-  font-size: 12px;
-}
-
-.nx-professional-feature span {
-  color: #455164;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-/* =========================================================
-   SPEC TABLE
-   ========================================================= */
+/* =========================
+   Specification Table
+========================= */
 
 .nx-spec-table {
-  margin-top: 17px;
-  border: 1px solid #e8ebf0;
-  border-radius: 9px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .nx-spec-row {
   display: grid;
-  grid-template-columns: 42% 58%;
-  min-height: 43px;
-  border-bottom: 1px solid #edf0f4;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  padding: 9px 0;
+
+  border-bottom: 1px solid #f0f1f3;
 }
 
 .nx-spec-row:last-child {
-  border-bottom: none;
-}
-
-.nx-spec-row span,
-.nx-spec-row strong {
-  display: flex;
-  align-items: center;
-  padding: 10px 13px;
-  font-size: 11px;
+  border-bottom: 0;
 }
 
 .nx-spec-row span {
-  background: #f8fafc;
-  color: #7a8494;
-  font-weight: 600;
-}
-
-.nx-spec-row strong {
-  color: #354154;
-  font-weight: 650;
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-}
-
-.nx-spec-row:hover span {
-  background: #f1f5f9;
-}
-
-/* =========================================================
-   BOTTOM TRUST CARDS
-   ========================================================= */
-
-.nx-details-bottom {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: 1px;
-}
-
-.nx-bottom-card {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 18px;
-  border: 1px solid #e4e8ee;
-  border-radius: 11px;
-  background: #ffffff;
-}
-
-.nx-bottom-card > i {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: #f1f5f9;
-  color: #475569;
-}
-
-.nx-bottom-card div {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.nx-bottom-card strong {
-  color: #263143;
+  color: #7a838e;
   font-size: 12px;
 }
 
-.nx-bottom-card span {
-  color: #8a94a4;
-  font-size: 10px;
+.nx-spec-row strong {
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+
+  text-align: right;
 }
 
-/* =========================================================
-   NOT FOUND
-   ========================================================= */
+/* =========================
+   Bottom Service Cards
+========================= */
+
+.nx-details-bottom {
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.nx-bottom-card {
+  min-height: 70px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 13px 15px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+}
+
+.nx-bottom-card > i {
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 auto;
+
+  border-radius: 7px;
+
+  background: #f3f6fa;
+  color: #4b6b8f;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+}
+
+.nx-bottom-card strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #374151;
+
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.nx-bottom-card span {
+  display: block;
+
+  color: #8a929d;
+
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* =========================
+   Fullscreen Viewer
+========================= */
+
+.nx-image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  background: rgba(12, 16, 22, 0.96);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+}
+
+.nx-viewer-content {
+  width: min(900px, 88vw);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.nx-viewer-image {
+  width: auto;
+  height: auto;
+
+  max-width: 88vw;
+  max-height: 76vh;
+
+  object-fit: contain;
+
+  user-select: none;
+}
+
+.nx-viewer-close {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+
+  width: 40px;
+  height: 40px;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.nx-viewer-close:hover {
+  background: rgba(255, 255, 255, 0.17);
+}
+
+.nx-viewer-counter {
+  position: absolute;
+  top: 27px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  color: rgba(255, 255, 255, 0.82);
+
+  font-size: 12px;
+}
+
+.nx-viewer-arrow {
+  position: absolute;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 44px;
+  height: 44px;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.nx-viewer-arrow:hover {
+  background: rgba(255, 255, 255, 0.17);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.nx-viewer-arrow-left {
+  left: 24px;
+}
+
+.nx-viewer-arrow-right {
+  right: 24px;
+}
+
+/* Viewer Thumbnails */
+
+.nx-viewer-thumbnails {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  max-width: 90vw;
+  overflow-x: auto;
+
+  padding-bottom: 3px;
+}
+
+.nx-viewer-thumbnails button {
+  width: 58px;
+  height: 58px;
+
+  flex: 0 0 auto;
+
+  padding: 3px;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+
+  background: rgba(255, 255, 255, 0.06);
+
+  cursor: pointer;
+}
+
+.nx-viewer-thumbnails button.active {
+  border-color: #ffffff;
+}
+
+.nx-viewer-thumbnails img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}
+
+/* =========================
+   Loading / Not Found
+========================= */
 
 .nx-product-not-found {
   min-height: 65vh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  padding: 30px;
+
   text-align: center;
-  padding: 40px 20px;
 }
 
-.nx-product-not-found > span {
-  margin-bottom: 15px;
-  color: #94a3b8;
-  font-size: 46px;
+.nx-product-not-found
+  .material-symbols-outlined {
+  margin-bottom: 14px;
+
+  color: #64748b;
+  font-size: 42px;
 }
 
 .nx-product-not-found h2 {
-  margin: 0;
-  color: #172033;
-  font-size: 24px;
+  margin: 0 0 7px;
+
+  color: #1f2937;
+
+  font-size: 22px;
+  font-weight: 650;
 }
 
 .nx-product-not-found p {
-  margin: 8px 0 20px;
-  color: #7b8494;
+  margin: 0 0 18px;
+
+  max-width: 420px;
+
+  color: #7b8490;
+
   font-size: 13px;
+  line-height: 1.6;
 }
 
 .nx-back-products {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 42px;
-  padding: 0 18px;
-  border-radius: 7px;
+
+  min-height: 40px;
+
+  padding: 0 17px;
+
+  border-radius: 6px;
+
   background: #2563eb;
   color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+
   text-decoration: none;
-  font-size: 12px;
-  font-weight: 700;
 }
 
 .nx-back-products:hover {
@@ -852,150 +1076,140 @@
   color: #ffffff;
 }
 
-/* =========================================================
-   RESPONSIVE - TABLET
-   ========================================================= */
+/* =========================
+   Responsive
+========================= */
 
-@media (max-width: 1050px) {
-  .nx-product-details-grid {
+@media (max-width: 1100px) {
+  .nx-product-main-card {
     grid-template-columns: 1fr;
-    gap: 35px;
+    gap: 28px;
   }
 
   .nx-image-zoom-area {
-    height: 470px;
+    height: 440px;
   }
 
+  .nx-details-content {
+    padding: 0;
+  }
+}
+
+@media (max-width: 800px) {
   .nx-product-information {
     grid-template-columns: 1fr;
   }
 
   .nx-details-bottom {
     grid-column: auto;
-  }
-}
-
-/* =========================================================
-   RESPONSIVE - SMALL TABLET
-   ========================================================= */
-
-@media (max-width: 700px) {
-  .nx-product-details-page {
-    padding-bottom: 40px;
-  }
-
-  .nx-details-breadcrumb {
-    padding-top: 16px;
-    padding-bottom: 16px;
-    font-size: 11px;
-  }
-
-  .nx-product-details-grid {
-    padding: 18px;
-    border-radius: 12px;
-    gap: 27px;
-  }
-
-  .nx-image-zoom-area {
-    height: 380px;
-    border-radius: 12px;
-  }
-
-  .nx-details-image {
-    padding: 28px;
-  }
-
-  .nx-product-thumbnails {
-    gap: 8px;
-  }
-
-  .nx-product-thumbnail {
-    height: 68px;
-  }
-
-  .nx-details-title-row h1 {
-    font-size: 27px;
-  }
-
-  .nx-details-price {
-    margin-top: 18px;
-  }
-
-  .nx-current-price {
-    font-size: 27px;
-  }
-
-  .nx-details-quick-spec {
     grid-template-columns: 1fr;
   }
 
-  .nx-details-quick-spec > div + div {
-    border-top: 1px solid #e5e9ef;
-    border-left: none;
+  .nx-product-thumbnails {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .nx-product-details-page {
+    padding-bottom: 35px;
+  }
+
+  .nx-details-breadcrumb {
+    padding-top: 13px;
+    padding-bottom: 13px;
+
+    font-size: 12px;
+  }
+
+  .nx-product-main-card {
+    padding: 14px;
+    border-radius: 9px;
+    gap: 22px;
+  }
+
+  .nx-image-zoom-area {
+    height: 330px;
+  }
+
+  .nx-details-image {
+    padding: 20px;
+  }
+
+  .nx-product-thumbnails {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+  }
+
+  .nx-product-thumbnail {
+    height: 65px;
+  }
+
+  .nx-details-title-row h1 {
+    font-size: 24px;
+  }
+
+  .nx-current-price {
+    font-size: 25px;
   }
 
   .nx-details-purchase {
-    grid-template-columns: 105px 1fr;
+    grid-template-columns: 100px 1fr;
   }
 
   .nx-buy-now-details {
     grid-column: 1 / -1;
   }
 
-  .nx-product-information {
-    gap: 14px;
+  .nx-details-quick-spec {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-quick-spec-item + .nx-quick-spec-item {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid #edf0f2;
   }
 
   .nx-info-card {
-    padding: 20px;
+    padding: 16px;
   }
 
-  .nx-details-bottom {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* =========================================================
-   RESPONSIVE - MOBILE
-   ========================================================= */
-
-@media (max-width: 480px) {
-  .nx-details-breadcrumb {
-    padding-left: 15px;
-    padding-right: 15px;
+  .nx-image-viewer {
+    padding: 15px;
   }
 
-  .nx-product-details-grid {
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 14px;
+  .nx-viewer-image {
+    max-width: 94vw;
+    max-height: 70vh;
   }
 
-  .nx-image-zoom-area {
-    height: 310px;
+  .nx-viewer-arrow {
+    width: 36px;
+    height: 36px;
   }
 
-  .nx-details-image {
-    padding: 22px;
-  }
-
-  .nx-image-arrow {
-    width: 32px;
-    height: 32px;
-    font-size: 15px;
-  }
-
-  .nx-image-arrow-left {
+  .nx-viewer-arrow-left {
     left: 10px;
   }
 
-  .nx-image-arrow-right {
+  .nx-viewer-arrow-right {
     right: 10px;
   }
 
-  .nx-image-magnifier {
-    width: 75px;
-    height: 75px;
+  .nx-viewer-close {
+    top: 12px;
+    right: 12px;
+  }
+
+  .nx-viewer-counter {
+    top: 24px;
+  }
+}
+
+@media (max-width: 420px) {
+  .nx-image-zoom-area {
+    height: 285px;
   }
 
   .nx-details-title-row {
@@ -1003,43 +1217,28 @@
   }
 
   .nx-details-title-row h1 {
-    font-size: 23px;
+    font-size: 21px;
   }
 
   .nx-details-wishlist {
-    width: 38px;
-    height: 38px;
-    flex-basis: 38px;
+    width: 36px;
+    height: 36px;
   }
 
   .nx-details-purchase {
-    grid-template-columns: 1fr;
-  }
-
-  .nx-quantity-control {
-    width: 100%;
+    grid-template-columns: 92px 1fr;
   }
 
   .nx-add-cart-details,
   .nx-buy-now-details {
-    width: 100%;
+    font-size: 12px;
   }
 
-  .nx-spec-row {
-    grid-template-columns: 1fr;
+  .nx-product-thumbnails {
+    grid-template-columns: repeat(4, 1fr);
   }
 
-  .nx-spec-row span {
-    padding-bottom: 5px;
-    background: #f8fafc;
-  }
-
-  .nx-spec-row strong {
-    padding-top: 5px;
-  }
-
-  .nx-info-card {
-    padding: 17px;
+  .nx-product-thumbnail {
+    height: 58px;
   }
 }
-

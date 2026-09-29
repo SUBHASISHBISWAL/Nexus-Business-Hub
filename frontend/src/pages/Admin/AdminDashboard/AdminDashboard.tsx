@@ -105,13 +105,31 @@ const monthlySales = [
   { month: "Sep", value: 94 },
 ];
 
+const topProducts = [
+  {
+    name: "Smart IoT Gateway Pro",
+    orders: "128 orders",
+  },
+  {
+    name: "Industrial PoE Switch 8P",
+    orders: "94 orders",
+  },
+  {
+    name: "Thermal Vision Array",
+    orders: "72 orders",
+  },
+];
+
 function AdminDashboard() {
   return (
     <div className="nx-admin-dashboard">
-
       {/* PAGE HEADER */}
       <div className="nx-admin-page-header">
         <div>
+          <span className="nx-admin-page-eyebrow">
+            EXECUTIVE OVERVIEW
+          </span>
+
           <h1>Dashboard</h1>
 
           <p>
@@ -124,7 +142,9 @@ function AdminDashboard() {
           className="nx-admin-date-button"
         >
           <i className="bi bi-calendar3" />
+
           <span>September 2026</span>
+
           <i className="bi bi-chevron-down" />
         </button>
       </div>
@@ -163,12 +183,12 @@ function AdminDashboard() {
 
       {/* MAIN DASHBOARD GRID */}
       <section className="nx-admin-dashboard-grid">
-
         {/* SALES OVERVIEW */}
         <div className="nx-admin-card nx-admin-sales-card">
           <div className="nx-admin-card-header">
             <div>
               <h2>Sales Overview</h2>
+
               <p>Monthly revenue performance</p>
             </div>
 
@@ -176,7 +196,8 @@ function AdminDashboard() {
               type="button"
               className="nx-admin-card-filter"
             >
-              Last 6 months
+              <span>Last 6 months</span>
+
               <i className="bi bi-chevron-down" />
             </button>
           </div>
@@ -220,12 +241,17 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* ORDER STATUS */}
+        {/* ORDER FULFILLMENT */}
         <div className="nx-admin-card nx-admin-status-card">
           <div className="nx-admin-card-header">
             <div>
-              <h2>Order Status</h2>
-              <p>Current order distribution</p>
+              <span className="nx-admin-section-label">
+                ORDERS
+              </span>
+
+              <h2>Order Fulfillment</h2>
+
+              <p>Current fulfillment progress</p>
             </div>
 
             <button
@@ -237,34 +263,32 @@ function AdminDashboard() {
             </button>
           </div>
 
-          <div className="nx-admin-status-content">
-            <div className="nx-admin-status-donut">
-              <div className="nx-admin-donut-center">
-                <strong>1,284</strong>
-                <span>Orders</span>
-              </div>
-            </div>
+          <div className="nx-admin-fulfillment-list">
+            {orderStatus.map((item) => (
+              <div
+                className="nx-admin-fulfillment-row"
+                key={item.label}
+              >
+                <div className="nx-admin-fulfillment-main">
+                  <span
+                    className={`nx-admin-status-dot ${item.className}`}
+                  />
 
-            <div className="nx-admin-status-list">
-              {orderStatus.map((item) => (
-                <div
-                  className="nx-admin-status-row"
-                  key={item.label}
-                >
-                  <div className="nx-admin-status-label">
-                    <span
-                      className={`nx-admin-status-dot ${item.className}`}
-                    />
-
-                    <span>{item.label}</span>
-                  </div>
-
-                  <div className="nx-admin-status-value">
-                    <strong>{item.count}</strong>
-                    <span>{item.percentage}%</span>
-                  </div>
+                  <span>{item.label}</span>
                 </div>
-              ))}
+
+                <strong>{item.count}</strong>
+
+                <span className="nx-admin-fulfillment-percent">
+                  {item.percentage}%
+                </span>
+              </div>
+            ))}
+
+            <div className="nx-admin-fulfillment-total">
+              <span>Total Orders</span>
+
+              <strong>1,284</strong>
             </div>
           </div>
         </div>
@@ -272,10 +296,10 @@ function AdminDashboard() {
 
       {/* RECENT ORDERS */}
       <section className="nx-admin-card nx-admin-orders-card">
-
         <div className="nx-admin-card-header">
           <div>
             <h2>Recent Orders</h2>
+
             <p>Latest orders placed by customers</p>
           </div>
 
@@ -283,7 +307,8 @@ function AdminDashboard() {
             type="button"
             className="nx-admin-view-all"
           >
-            View all
+            <span>View all</span>
+
             <i className="bi bi-arrow-right" />
           </button>
         </div>
@@ -354,62 +379,14 @@ function AdminDashboard() {
         </div>
       </section>
 
-      {/* BOTTOM CARDS */}
+      {/* BOTTOM GRID */}
       <section className="nx-admin-bottom-grid">
-
-        {/* QUICK SUMMARY */}
-        <div className="nx-admin-card nx-admin-summary-card">
-          <div className="nx-admin-card-header">
-            <div>
-              <h2>Store Summary</h2>
-              <p>Current operational overview</p>
-            </div>
-          </div>
-
-          <div className="nx-admin-summary-list">
-            <div>
-              <span>
-                <i className="bi bi-credit-card" />
-                Paid Orders
-              </span>
-
-              <strong>1,106</strong>
-            </div>
-
-            <div>
-              <span>
-                <i className="bi bi-truck" />
-                Pending Shipments
-              </span>
-
-              <strong>32</strong>
-            </div>
-
-            <div>
-              <span>
-                <i className="bi bi-box-seam" />
-                Low Stock Products
-              </span>
-
-              <strong>18</strong>
-            </div>
-
-            <div>
-              <span>
-                <i className="bi bi-headset" />
-                Open Tickets
-              </span>
-
-              <strong>24</strong>
-            </div>
-          </div>
-        </div>
-
-        {/* TOP PRODUCTS */}
+        {/* TOP PRODUCTS - LEFT */}
         <div className="nx-admin-card nx-admin-products-summary">
           <div className="nx-admin-card-header">
             <div>
               <h2>Top Products</h2>
+
               <p>Best performing products</p>
             </div>
 
@@ -422,44 +399,83 @@ function AdminDashboard() {
             </button>
           </div>
 
-          <div className="nx-admin-product-summary-list">
-            <div className="nx-admin-product-summary-item">
-              <div className="nx-admin-product-number">
-                01
-              </div>
+          <div className="nx-admin-summary-list">
+            {topProducts.map((product) => (
+              <div
+                className="nx-admin-summary-row"
+                key={product.name}
+              >
+                <span className="nx-admin-summary-label">
+                  <i className="bi bi-trophy" />
 
-              <div className="nx-admin-product-info">
-                <strong>Smart IoT Gateway Pro</strong>
-                <span>128 orders</span>
-              </div>
+                  {product.name}
+                </span>
 
-              <strong>₹24,999</strong>
+                <strong className="nx-admin-summary-value">
+                  {product.orders}
+                </strong>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* STORE SUMMARY - RIGHT */}
+        <div className="nx-admin-card nx-admin-summary-card">
+          <div className="nx-admin-card-header">
+            <div>
+              <h2>Store Summary</h2>
+
+              <p>Current operational overview</p>
+            </div>
+          </div>
+
+          <div className="nx-admin-summary-list">
+            <div className="nx-admin-summary-row">
+              <span className="nx-admin-summary-label">
+                <i className="bi bi-credit-card" />
+
+                Paid Orders
+              </span>
+
+              <strong className="nx-admin-summary-value">
+                1,106
+              </strong>
             </div>
 
-            <div className="nx-admin-product-summary-item">
-              <div className="nx-admin-product-number">
-                02
-              </div>
+            <div className="nx-admin-summary-row">
+              <span className="nx-admin-summary-label">
+                <i className="bi bi-truck" />
 
-              <div className="nx-admin-product-info">
-                <strong>Industrial PoE Switch 8P</strong>
-                <span>94 orders</span>
-              </div>
+                Pending Shipments
+              </span>
 
-              <strong>₹32,800</strong>
+              <strong className="nx-admin-summary-value">
+                32
+              </strong>
             </div>
 
-            <div className="nx-admin-product-summary-item">
-              <div className="nx-admin-product-number">
-                03
-              </div>
+            <div className="nx-admin-summary-row">
+              <span className="nx-admin-summary-label">
+                <i className="bi bi-box-seam" />
 
-              <div className="nx-admin-product-info">
-                <strong>Thermal Vision Array</strong>
-                <span>72 orders</span>
-              </div>
+                Low Stock Products
+              </span>
 
-              <strong>₹46,800</strong>
+              <strong className="nx-admin-summary-value">
+                18
+              </strong>
+            </div>
+
+            <div className="nx-admin-summary-row">
+              <span className="nx-admin-summary-label">
+                <i className="bi bi-headset" />
+
+                Open Tickets
+              </span>
+
+              <strong className="nx-admin-summary-value">
+                24
+              </strong>
             </div>
           </div>
         </div>

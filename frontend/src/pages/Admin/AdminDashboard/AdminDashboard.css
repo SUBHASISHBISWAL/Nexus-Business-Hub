@@ -1,57 +1,114 @@
+/* =========================================================
+   ADMIN DASHBOARD
+========================================================= */
+
 .nx-admin-dashboard {
   width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2px 0px 6px;
+  color: #0f172a;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
 .nx-admin-page-header {
+  position: relative;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #e8edf3;
+}
+
+.nx-admin-page-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 105px;
+  height: 2px;
+  background: linear-gradient(90deg, #0f2747, #2563eb);
+  border-radius: 2px;
+}
+
+.nx-admin-page-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #2563eb;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
 }
 
 .nx-admin-page-header h1 {
   margin: 0;
-  color: #172033;
+  color: #0f172a;
   font-size: 25px;
+  line-height: 1.25;
   font-weight: 700;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.3px;
 }
 
 .nx-admin-page-header p {
   margin: 6px 0 0;
-  color: #7c8797;
+  color: #64748b;
   font-size: 13px;
+  line-height: 1.5;
 }
 
-.nx-admin-date-button,
-.nx-admin-card-filter {
-  height: 36px;
+/* =========================================================
+   DATE BUTTON
+========================================================= */
 
+.nx-admin-date-button {
+  height: 36px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-
-  padding: 0 12px;
-
-  border: 1px solid #dfe4ea;
+  flex-shrink: 0;
+  padding: 0 13px;
+  border: 1px solid #dbe3ec;
   border-radius: 7px;
-
   background: #ffffff;
-  color: #4b5563;
-
-  font-size: 12px;
-  font-weight: 500;
-
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 600;
   cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
-.nx-admin-date-button:hover,
-.nx-admin-card-filter:hover {
-  background: #f8f9fb;
+.nx-admin-date-button i:first-child {
+  color: #2563eb;
 }
 
-/* STAT CARDS */
+.nx-admin-date-button i:last-child {
+  margin-left: 2px;
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+.nx-admin-date-button:hover {
+  border-color: #b9c9e5;
+  color: #2563eb;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.08);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   STAT CARDS
+========================================================= */
 
 .nx-admin-stat-grid {
   display: grid;
@@ -60,148 +117,266 @@
   margin-bottom: 16px;
 }
 
-.nx-admin-stat-card,
-.nx-admin-card {
+.nx-admin-stat-card {
+  min-width: 0;
+  min-height: 142px;
+  padding: 18px;
   border: 1px solid #e3e7ec;
   border-radius: 10px;
   background: #ffffff;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.025);
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.035);
+  box-sizing: border-box;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
 }
 
-.nx-admin-stat-card {
-  min-height: 142px;
-  padding: 18px;
+.nx-admin-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: #d3ddea;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.07);
 }
 
 .nx-admin-stat-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .nx-admin-stat-title {
-  color: #727d8d;
-  font-size: 12px;
-  font-weight: 500;
+  min-width: 0;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .nx-admin-stat-icon {
   width: 34px;
   height: 34px;
-
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 7px;
-
+  flex-shrink: 0;
+  border-radius: 8px;
   background: #eef3ff;
   color: #2563eb;
-
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .nx-admin-stat-value {
-  margin-top: 13px;
-
-  color: #172033;
-
-  font-size: 24px;
+  margin-top: 16px;
+  color: #0f172a;
+  font-size: 22px;
+  line-height: 1.15;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.4px;
 }
 
 .nx-admin-stat-footer {
   display: flex;
   align-items: center;
   gap: 7px;
-
-  margin-top: 8px;
-
-  color: #929baa;
-
-  font-size: 11px;
+  margin-top: 10px;
+  color: #94a3b8;
+  font-size: 10px;
 }
 
 .nx-admin-stat-change {
-  color: #159a68;
-  font-weight: 600;
+  color: #2563eb;
+  font-weight: 700;
 }
 
-/* COMMON CARD */
+/* =========================================================
+   COMMON CARDS
+========================================================= */
 
 .nx-admin-card {
-  padding: 20px;
+  min-width: 0;
+  border: 1px solid #e3e7ec;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.035);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .nx-admin-card-header {
+  min-width: 0;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 16px;
+  padding: 19px 20px;
+}
+
+.nx-admin-card-header > div {
+  min-width: 0;
 }
 
 .nx-admin-card-header h2 {
   margin: 0;
-
-  color: #202a3a;
-
-  font-size: 14px;
-  font-weight: 650;
+  color: #1e293b;
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.15px;
 }
 
 .nx-admin-card-header p {
   margin: 5px 0 0;
-
-  color: #8a94a3;
-
-  font-size: 11px;
+  color: #94a3b8;
+  font-size: 10.5px;
+  line-height: 1.4;
 }
 
-/* DASHBOARD GRID */
+.nx-admin-section-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #2563eb;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   MORE BUTTON
+========================================================= */
+
+.nx-admin-more-button {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  margin: 0;
+  padding: 0;
+
+  border: 1px solid #e3e8ef;
+  border-radius: 7px;
+
+  background: #ffffff !important;
+  color: #64748b;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  box-shadow: none !important;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.nx-admin-more-button:hover {
+  border-color: #cbd8eb;
+  background: #f7faff !important;
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   MAIN DASHBOARD GRID
+========================================================= */
 
 .nx-admin-dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.85fr);
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(0, 0.85fr);
   gap: 16px;
   margin-bottom: 16px;
 }
 
-/* SALES */
+/* =========================================================
+   SALES OVERVIEW
+========================================================= */
 
 .nx-admin-sales-card {
   min-height: 345px;
 }
 
+.nx-admin-card-filter {
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex-shrink: 0;
+
+  padding: 0 10px;
+
+  border: 1px solid #e0e6ee;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nx-admin-card-filter:hover {
+  border-color: #cbd8eb;
+  color: #2563eb;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.06);
+}
+
+.nx-admin-card-filter i {
+  color: #94a3b8;
+  font-size: 8px;
+}
+
+/* =========================================================
+   SALES CHART
+========================================================= */
+
 .nx-admin-sales-chart {
   height: 245px;
   display: flex;
+  padding: 0 20px 20px;
+  box-sizing: border-box;
 }
 
 .nx-admin-chart-y-axis {
   width: 48px;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  padding: 5px 8px 28px 0;
+  padding: 3px 8px 24px 0;
 
-  color: #a1a9b5;
-
+  color: #a1aab8;
   font-size: 9px;
+
   text-align: right;
+
+  box-sizing: border-box;
 }
 
 .nx-admin-chart-area {
   position: relative;
   flex: 1;
+  min-width: 0;
+  height: 100%;
 }
 
 .nx-admin-chart-lines {
   position: absolute;
-  inset: 5px 0 28px;
+  inset: 0 0 23px 0;
 
   display: flex;
   flex-direction: column;
@@ -209,179 +384,120 @@
 }
 
 .nx-admin-chart-lines span {
+  display: block;
   width: 100%;
-  height: 1px;
-  background: #edf0f3;
+  border-top: 1px dashed #edf0f4;
 }
 
 .nx-admin-chart-bars {
   position: absolute;
-  inset: 5px 0 0;
+  inset: 0;
 
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: end;
 
-  padding: 0 20px;
+  gap: 14px;
+  padding: 0 8px;
 }
 
 .nx-admin-chart-column {
   height: 100%;
-  flex: 1;
-
-  max-width: 65px;
+  min-width: 0;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+
+  gap: 8px;
 }
 
 .nx-admin-chart-bar {
-  width: 34px;
-  min-height: 12px;
+  width: min(38px, 70%);
+  min-height: 8px;
 
-  border-radius: 5px 5px 2px 2px;
+  border-radius: 6px 6px 3px 3px;
 
-  background: #3268df;
+  background: linear-gradient(
+    180deg,
+    #2563eb 0%,
+    #5b8def 100%
+  );
 
-  transition:
-    height 0.3s ease,
-    opacity 0.2s ease;
-}
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.14);
 
-.nx-admin-chart-bar:hover {
-  opacity: 0.8;
+  transform-origin: bottom;
+
+  animation: nxDashboardBarGrow 0.8s ease both;
 }
 
 .nx-admin-chart-column > span {
-  margin-top: 9px;
-
-  color: #8c96a5;
-
-  font-size: 10px;
+  color: #94a3b8;
+  font-size: 9px;
+  line-height: 1;
 }
 
-/* STATUS */
+/* =========================================================
+   ORDER FULFILLMENT
+========================================================= */
 
-.nx-admin-more-button {
-  width: 30px;
-  height: 30px;
+.nx-admin-status-card {
+  min-width: 0;
+}
 
-  display: flex;
+.nx-admin-fulfillment-list {
+  width: 100%;
+  padding: 0 20px 19px;
+  box-sizing: border-box;
+}
+
+.nx-admin-fulfillment-row {
+  min-width: 0;
+  min-height: 48px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    58px
+    42px;
+
   align-items: center;
-  justify-content: center;
 
-  border: 0;
-  border-radius: 6px;
-
-  background: transparent;
-  color: #8791a0;
-
-  cursor: pointer;
-}
-
-.nx-admin-more-button:hover {
-  background: #f5f7f9;
-  color: #374151;
-}
-
-.nx-admin-status-content {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-}
-
-.nx-admin-status-donut {
-  width: 150px;
-  height: 150px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background:
-    conic-gradient(
-      #2563eb 0 53%,
-      #5b8def 53% 75%,
-      #9bb7f4 75% 90%,
-      #dbe5fb 90% 100%
-    );
-
-  position: relative;
-}
-
-.nx-admin-status-donut::after {
-  content: "";
-
-  position: absolute;
-
-  width: 103px;
-  height: 103px;
-
-  border-radius: 50%;
-
-  background: #ffffff;
-}
-
-.nx-admin-donut-center {
-  position: relative;
-  z-index: 1;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.nx-admin-donut-center strong {
-  color: #172033;
-  font-size: 21px;
-  font-weight: 700;
-}
-
-.nx-admin-donut-center span {
-  margin-top: 2px;
-
-  color: #9099a7;
-
-  font-size: 10px;
-}
-
-.nx-admin-status-list {
-  flex: 1;
-}
-
-.nx-admin-status-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 10px 0;
-
-  border-bottom: 1px solid #f0f2f4;
-}
-
-.nx-admin-status-row:last-child {
-  border-bottom: 0;
-}
-
-.nx-admin-status-label {
-  display: flex;
-  align-items: center;
   gap: 8px;
 
-  color: #566172;
+  border-bottom: 1px solid #edf0f4;
+}
 
+.nx-admin-fulfillment-main {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.nx-admin-fulfillment-main > span:last-child {
+  min-width: 0;
+
+  overflow: hidden;
+
+  color: #475569;
   font-size: 11px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nx-admin-status-dot {
   width: 7px;
   height: 7px;
+
+  display: inline-block;
+  flex-shrink: 0;
 
   border-radius: 50%;
 }
@@ -395,115 +511,214 @@
 }
 
 .nx-admin-status-dot.shipped {
-  background: #9bb7f4;
+  background: #8eb0f5;
 }
 
 .nx-admin-status-dot.pending {
-  background: #dbe5fb;
+  background: #cbd9f3;
 }
 
-.nx-admin-status-value {
+.nx-admin-fulfillment-row > strong {
+  color: #1e293b;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-align: right;
+}
+
+.nx-admin-fulfillment-percent {
+  color: #94a3b8;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  text-align: right;
+}
+
+.nx-admin-fulfillment-total {
+  min-height: 52px;
+
   display: flex;
   align-items: center;
-  gap: 7px;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding-top: 3px;
 }
 
-.nx-admin-status-value strong {
-  color: #303a4a;
-  font-size: 11px;
+.nx-admin-fulfillment-total span {
+  color: #64748b;
+
+  font-size: 10.5px;
+  font-weight: 600;
 }
 
-.nx-admin-status-value span {
-  color: #9aa3b0;
-  font-size: 10px;
+.nx-admin-fulfillment-total strong {
+  color: #0f172a;
+
+  font-size: 15px;
+  font-weight: 700;
 }
 
-/* RECENT ORDERS */
+/* =========================================================
+   RECENT ORDERS
+========================================================= */
 
 .nx-admin-orders-card {
   margin-bottom: 16px;
 }
 
 .nx-admin-view-all {
+  height: 30px;
+
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+
+  gap: 7px;
+
+  flex-shrink: 0;
+
+  padding: 0 10px;
 
   border: 0;
+
   background: transparent;
 
   color: #2563eb;
 
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
 
   cursor: pointer;
 }
 
-.nx-admin-view-all:hover {
-  color: #1d4ed8;
+.nx-admin-view-all i {
+  font-size: 10px;
+
+  transition: transform 0.2s ease;
 }
+
+.nx-admin-view-all:hover i {
+  transform: translateX(3px);
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
 
 .nx-admin-table-wrapper {
   width: 100%;
-  overflow-x: auto;
+
+  overflow: hidden;
+
+  border-top: 1px solid #edf0f4;
 }
 
 .nx-admin-table {
   width: 100%;
-  min-width: 720px;
+  max-width: 100%;
+  min-width: 0;
+
+  table-layout: fixed;
 
   border-collapse: collapse;
 }
 
 .nx-admin-table th {
-  padding: 11px 10px;
+  height: 42px;
 
-  border-bottom: 1px solid #e8ebef;
+  padding: 0 14px;
 
-  color: #8b95a3;
+  border-bottom: 1px solid #e8edf2;
 
-  font-size: 10px;
-  font-weight: 600;
+  background: #fbfcfe;
+
+  color: #7b8797;
+
+  font-size: 9.5px;
+  font-weight: 700;
+
   text-align: left;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+
+  white-space: nowrap;
+}
+
+.nx-admin-table th:nth-child(1) {
+  width: 17%;
+}
+
+.nx-admin-table th:nth-child(2) {
+  width: 23%;
+}
+
+.nx-admin-table th:nth-child(3) {
+  width: 16%;
+}
+
+.nx-admin-table th:nth-child(4) {
+  width: 16%;
+}
+
+.nx-admin-table th:nth-child(5) {
+  width: 20%;
+}
+
+.nx-admin-table th:nth-child(6) {
+  width: 8%;
 }
 
 .nx-admin-table td {
-  padding: 13px 10px;
+  height: 61px;
 
-  border-bottom: 1px solid #f0f2f4;
+  padding: 9px 14px;
 
-  color: #4d5868;
+  border-bottom: 1px solid #edf0f4;
 
-  font-size: 11px;
+  color: #475569;
+
+  font-size: 10.5px;
+
+  vertical-align: middle;
+
+  box-sizing: border-box;
 }
 
 .nx-admin-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
+.nx-admin-table tbody tr {
+  transition: background 0.18s ease;
+}
+
 .nx-admin-table tbody tr:hover {
-  background: #fafbfc;
+  background: #fbfdff;
 }
 
 .nx-admin-order-number {
   color: #2563eb;
-  font-weight: 600;
+
+  font-size: 10.5px;
+  font-weight: 650;
 }
 
 .nx-admin-customer {
+  min-width: 0;
+
   display: flex;
   align-items: center;
-  gap: 9px;
+
+  gap: 8px;
 }
 
 .nx-admin-customer-avatar {
-  width: 28px;
-  height: 28px;
+  width: 27px;
+  height: 27px;
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
@@ -511,180 +726,367 @@
 
   border-radius: 50%;
 
-  background: #eef2f8;
-  color: #506078;
+  background: #eef3ff;
+  color: #2563eb;
 
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
 }
 
-.nx-admin-table td strong {
-  color: #303a4a;
-  font-weight: 600;
+.nx-admin-customer > span {
+  min-width: 0;
+
+  overflow: hidden;
+
+  color: #475569;
+
+  font-size: 10.5px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.nx-admin-order-date {
-  color: #8d96a4 !important;
+.nx-admin-table td strong {
+  color: #1e293b;
+
+  font-size: 10.5px;
+  font-weight: 650;
 }
 
 .nx-admin-order-status {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  padding: 5px 8px;
+  max-width: 100%;
 
-  border-radius: 5px;
+  padding: 4px 8px;
+
+  border-radius: 12px;
 
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 650;
+
+  white-space: nowrap;
 }
 
 .nx-admin-order-status.processing {
-  background: #fff6e5;
-  color: #b77905;
-}
-
-.nx-admin-order-status.shipped {
-  background: #edf4ff;
+  background: #eef3ff;
   color: #2563eb;
 }
 
+.nx-admin-order-status.shipped {
+  background: #edf7ff;
+  color: #3577b8;
+}
+
 .nx-admin-order-status.delivered {
-  background: #eaf8f1;
-  color: #16855a;
+  background: #eef8f4;
+  color: #3c8067;
 }
 
 .nx-admin-order-status.placed {
-  background: #f2f4f7;
-  color: #687386;
+  background: #f4f5f7;
+  color: #64748b;
+}
+
+.nx-admin-order-date {
+  color: #94a3b8 !important;
+  white-space: nowrap;
 }
 
 .nx-admin-row-action {
   width: 28px;
   height: 28px;
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #e1e5ea;
+  border: 1px solid #e3e8ef;
   border-radius: 6px;
 
   background: #ffffff;
-  color: #687386;
+  color: #64748b;
+
+  font-size: 11px;
 
   cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .nx-admin-row-action:hover {
-  border-color: #b8c8e8;
+  border-color: #c7d5eb;
+  background: #f7faff;
   color: #2563eb;
+
+  transform: translateY(-1px);
 }
 
-/* BOTTOM GRID */
+/* =========================================================
+   BOTTOM GRID
+========================================================= */
 
 .nx-admin-bottom-grid {
+  width: 100%;
+
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
   gap: 16px;
+
+  align-items: stretch;
 }
+
+/*
+   TOP PRODUCTS = LEFT
+   STORE SUMMARY = RIGHT
+*/
+
+.nx-admin-products-summary {
+  order: 1;
+}
+
+.nx-admin-summary-card {
+  order: 2;
+}
+
+/* =========================================================
+   SUMMARY LIST
+   EXACT SAME STRUCTURE FOR BOTH CARDS
+========================================================= */
 
 .nx-admin-summary-list {
+  width: 100%;
+
   display: flex;
   flex-direction: column;
+
+  padding: 0 20px 15px;
+
+  box-sizing: border-box;
 }
 
-.nx-admin-summary-list > div {
-  min-height: 50px;
+/* EXACT SAME ROW */
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.nx-admin-summary-row {
+  width: 100%;
+  height: 49px;
+  min-height: 49px;
 
-  border-bottom: 1px solid #f0f2f4;
-}
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
 
-.nx-admin-summary-list > div:last-child {
-  border-bottom: 0;
-}
-
-.nx-admin-summary-list span {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-
-  color: #697485;
-
-  font-size: 11px;
-}
-
-.nx-admin-summary-list span i {
-  color: #60718d;
-  font-size: 14px;
-}
-
-.nx-admin-summary-list strong {
-  color: #273143;
-  font-size: 13px;
-  font-weight: 650;
-}
-
-.nx-admin-product-summary-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.nx-admin-product-summary-item {
-  min-height: 54px;
-
-  display: flex;
-  align-items: center;
   gap: 12px;
 
-  border-bottom: 1px solid #f0f2f4;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border-bottom: 1px solid #edf0f4;
+
+  box-sizing: border-box;
 }
 
-.nx-admin-product-summary-item:last-child {
+.nx-admin-summary-row:last-child {
   border-bottom: 0;
 }
 
-.nx-admin-product-number {
-  width: 28px;
+/* =========================================================
+   SUMMARY LABEL
+========================================================= */
 
-  color: #9aa3b0;
+.nx-admin-summary-label {
+  min-width: 0;
 
-  font-size: 10px;
+  flex: 1 1 auto;
+
+  display: flex !important;
+  align-items: center !important;
+
+  gap: 9px;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  overflow: hidden;
+
+  color: #64748b;
+
+  font-size: 10.5px;
   font-weight: 600;
+
+  line-height: 1.2;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  box-sizing: border-box;
 }
 
-.nx-admin-product-info {
-  flex: 1;
+/* =========================================================
+   SUMMARY ICON
+========================================================= */
 
-  display: flex;
-  flex-direction: column;
-}
+.nx-admin-summary-label > i {
+  width: 27px;
+  height: 27px;
 
-.nx-admin-product-info strong {
-  color: #374151;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  flex: 0 0 27px;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border-radius: 7px;
+
+  background: #eef3ff;
+  color: #2563eb;
 
   font-size: 11px;
-  font-weight: 600;
+
+  box-sizing: border-box;
 }
 
-.nx-admin-product-info span {
-  margin-top: 3px;
+/* =========================================================
+   SUMMARY VALUE
+========================================================= */
 
-  color: #9aa3b0;
+.nx-admin-summary-value {
+  min-width: max-content;
 
-  font-size: 9px;
+  flex: 0 0 auto;
+
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+
+  color: #1e293b;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  text-align: right;
+
+  white-space: nowrap;
+
+  box-sizing: border-box;
 }
 
-.nx-admin-product-summary-item > strong {
-  color: #344054;
-  font-size: 11px;
-  font-weight: 600;
+/* =========================================================
+   TOP PRODUCTS
+========================================================= */
+
+.nx-admin-products-summary {
+  min-width: 0;
 }
 
-/* RESPONSIVE */
+.nx-admin-products-summary .nx-admin-summary-list {
+  width: 100%;
+}
+
+.nx-admin-products-summary .nx-admin-summary-row {
+  height: 49px;
+  min-height: 49px;
+}
+
+.nx-admin-products-summary .nx-admin-summary-label {
+  min-width: 0;
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-admin-products-summary .nx-admin-summary-value {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   STORE SUMMARY
+========================================================= */
+
+.nx-admin-summary-card {
+  min-width: 0;
+}
+
+.nx-admin-summary-card .nx-admin-summary-list {
+  width: 100%;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+.nx-admin-stat-card,
+.nx-admin-card {
+  animation: nxDashboardFadeUp 0.45s ease both;
+}
+
+.nx-admin-stat-card:nth-child(1) {
+  animation-delay: 0.03s;
+}
+
+.nx-admin-stat-card:nth-child(2) {
+  animation-delay: 0.07s;
+}
+
+.nx-admin-stat-card:nth-child(3) {
+  animation-delay: 0.11s;
+}
+
+.nx-admin-stat-card:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+.nx-admin-bottom-grid .nx-admin-card:nth-child(1) {
+  animation-delay: 0.18s;
+}
+
+.nx-admin-bottom-grid .nx-admin-card:nth-child(2) {
+  animation-delay: 0.22s;
+}
+
+@keyframes nxDashboardFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nxDashboardBarGrow {
+  from {
+    opacity: 0.35;
+    transform: scaleY(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 1200px
+========================================================= */
 
 @media (max-width: 1200px) {
   .nx-admin-stat-grid {
@@ -692,53 +1094,247 @@
   }
 
   .nx-admin-dashboard-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* =========================================================
+   RESPONSIVE - 900px
+========================================================= */
 
 @media (max-width: 900px) {
   .nx-admin-bottom-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nx-admin-products-summary {
+    order: 1;
+  }
+
+  .nx-admin-summary-card {
+    order: 2;
   }
 }
 
-@media (max-width: 600px) {
-  .nx-admin-page-header {
-    align-items: flex-start;
-    flex-direction: column;
+/* =========================================================
+   RESPONSIVE - 768px
+========================================================= */
+
+@media (max-width: 768px) {
+  .nx-admin-dashboard {
+    padding: 22px 18px 32px;
   }
 
-  .nx-admin-date-button {
-    width: 100%;
-    justify-content: center;
+  .nx-admin-page-header {
+    margin-bottom: 18px;
+  }
+
+  .nx-admin-page-header h1 {
+    font-size: 24px;
   }
 
   .nx-admin-stat-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .nx-admin-card {
-    padding: 16px;
-  }
-
-  .nx-admin-status-content {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .nx-admin-status-donut {
-    margin: 0 auto;
+  .nx-admin-card-header {
+    padding: 17px 16px;
   }
 
   .nx-admin-sales-chart {
     height: 220px;
+    padding: 0 16px 18px;
+  }
+
+  .nx-admin-fulfillment-list {
+    padding: 0 16px 17px;
+  }
+
+  .nx-admin-table-wrapper {
+    overflow: hidden;
+  }
+
+  .nx-admin-table th,
+  .nx-admin-table td {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .nx-admin-table th:nth-child(5),
+  .nx-admin-table td:nth-child(5) {
+    display: none;
+  }
+
+  .nx-admin-table th:nth-child(1) {
+    width: 20%;
+  }
+
+  .nx-admin-table th:nth-child(2) {
+    width: 28%;
+  }
+
+  .nx-admin-table th:nth-child(3) {
+    width: 19%;
+  }
+
+  .nx-admin-table th:nth-child(4) {
+    width: 22%;
+  }
+
+  .nx-admin-table th:nth-child(6) {
+    width: 11%;
+  }
+
+  .nx-admin-summary-list {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 600px
+========================================================= */
+
+@media (max-width: 600px) {
+  .nx-admin-dashboard {
+    padding: 18px 14px 28px;
+  }
+
+  .nx-admin-page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .nx-admin-date-button {
+    width: 100%;
+  }
+
+  .nx-admin-stat-card {
+    min-height: 132px;
+    padding: 16px;
+  }
+
+  .nx-admin-card-header {
+    padding: 16px;
+  }
+
+  .nx-admin-card-filter {
+    font-size: 9px;
+    padding: 0 8px;
+  }
+
+  .nx-admin-sales-chart {
+    height: 210px;
+    padding: 0 14px 16px;
+  }
+
+  .nx-admin-chart-y-axis {
+    width: 40px;
   }
 
   .nx-admin-chart-bars {
+    gap: 8px;
     padding: 0 5px;
   }
 
   .nx-admin-chart-bar {
     width: 24px;
+  }
+
+  .nx-admin-fulfillment-row {
+    grid-template-columns:
+      minmax(0, 1fr)
+      48px
+      38px;
+
+    gap: 6px;
+  }
+
+  .nx-admin-table {
+    table-layout: fixed;
+  }
+
+  .nx-admin-table th,
+  .nx-admin-table td {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .nx-admin-table th:nth-child(3),
+  .nx-admin-table td:nth-child(3) {
+    display: none;
+  }
+
+  .nx-admin-table th:nth-child(1) {
+    width: 24%;
+  }
+
+  .nx-admin-table th:nth-child(2) {
+    width: 34%;
+  }
+
+  .nx-admin-table th:nth-child(4) {
+    width: 27%;
+  }
+
+  .nx-admin-table th:nth-child(6) {
+    width: 15%;
+  }
+
+  .nx-admin-customer-avatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nx-admin-customer {
+    gap: 6px;
+  }
+
+  /* Bottom summary cards */
+
+  .nx-admin-summary-list {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .nx-admin-summary-row {
+    height: 49px;
+    min-height: 49px;
+  }
+
+  .nx-admin-summary-label {
+    gap: 8px;
+    font-size: 10px;
+  }
+
+  .nx-admin-summary-label > i {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+  }
+
+  .nx-admin-summary-value {
+    font-size: 10.5px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-admin-stat-card,
+  .nx-admin-card,
+  .nx-admin-chart-bar {
+    animation: none;
+  }
+
+  .nx-admin-stat-card,
+  .nx-admin-row-action,
+  .nx-admin-view-all i,
+  .nx-admin-date-button,
+  .nx-admin-more-button,
+  .nx-admin-card-filter {
+    transition: none;
   }
 }

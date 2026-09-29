@@ -2,8 +2,9 @@
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 30px 34px 110px;
+  padding: 3px 3px 10px;
   box-sizing: border-box;
+  font-family: arial;
 }
 
 /* HEADER */
