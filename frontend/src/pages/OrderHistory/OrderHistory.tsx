@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./OrderHistory.css";
 import { getOrders } from "../../services/orderService";
+import { OrderHistorySkeleton } from "../../components/skeleton";
+import { ErrorState } from "../../components/common/ErrorState";
+import { useInitialLoading } from "../../context/InitialLoadingContext";
 
 type Order = {
   id: number;
@@ -36,28 +39,30 @@ type Order = {
 
 function OrderHistory() {
   const navigate = useNavigate();
+  const { markAppReady } = useInitialLoading();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const loadOrders = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await getOrders();
+
+      setOrders(data);
+    } catch (err) {
+      console.error("Failed to load orders:", err);
+      setError("Unable to load your orders.");
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
+
   useEffect(() => {
-    const loadOrders = async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const data = await getOrders();
-
-        setOrders(data);
-      } catch (err) {
-        console.error("Failed to load orders:", err);
-        setError("Unable to load your orders.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadOrders();
   }, []);
 
@@ -78,40 +83,41 @@ function OrderHistory() {
   };
 
   /*
-   * LOADING STATE
+   * LOADING STATE - Clean Shimmer Skeleton
    */
   if (loading) {
     return (
       <div className="nx-order-history-page">
         <div className="container nx-order-history-container">
-          <div className="nx-order-history-loading">
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">
-                Loading...
-              </span>
-            </div>
-
-            <p>Loading your orders...</p>
+          <div className="nx-order-history-header">
+            <span className="nx-order-history-kicker">ACCOUNT</span>
+            <h1>Order History</h1>
+            <p>
+              View your previous orders, payment details and order status.
+            </p>
           </div>
+          <OrderHistorySkeleton count={3} />
         </div>
       </div>
     );
   }
 
   /*
-   * ERROR STATE
+   * ERROR STATE - Clean Error Card with Retry Button
    */
   if (error) {
     return (
       <div className="nx-order-history-page">
         <div className="container nx-order-history-container">
-          <div className="nx-order-history-error">
-            <i className="bi bi-exclamation-circle"></i>
-
-            <h2>Unable to load orders</h2>
-
-            <p>{error}</p>
+          <div className="nx-order-history-header">
+            <span className="nx-order-history-kicker">ACCOUNT</span>
+            <h1>Order History</h1>
           </div>
+          <ErrorState
+            title="Unable to load content"
+            message={error}
+            onRetry={loadOrders}
+          />
         </div>
       </div>
     );

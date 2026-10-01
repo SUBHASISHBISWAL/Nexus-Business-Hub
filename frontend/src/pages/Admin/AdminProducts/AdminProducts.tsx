@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { AdminTableSkeleton } from "../../../components/skeleton";
+import { ErrorState } from "../../../components/common/ErrorState";
+import { getProducts } from "../../../services/productService";
+import { useInitialLoading } from "../../../context/InitialLoadingContext";
+
 import "./AdminProducts.css";
 
 const PRODUCTS_STORAGE_KEY = "nexus_business_products";
+const ITEMS_PER_PAGE = 8;
 
 type ProductStatus =
   | "Active"
@@ -189,14 +196,17 @@ const initialProducts: Product[] = [
 
 function AdminProducts() {
   const navigate = useNavigate();
+  const { markAppReady } = useInitialLoading();
 
   const [products, setProducts] =
     useState<Product[]>(initialProducts);
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] =
     useState("All Categories");
-
   const [statusFilter, setStatusFilter] =
     useState("All Status");
 
@@ -208,50 +218,111 @@ function AdminProducts() {
   const [deleteSuccess, setDeleteSuccess] =
     useState(false);
 
-  const itemsPerPage = 8;
+  /*
+   * LOAD PRODUCTS
+   *
+   * Priority:
+   * 1. LocalStorage products
+   * 2. Backend API products
+   * 3. Initial demo products
+   */
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-  /* =========================
-     LOAD PRODUCTS
-  ========================= */
+      const storedProducts =
+        localStorage.getItem(PRODUCTS_STORAGE_KEY);
+
+      if (storedProducts) {
+        try {
+          const parsedProducts: Product[] =
+            JSON.parse(storedProducts);
+
+          if (
+            Array.isArray(parsedProducts) &&
+            parsedProducts.length > 0
+          ) {
+            setProducts(parsedProducts);
+            setLoading(false);
+            markAppReady();
+            return;
+          }
+        } catch (storageError) {
+          console.error(
+            "Unable to parse local products:",
+            storageError
+          );
+        }
+      }
+
+      const apiData = await getProducts();
+
+      if (Array.isArray(apiData) && apiData.length > 0) {
+        const mappedProducts: Product[] =
+          apiData.map((product) => ({
+            id: product.id,
+            name: product.name,
+            sku: `NEX-${
+              product.category?.substring(0, 3).toUpperCase() ||
+              "GEN"
+            }-${String(product.id).padStart(3, "0")}`,
+            category: product.category || "Electronics",
+            price: Number(product.price) || 0,
+            stock: product.stockQuantity ?? 25,
+            status:
+              product.isActive === false
+                ? "Inactive"
+                : "Active",
+            updated: "22 Sep 2026",
+            images: [],
+          }));
+
+        setProducts(mappedProducts);
+
+        localStorage.setItem(
+          PRODUCTS_STORAGE_KEY,
+          JSON.stringify(mappedProducts)
+        );
+      } else {
+        setProducts(initialProducts);
+      }
+    } catch (err) {
+      console.error(
+        "Failed to load admin products:",
+        err
+      );
+
+      setError(
+        "Unable to load products right now. Please try again."
+      );
+
+      setProducts(initialProducts);
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
 
   useEffect(() => {
-    const storedProducts =
-      localStorage.getItem(PRODUCTS_STORAGE_KEY);
-
-    if (!storedProducts) {
-      return;
-    }
-
-    try {
-      const parsedProducts: Product[] =
-        JSON.parse(storedProducts);
-
-      if (Array.isArray(parsedProducts)) {
-        setProducts(parsedProducts);
-      }
-    } catch (error) {
-      console.error(
-        "Unable to load products from localStorage:",
-        error
-      );
-    }
+    loadProducts();
   }, []);
 
-  /* =========================
-     SAVE PRODUCTS
-  ========================= */
-
+  /*
+   * SAVE PRODUCTS
+   */
   useEffect(() => {
-    localStorage.setItem(
-      PRODUCTS_STORAGE_KEY,
-      JSON.stringify(products)
-    );
-  }, [products]);
+    if (!loading) {
+      localStorage.setItem(
+        PRODUCTS_STORAGE_KEY,
+        JSON.stringify(products)
+      );
+    }
+  }, [products, loading]);
 
-  /* =========================
-     CATEGORIES
-  ========================= */
-
+  /*
+   * CATEGORIES
+   */
   const categories = useMemo(() => {
     const categorySet = new Set(
       products
@@ -262,10 +333,9 @@ function AdminProducts() {
     return Array.from(categorySet);
   }, [products]);
 
-  /* =========================
-     FILTER PRODUCTS
-  ========================= */
-
+  /*
+   * FILTER PRODUCTS
+   */
   const filteredProducts = useMemo(() => {
     const searchValue =
       search.trim().toLowerCase();
@@ -304,15 +374,13 @@ function AdminProducts() {
     statusFilter,
   ]);
 
-  /* =========================
-     PAGINATION
-  ========================= */
-
+  /*
+   * PAGINATION
+   */
   const totalPages = Math.max(
     1,
     Math.ceil(
-      filteredProducts.length /
-        itemsPerPage
+      filteredProducts.length / ITEMS_PER_PAGE
     )
   );
 
@@ -323,10 +391,10 @@ function AdminProducts() {
 
   const startIndex =
     (safeCurrentPage - 1) *
-    itemsPerPage;
+    ITEMS_PER_PAGE;
 
   const endIndex =
-    startIndex + itemsPerPage;
+    startIndex + ITEMS_PER_PAGE;
 
   const paginatedProducts =
     filteredProducts.slice(
@@ -334,12 +402,10 @@ function AdminProducts() {
       endIndex
     );
 
-  /* =========================
-     SUMMARY
-  ========================= */
-
-  const totalProducts =
-    products.length;
+  /*
+   * SUMMARY
+   */
+  const totalProducts = products.length;
 
   const activeProducts =
     products.filter(
@@ -350,8 +416,7 @@ function AdminProducts() {
   const outOfStockProducts =
     products.filter(
       (product) =>
-        product.status ===
-          "Out of Stock" ||
+        product.status === "Out of Stock" ||
         product.stock === 0
     ).length;
 
@@ -361,10 +426,9 @@ function AdminProducts() {
         product.status === "Draft"
     ).length;
 
-  /* =========================
-     HANDLERS
-  ========================= */
-
+  /*
+   * HANDLERS
+   */
   const handleSearchChange = (
     value: string
   ) => {
@@ -388,9 +452,7 @@ function AdminProducts() {
 
   const handleClearFilters = () => {
     setSearch("");
-    setCategoryFilter(
-      "All Categories"
-    );
+    setCategoryFilter("All Categories");
     setStatusFilter("All Status");
     setCurrentPage(1);
   };
@@ -441,14 +503,13 @@ function AdminProducts() {
     );
 
     setDeleteProduct(null);
-
     setDeleteSuccess(true);
 
     const newTotalPages = Math.max(
       1,
       Math.ceil(
         updatedProducts.length /
-          itemsPerPage
+          ITEMS_PER_PAGE
       )
     );
 
@@ -487,8 +548,7 @@ function AdminProducts() {
 
   const pageNumbers = Array.from(
     { length: totalPages },
-    (_, index) =>
-      index + 1
+    (_, index) => index + 1
   );
 
   const formatPrice = (
@@ -506,15 +566,10 @@ function AdminProducts() {
 
   return (
     <div className="nx-admin-products-page">
-
-      {/* =========================
-          HEADER
-      ========================= */}
-
+      {/* HEADER */}
       <div className="nx-admin-page-header">
         <div>
           <h1>Products</h1>
-
           <p>
             Manage your product catalog,
             inventory and product information.
@@ -525,9 +580,7 @@ function AdminProducts() {
           type="button"
           className="nx-admin-primary-button"
           onClick={() =>
-            navigate(
-              "/admin/products/add"
-            )
+            navigate("/admin/products/add")
           }
         >
           <i className="bi bi-plus-lg" />
@@ -535,26 +588,18 @@ function AdminProducts() {
         </button>
       </div>
 
-      {/* =========================
-          SUCCESS MESSAGE
-      ========================= */}
-
+      {/* SUCCESS MESSAGE */}
       {deleteSuccess && (
         <div className="nx-admin-success-message">
           <i className="bi bi-check-circle-fill" />
-
           <span>
             Product deleted successfully.
           </span>
         </div>
       )}
 
-      {/* =========================
-          SUMMARY
-      ========================= */}
-
+      {/* SUMMARY */}
       <div className="nx-admin-product-summary">
-
         <div className="nx-admin-summary-card">
           <div className="nx-admin-summary-icon">
             <i className="bi bi-box-seam" />
@@ -606,19 +651,12 @@ function AdminProducts() {
             </strong>
           </div>
         </div>
-
       </div>
 
-      {/* =========================
-          PRODUCTS CARD
-      ========================= */}
-
+      {/* PRODUCTS CARD */}
       <div className="nx-admin-products-card">
-
         {/* TOOLBAR */}
-
         <div className="nx-admin-products-toolbar">
-
           <div className="nx-admin-search-box">
             <i className="bi bi-search" />
 
@@ -648,7 +686,6 @@ function AdminProducts() {
           </div>
 
           <div className="nx-admin-filter-group">
-
             <select
               value={categoryFilter}
               onChange={(event) =>
@@ -719,12 +756,10 @@ function AdminProducts() {
                 Clear
               </button>
             )}
-
           </div>
         </div>
 
         {/* RESULT INFO */}
-
         <div className="nx-admin-result-info">
           <span>
             Showing{" "}
@@ -742,12 +777,18 @@ function AdminProducts() {
           </span>
         </div>
 
+        {/* ERROR */}
+        {!loading && error && (
+          <ErrorState
+            title="Unable to load content"
+            message={error}
+            onRetry={loadProducts}
+          />
+        )}
+
         {/* TABLE */}
-
         <div className="nx-admin-products-table-wrapper">
-
           <table className="nx-admin-products-table">
-
             <thead>
               <tr>
                 <th>PRODUCT</th>
@@ -764,25 +805,23 @@ function AdminProducts() {
             </thead>
 
             <tbody>
-
-              {paginatedProducts.length >
-              0 ? (
-
+              {loading ? (
+                <AdminTableSkeleton
+                  columns={8}
+                  rows={ITEMS_PER_PAGE}
+                />
+              ) : paginatedProducts.length >
+                0 ? (
                 paginatedProducts.map(
                   (product) => (
-
                     <tr
                       key={product.id}
                     >
-
                       <td>
                         <div className="nx-admin-product-cell">
-
                           <div className="nx-admin-product-image">
-
                             {product.images?.[0]
                               ?.src ? (
-
                               <img
                                 src={
                                   product
@@ -793,17 +832,12 @@ function AdminProducts() {
                                   product.name
                                 }
                               />
-
                             ) : (
-
                               <i className="bi bi-box-seam" />
-
                             )}
-
                           </div>
 
                           <div className="nx-admin-product-info">
-
                             <strong>
                               {product.name}
                             </strong>
@@ -815,9 +849,7 @@ function AdminProducts() {
                                 }
                               </span>
                             )}
-
                           </div>
-
                         </div>
                       </td>
 
@@ -846,7 +878,8 @@ function AdminProducts() {
                       <td>
                         <span
                           className={`nx-admin-stock ${
-                            product.stock === 0
+                            Number(product.stock) ===
+                            0
                               ? "empty"
                               : ""
                           }`}
@@ -862,7 +895,6 @@ function AdminProducts() {
                           )}`}
                         >
                           <span className="nx-admin-status-dot" />
-
                           {product.status}
                         </span>
                       </td>
@@ -875,9 +907,7 @@ function AdminProducts() {
                       </td>
 
                       <td>
-
                         <div className="nx-admin-product-actions">
-
                           <button
                             type="button"
                             className="nx-admin-action-button view"
@@ -919,27 +949,18 @@ function AdminProducts() {
                           >
                             <i className="bi bi-trash3" />
                           </button>
-
                         </div>
-
                       </td>
-
                     </tr>
-
                   )
                 )
-
               ) : (
-
                 <tr>
-
                   <td
                     colSpan={8}
                     className="nx-admin-empty-cell"
                   >
-
                     <div className="nx-admin-empty-state">
-
                       <div className="nx-admin-empty-icon">
                         <i className="bi bi-box-seam" />
                       </div>
@@ -959,7 +980,6 @@ function AdminProducts() {
                           "All Categories" ||
                         statusFilter !==
                           "All Status") && (
-
                         <button
                           type="button"
                           onClick={
@@ -968,125 +988,100 @@ function AdminProducts() {
                         >
                           Clear Filters
                         </button>
-
                       )}
-
                     </div>
-
                   </td>
-
                 </tr>
-
               )}
-
             </tbody>
-
           </table>
-
         </div>
 
-        {/* =========================
-            PAGINATION
-        ========================= */}
-
-        {filteredProducts.length > 0 &&
+        {/* PAGINATION */}
+        {!loading &&
+          filteredProducts.length > 0 &&
           totalPages > 1 && (
-
-          <div className="nx-admin-pagination">
-
-            <button
-              type="button"
-              className="nx-admin-pagination-button"
-              disabled={
-                safeCurrentPage === 1
-              }
-              onClick={() =>
-                setCurrentPage(
-                  (previous) =>
-                    Math.max(
-                      1,
-                      previous - 1
-                    )
-                )
-              }
-              aria-label="Previous page"
-            >
-              <i className="bi bi-chevron-left" />
-            </button>
-
-            <div className="nx-admin-page-numbers">
-
-              {pageNumbers.map(
-                (page) => (
-
-                  <button
-                    key={page}
-                    type="button"
-                    className={`nx-admin-page-number ${
-                      safeCurrentPage ===
-                      page
-                        ? "active"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      setCurrentPage(
-                        page
+            <div className="nx-admin-pagination">
+              <button
+                type="button"
+                className="nx-admin-pagination-button"
+                disabled={
+                  safeCurrentPage === 1
+                }
+                onClick={() =>
+                  setCurrentPage(
+                    (previous) =>
+                      Math.max(
+                        1,
+                        previous - 1
                       )
-                    }
-                  >
-                    {page}
-                  </button>
+                  )
+                }
+                aria-label="Previous page"
+              >
+                <i className="bi bi-chevron-left" />
+              </button>
 
-                )
-              )}
+              <div className="nx-admin-page-numbers">
+                {pageNumbers.map(
+                  (page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      className={`nx-admin-page-number ${
+                        safeCurrentPage ===
+                        page
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setCurrentPage(
+                          page
+                        )
+                      }
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+              </div>
 
+              <button
+                type="button"
+                className="nx-admin-pagination-button"
+                disabled={
+                  safeCurrentPage ===
+                  totalPages
+                }
+                onClick={() =>
+                  setCurrentPage(
+                    (previous) =>
+                      Math.min(
+                        totalPages,
+                        previous + 1
+                      )
+                  )
+                }
+                aria-label="Next page"
+              >
+                <i className="bi bi-chevron-right" />
+              </button>
             </div>
-
-            <button
-              type="button"
-              className="nx-admin-pagination-button"
-              disabled={
-                safeCurrentPage ===
-                totalPages
-              }
-              onClick={() =>
-                setCurrentPage(
-                  (previous) =>
-                    Math.min(
-                      totalPages,
-                      previous + 1
-                    )
-                )
-              }
-              aria-label="Next page"
-            >
-              <i className="bi bi-chevron-right" />
-            </button>
-
-          </div>
-
-        )}
-
+          )}
       </div>
 
-      {/* =========================
-          DELETE MODAL
-      ========================= */}
-
+      {/* DELETE MODAL */}
       {deleteProduct && (
-
         <div
           className="nx-admin-modal-backdrop"
           onClick={handleDeleteCancel}
         >
-
           <div
             className="nx-admin-delete-modal"
             onClick={(event) =>
               event.stopPropagation()
             }
           >
-
             <div className="nx-admin-delete-icon">
               <i className="bi bi-trash3" />
             </div>
@@ -1105,7 +1100,6 @@ function AdminProducts() {
             </p>
 
             <div className="nx-admin-delete-actions">
-
               <button
                 type="button"
                 className="nx-admin-delete-cancel"
@@ -1125,15 +1119,10 @@ function AdminProducts() {
               >
                 Delete Product
               </button>
-
             </div>
-
           </div>
-
         </div>
-
       )}
-
     </div>
   );
 }

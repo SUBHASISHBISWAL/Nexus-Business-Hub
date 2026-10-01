@@ -1,0 +1,1247 @@
+/* =========================================================
+   Nexus Business Hub — Universal Skeleton & Shimmer Styles
+   ========================================================= */
+
+:root {
+  --nx-skel-base: #f1f5f9;
+  --nx-skel-highlight: #ffffff;
+  --nx-skel-mid: #e2e8f0;
+  --nx-skel-border: #e2e8f0;
+  --nx-skel-card-bg: #ffffff;
+  --nx-skel-subtle: #f8fafc;
+  --nx-skel-ground: #f8faff;
+}
+
+[data-theme="dark"],
+body.dark,
+.dark,
+.dark-mode {
+  --nx-skel-base: #1e293b;
+  --nx-skel-highlight: #334155;
+  --nx-skel-mid: #475569;
+  --nx-skel-border: #334155;
+  --nx-skel-card-bg: #0f172a;
+  --nx-skel-subtle: #141f32;
+  --nx-skel-ground: #0b1120;
+}
+
+/* Shimmer Animation (1.5s cycle) */
+@keyframes nx-shimmer-anim {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.nx-shimmer,
+.nx-skeleton-bone {
+  background: linear-gradient(
+    90deg,
+    var(--nx-skel-base) 0%,
+    var(--nx-skel-highlight) 35%,
+    var(--nx-skel-mid) 50%,
+    var(--nx-skel-highlight) 65%,
+    var(--nx-skel-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: nx-shimmer-anim 1.5s ease-in-out infinite;
+  display: block;
+}
+
+/* Reduced motion preference support */
+@media (prefers-reduced-motion: reduce) {
+  .nx-shimmer,
+  .nx-skeleton-bone,
+  .nx-skeleton-card,
+  .nx-shimmer-bg {
+    animation: none !important;
+    background: var(--nx-skel-base) !important;
+  }
+}
+
+/* Smooth fade-in when content replaces skeleton */
+.nx-content-loaded {
+  animation: nxFadeContent 0.22s ease-out;
+}
+
+@keyframes nxFadeContent {
+  from {
+    opacity: 0.88;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Basic Skeleton Utility Elements */
+.nx-skel-line {
+  height: 14px;
+  border-radius: 4px;
+}
+
+.nx-skel-circle {
+  border-radius: 50%;
+}
+
+.nx-skel-box {
+  border-radius: 6px;
+}
+
+.nx-skel-btn {
+  height: 38px;
+  border-radius: 6px;
+}
+
+/* =========================================================
+   Product Card Skeleton (Matches ProductCard.tsx exactly)
+   ========================================================= */
+.nx-node-card.nx-skeleton-card {
+  pointer-events: none;
+  user-select: none;
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.nx-node-card.nx-skeleton-card:hover {
+  transform: none;
+  border-color: var(--nx-skel-border);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.nx-skeleton-card .nx-node-visual {
+  background: var(--nx-skel-base);
+  height: 156px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nx-skeleton-card .nx-node-visual::after {
+  display: none;
+}
+
+.nx-skeleton-img-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.nx-skeleton-card .nx-node-body {
+  padding: 0.9rem 0.95rem 0.7rem;
+}
+
+.nx-skeleton-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.nx-skeleton-rating-pill {
+  width: 76px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.nx-skeleton-badge-pill {
+  width: 60px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.nx-skeleton-title-line-1 {
+  width: 90%;
+  height: 18px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.nx-skeleton-title-line-2 {
+  width: 60%;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.nx-skeleton-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--nx-skel-border);
+}
+
+.nx-skeleton-price-main {
+  width: 84px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+.nx-skeleton-price-old {
+  width: 50px;
+  height: 15px;
+  border-radius: 3px;
+}
+
+.nx-skeleton-card .nx-node-actions {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+}
+
+.nx-skeleton-action-btn {
+  height: 34px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   Product Details Skeleton (Matches ProductDetails.tsx)
+   ========================================================= */
+.nx-details-skeleton-wrap {
+  width: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.nx-details-skeleton-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.nx-skel-bread-item {
+  width: 60px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.nx-skel-bread-sep {
+  width: 8px;
+  height: 14px;
+  background: var(--nx-skel-mid);
+  border-radius: 2px;
+}
+
+.nx-skel-bread-current {
+  width: 180px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.nx-details-skeleton-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 42px;
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 12px;
+  padding: 26px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+@media (max-width: 991px) {
+  .nx-details-skeleton-card {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+.nx-details-skel-image-box {
+  width: 100%;
+  height: 470px;
+  border-radius: 10px;
+  border: 1px solid var(--nx-skel-border);
+}
+
+@media (max-width: 576px) {
+  .nx-details-skel-image-box {
+    height: 300px;
+  }
+}
+
+.nx-details-skel-thumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.nx-details-skel-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 6px;
+  border: 1px solid var(--nx-skel-border);
+}
+
+.nx-details-skel-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-details-skel-category {
+  width: 110px;
+  height: 16px;
+  border-radius: 3px;
+  margin-bottom: 14px;
+}
+
+.nx-details-skel-title-1 {
+  width: 90%;
+  height: 32px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.nx-details-skel-title-2 {
+  width: 65%;
+  height: 32px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.nx-details-skel-rating {
+  width: 150px;
+  height: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.nx-details-skel-divider {
+  height: 1px;
+  background: var(--nx-skel-border);
+  margin-bottom: 20px;
+}
+
+.nx-details-skel-price-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.nx-details-skel-price {
+  width: 140px;
+  height: 36px;
+  border-radius: 6px;
+}
+
+.nx-details-skel-old-price {
+  width: 80px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+.nx-details-skel-stock {
+  width: 100px;
+  height: 22px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.nx-details-skel-desc-1 {
+  width: 100%;
+  height: 15px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.nx-details-skel-desc-2 {
+  width: 94%;
+  height: 15px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.nx-details-skel-desc-3 {
+  width: 72%;
+  height: 15px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.nx-details-skel-quick-spec {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 14px;
+  background: var(--nx-skel-subtle);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.nx-details-skel-spec-item {
+  height: 24px;
+  border-radius: 4px;
+}
+
+.nx-details-skel-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 576px) {
+  .nx-details-skel-actions {
+    flex-direction: column;
+  }
+}
+
+.nx-details-skel-qty {
+  width: 110px;
+  height: 44px;
+  border-radius: 6px;
+}
+
+.nx-details-skel-btn-cart {
+  flex: 1;
+  height: 44px;
+  border-radius: 6px;
+}
+
+.nx-details-skel-btn-buy {
+  flex: 1;
+  height: 44px;
+  border-radius: 6px;
+}
+
+.nx-details-skel-ref {
+  width: 120px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+/* =========================================================
+   Orders Skeleton (Matches Orders.tsx)
+   ========================================================= */
+.nx-order-skeleton-card {
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  margin-bottom: 16px;
+}
+
+.nx-order-skel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--nx-skel-subtle);
+  border-bottom: 1px solid var(--nx-skel-border);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.nx-order-skel-top-item {
+  width: 120px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.nx-order-skel-top-pill {
+  width: 90px;
+  height: 24px;
+  border-radius: 12px;
+}
+
+.nx-order-skel-body {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nx-order-skel-info {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.nx-order-skel-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nx-order-skel-info-label {
+  width: 50px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.nx-order-skel-info-val {
+  width: 80px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.nx-order-skel-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.nx-order-skel-btn {
+  width: 120px;
+  height: 38px;
+  border-radius: 6px;
+}
+
+/* =========================================================
+   Order History Skeleton (Matches OrderHistory.tsx)
+   ========================================================= */
+.nx-history-skel-card {
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  margin-bottom: 18px;
+}
+
+.nx-history-skel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--nx-skel-subtle);
+  border-bottom: 1px solid var(--nx-skel-border);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.nx-history-skel-content {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.nx-history-skel-product {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nx-history-skel-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  border: 1px solid var(--nx-skel-border);
+  flex-shrink: 0;
+}
+
+.nx-history-skel-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nx-history-skel-title {
+  width: 200px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.nx-history-skel-sub {
+  width: 110px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.nx-history-skel-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* =========================================================
+   Order Details Skeleton (Matches OrderDetails.tsx page)
+   ========================================================= */
+.nx-order-details-skel-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.nx-order-details-skel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.nx-order-details-skel-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .nx-order-details-skel-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nx-order-details-skel-overview-card {
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nx-order-details-skel-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.nx-order-details-skel-items-card {
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.nx-order-details-skel-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--nx-skel-border);
+  gap: 16px;
+}
+
+/* =========================================================
+   Order Tracking Skeleton (Matches OrderTracking.tsx)
+   ========================================================= */
+.nx-tracking-skel-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.nx-tracking-skel-card {
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.nx-tracking-skel-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 10px;
+  position: relative;
+}
+
+.nx-tracking-skel-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+}
+
+.nx-tracking-skel-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+}
+
+.nx-tracking-skel-bar {
+  flex: 1;
+  height: 4px;
+  margin: 0 10px;
+  border-radius: 2px;
+}
+
+/* =========================================================
+   Admin Table Skeleton (Matches Admin Products & Orders)
+   ========================================================= */
+.nx-admin-table-skel-row {
+  pointer-events: none;
+  user-select: none;
+}
+
+.nx-admin-skel-cell {
+  height: 18px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   Clean Error State Component Styles
+   ========================================================= */
+.nx-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 10px;
+  margin: 1.5rem 0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.nx-error-compact {
+  padding: 2rem 1rem;
+}
+
+.nx-error-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 1rem;
+  border: 1px solid #fee2e2;
+}
+
+.nx-error-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  font-family: "Geist", system-ui, sans-serif;
+}
+
+.nx-error-message {
+  font-size: 0.92rem;
+  color: #64748b;
+  max-width: 440px;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.nx-error-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 1.4rem;
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 1px 2px rgba(2, 132, 199, 0.2);
+}
+
+.nx-error-retry-btn:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.nx-error-retry-btn:active {
+  transform: translateY(0);
+}
+
+/* =========================================================
+   Global Initial Full-Page Skeleton Overlay & Components
+   ========================================================= */
+.nx-global-skeleton-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--nx-skel-ground, #f8faff);
+  overflow-y: auto;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease-out, visibility 0.25s ease-out;
+  pointer-events: auto;
+}
+
+.nx-global-skeleton-overlay.nx-fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Nav Skeleton */
+.nx-skel-nav {
+  height: 72px;
+  background: var(--nx-skel-card-bg, #ffffff);
+  border-bottom: 1px solid var(--nx-skel-border, #e2e8f0);
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nx-skel-nav-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.nx-skel-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.nx-skel-brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.nx-skel-brand-title {
+  width: 150px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.nx-skel-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+@media (max-width: 991px) {
+  .nx-skel-nav-links {
+    display: none;
+  }
+}
+
+.nx-skel-nav-link {
+  width: 68px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.nx-skel-search-box {
+  width: min(340px, 30vw);
+  height: 40px;
+  border-radius: 20px;
+}
+
+@media (max-width: 768px) {
+  .nx-skel-search-box {
+    display: none;
+  }
+}
+
+.nx-skel-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.nx-skel-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.nx-skel-btn-primary {
+  width: 100px;
+  height: 38px;
+  border-radius: 6px;
+}
+
+/* Main Container */
+.nx-skel-main-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+  width: 100%;
+}
+
+/* Hero Section */
+.nx-skel-hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+@media (max-width: 991px) {
+  .nx-skel-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nx-skel-hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.nx-skel-kicker {
+  width: 170px;
+  height: 24px;
+  border-radius: 12px;
+}
+
+.nx-skel-hero-title-1 {
+  width: 85%;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.nx-skel-hero-title-2 {
+  width: 60%;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.nx-skel-hero-desc-1 {
+  width: 95%;
+  height: 16px;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+.nx-skel-hero-desc-2 {
+  width: 80%;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.nx-skel-hero-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.nx-skel-hero-btn-1 {
+  width: 150px;
+  height: 44px;
+  border-radius: 6px;
+}
+
+.nx-skel-hero-btn-2 {
+  width: 130px;
+  height: 44px;
+  border-radius: 6px;
+}
+
+.nx-skel-hero-right {
+  height: 340px;
+  border-radius: 12px;
+  border: 1px solid var(--nx-skel-border);
+}
+
+/* Stats */
+.nx-skel-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+@media (max-width: 768px) {
+  .nx-skel-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nx-skel-stat-card {
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nx-skel-stat-label {
+  width: 90px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.nx-skel-stat-val {
+  width: 130px;
+  height: 28px;
+  border-radius: 4px;
+}
+
+.nx-skel-stat-sub {
+  width: 80px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* Sections General */
+.nx-skel-section {
+  margin-bottom: 56px;
+}
+
+.nx-skel-section-head {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nx-skel-section-head-split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.nx-skel-sec-kicker {
+  width: 140px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.nx-skel-sec-title {
+  width: 280px;
+  height: 28px;
+  border-radius: 6px;
+}
+
+.nx-skel-view-all {
+  width: 160px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+/* Categories Grid */
+.nx-skel-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.nx-skel-cat-card {
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nx-skel-cat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.nx-skel-cat-title {
+  width: 140px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.nx-skel-cat-desc {
+  width: 90%;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.nx-skel-cat-link {
+  width: 110px;
+  height: 14px;
+  border-radius: 3px;
+  margin-top: 4px;
+}
+
+/* Product Cards Grid */
+.nx-skel-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.nx-skel-card {
+  background: var(--nx-skel-card-bg);
+  border: 1px solid var(--nx-skel-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-skel-card-img {
+  height: 160px;
+  width: 100%;
+}
+
+.nx-skel-card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nx-skel-card-rating {
+  width: 75px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.nx-skel-card-title {
+  width: 90%;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.nx-skel-card-title-sub {
+  width: 60%;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.nx-skel-card-footer {
+  padding: 14px 16px;
+  border-top: 1px solid var(--nx-skel-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.nx-skel-card-price {
+  width: 80px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+.nx-skel-card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.nx-skel-card-btn {
+  width: 68px;
+  height: 32px;
+  border-radius: 4px;
+}
+
+/* Footer Skeleton */
+.nx-skel-footer {
+  background: var(--nx-skel-card-bg);
+  border-top: 1px solid var(--nx-skel-border);
+  padding: 48px 0 24px;
+  margin-top: auto;
+}
+
+.nx-skel-footer-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.nx-skel-footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .nx-skel-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-skel-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nx-skel-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nx-skel-footer-brand {
+  width: 140px;
+  height: 24px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.nx-skel-footer-line {
+  width: 80%;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.nx-skel-footer-socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.nx-skel-footer-head {
+  width: 100px;
+  height: 18px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.nx-skel-footer-bottom {
+  padding-top: 24px;
+  border-top: 1px solid var(--nx-skel-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.nx-skel-footer-copy {
+  width: 220px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.nx-skel-footer-terms {
+  width: 180px;
+  height: 14px;
+  border-radius: 3px;
+}
+

@@ -4,8 +4,14 @@ import Footer from "./components/layout/Footer";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { useLocation } from "react-router-dom";
+import {
+  InitialLoadingProvider,
+  useInitialLoading,
+} from "./context/InitialLoadingContext";
+import { GlobalFullPageSkeleton } from "./components/skeleton";
 
-function App() {
+function AppContent() {
+  const { isInitialReady, isFadingOut } = useInitialLoading();
   const location = useLocation();
 
   const isAdminPage = location.pathname.startsWith("/admin");
@@ -17,17 +23,31 @@ function App() {
   const hideLayout = isAdminPage || isAuthPage;
 
   return (
-    <CartProvider>
-      <WishlistProvider>
-        {!hideLayout && <Navbar />}
+    <>
+      {!isInitialReady && (
+        <GlobalFullPageSkeleton isFadingOut={isFadingOut} />
+      )}
 
-        <main>
-          <AppRoutes />
-        </main>
+      <CartProvider>
+        <WishlistProvider>
+          {!hideLayout && <Navbar />}
 
-        {!hideLayout && <Footer />}
-      </WishlistProvider>
-    </CartProvider>
+          <main>
+            <AppRoutes />
+          </main>
+
+          {!hideLayout && <Footer />}
+        </WishlistProvider>
+      </CartProvider>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <InitialLoadingProvider>
+      <AppContent />
+    </InitialLoadingProvider>
   );
 }
 

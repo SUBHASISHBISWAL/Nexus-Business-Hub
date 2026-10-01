@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AdminTableSkeleton } from "../../../components/skeleton";
+import { getOrders } from "../../../services/orderService";
+import { useInitialLoading } from "../../../context/InitialLoadingContext";
 import "./AdminOrders.css";
 
 type Order = {
@@ -154,6 +157,10 @@ const paymentOptions = [
 
 function AdminOrders() {
   const navigate = useNavigate();
+  const { markAppReady } = useInitialLoading();
+
+  const [ordersList, setOrdersList] = useState<Order[]>(orders);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("All");
@@ -162,10 +169,45 @@ function AdminOrders() {
 
   const ordersPerPage = 8;
 
+  const loadOrders = async () => {
+    try {
+      setLoading(true);
+      const apiData = await getOrders();
+      if (Array.isArray(apiData) && apiData.length > 0) {
+        const mapped: Order[] = apiData.map((o: any) => ({
+          id: o.orderNumber || `ORD-${o.id}`,
+          customer: o.customerName || "Enterprise Client",
+          email: o.customerEmail || "client@nexus.internal",
+          items: o.orderItems?.length || 1,
+          total: o.totalAmount || 0,
+          payment: o.paymentStatus === "Paid" ? "Paid" : o.paymentStatus === "Failed" ? "Failed" : "Pending",
+          status: o.orderStatus || "Processing",
+          date: new Date(o.orderDate || Date.now()).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }),
+        }));
+        setOrdersList(mapped);
+      } else {
+        setOrdersList(orders);
+      }
+    } catch {
+      setOrdersList(orders);
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
   const filteredOrders = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return orders.filter((order) => {
+    return ordersList.filter((order) => {
       const matchesSearch =
         !query ||
         order.id.toLowerCase().includes(query) ||
@@ -180,7 +222,7 @@ function AdminOrders() {
 
       return matchesSearch && matchesStatus && matchesPayment;
     });
-  }, [search, status, payment]);
+  }, [search, status, payment, ordersList]);
 
   const totalPages = Math.max(
     1,
@@ -333,7 +375,10 @@ function AdminOrders() {
             </thead>
 
             <tbody>
-              {paginatedOrders.map((order) => (
+              {loading ? (
+                <AdminTableSkeleton columns={8} rows={ordersPerPage} />
+              ) : (
+                paginatedOrders.map((order) => (
                 <tr key={order.id}>
                   <td>
                     <button
@@ -400,11 +445,11 @@ function AdminOrders() {
                     </button>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
 
-          {!paginatedOrders.length && (
+          {!loading && !paginatedOrders.length && (
             <div className="nx-orders-empty">
               <h3>No orders found</h3>
               <p>

@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getOrderById } from "../../services/orderService";
+import { OrderDetailSkeleton } from "../../components/skeleton";
+import { ErrorState } from "../../components/common/ErrorState";
+import { useInitialLoading } from "../../context/InitialLoadingContext";
 import "./OrderDetails.css";
 
 type OrderItem = {
@@ -62,36 +65,39 @@ type Order = {
 function OrderDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { markAppReady } = useInitialLoading();
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const loadOrder = async () => {
+    if (!id) {
+      setError("Invalid order ID.");
+      setLoading(false);
+      markAppReady();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await getOrderById(Number(id));
+
+      setOrder(data);
+    } catch (err) {
+      console.error("Failed to load order:", err);
+      setError(
+        "Unable to load this order. Please try again."
+      );
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
+
   useEffect(() => {
-    const loadOrder = async () => {
-      if (!id) {
-        setError("Invalid order ID.");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError("");
-
-        const data = await getOrderById(Number(id));
-
-        setOrder(data);
-      } catch (err) {
-        console.error("Failed to load order:", err);
-        setError(
-          "Unable to load this order. Please try again."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadOrder();
   }, [id]);
 
@@ -152,17 +158,7 @@ function OrderDetails() {
     return (
       <div className="nx-order-details-page">
         <div className="container">
-          <div className="nx-order-loading">
-            <div className="nx-loading-icon">
-              <i className="bi bi-box-seam"></i>
-            </div>
-
-            <h2>Loading order details...</h2>
-
-            <p>
-              Please wait while we retrieve your order information.
-            </p>
-          </div>
+          <OrderDetailSkeleton />
         </div>
       </div>
     );
@@ -172,23 +168,25 @@ function OrderDetails() {
     return (
       <div className="nx-order-details-page">
         <div className="container">
-          <div className="nx-order-error">
-            <div className="nx-error-icon">
-              <i className="bi bi-exclamation-triangle"></i>
-            </div>
-
-            <h2>Order unavailable</h2>
-
-            <p>
-              {error || "The requested order could not be found."}
-            </p>
-
+          <ErrorState
+            title="Unable to load content"
+            message={error || "The requested order could not be found."}
+            onRetry={loadOrder}
+          />
+          <div style={{ textAlign: "center", marginTop: 12 }}>
             <button
               type="button"
+              className="nx-error-retry-btn"
               onClick={() => navigate("/orders")}
+              style={{
+                background: "transparent",
+                color: "#475569",
+                border: "1px solid #cbd5e1",
+                boxShadow: "none",
+              }}
             >
               <i className="bi bi-arrow-left"></i>
-              Back to Orders
+              <span>Back to Orders</span>
             </button>
           </div>
         </div>

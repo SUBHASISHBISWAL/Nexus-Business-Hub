@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getOrderById } from "../../services/orderService";
+import { OrderTrackingSkeleton } from "../../components/skeleton";
+import { ErrorState } from "../../components/common/ErrorState";
+import { useInitialLoading } from "../../context/InitialLoadingContext";
 import "./OrderTracking.css";
 
 type Address = {
@@ -59,33 +62,37 @@ type Order = {
 function OrderTracking() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { markAppReady } = useInitialLoading();
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const loadOrder = async () => {
+    if (!id) {
+      setError("Invalid order ID.");
+      setLoading(false);
+      markAppReady();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await getOrderById(Number(id));
+
+      setOrder(data);
+    } catch (err) {
+      console.error("Failed to load order tracking:", err);
+      setError("Unable to load tracking information.");
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
+
   useEffect(() => {
-    const loadOrder = async () => {
-      if (!id) {
-        setError("Invalid order ID.");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-
-        const data = await getOrderById(Number(id));
-
-        setOrder(data);
-      } catch (err) {
-        console.error("Failed to load order tracking:", err);
-        setError("Unable to load tracking information.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadOrder();
   }, [id]);
 
@@ -121,13 +128,7 @@ function OrderTracking() {
     return (
       <div className="nx-order-tracking-page">
         <div className="container nx-order-tracking-container">
-          <div className="nx-tracking-state">
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-
-            <p>Loading tracking information...</p>
-          </div>
+          <OrderTrackingSkeleton />
         </div>
       </div>
     );
@@ -137,15 +138,25 @@ function OrderTracking() {
     return (
       <div className="nx-order-tracking-page">
         <div className="container nx-order-tracking-container">
-          <div className="nx-tracking-error">
-            <i className="bi bi-exclamation-circle"></i>
-
-            <h2>Unable to load order</h2>
-
-            <p>{error || "Order not found."}</p>
-
-            <button type="button" onClick={() => navigate("/order-history")}>
-              Back to Order History
+          <ErrorState
+            title="Unable to load content"
+            message={error || "Order not found."}
+            onRetry={loadOrder}
+          />
+          <div style={{ textAlign: "center", marginTop: 12 }}>
+            <button
+              type="button"
+              className="nx-error-retry-btn"
+              onClick={() => navigate("/orders")}
+              style={{
+                background: "transparent",
+                color: "#475569",
+                border: "1px solid #cbd5e1",
+                boxShadow: "none",
+              }}
+            >
+              <i className="bi bi-arrow-left"></i>
+              <span>Back to Orders</span>
             </button>
           </div>
         </div>
