@@ -1,5 +1,5 @@
 import "./ProductList.css";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { CartContext } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -17,38 +17,30 @@ function ProductList() {
   const { markAppReady } = useInitialLoading();
 
   // =========================
-  // API PRODUCTS
+  // API PRODUCTS & PAGINATION
   // =========================
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+
+  const productsPerPage = 8;
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // =========================
   // FILTER / SORT STATES
   // =========================
 
   const [search, setSearch] = useState<string>("");
-
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
   const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
-
   const [sortOpen, setSortOpen] = useState<boolean>(false);
-
   const [priceRange, setPriceRange] = useState<number>(412000);
-
   const [minRating, setMinRating] = useState<number>(0);
-
   const [sort, setSort] = useState<string>("featured");
-
-  // =========================
-  // PAGINATION
-  // =========================
-
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const productsPerPage = 12;
 
   // =========================
   // CART NOTICE
@@ -60,87 +52,69 @@ function ProductList() {
   // LOAD PRODUCTS FROM API
   // =========================
 
-  const loadProducts = async () => {
+  const loadProducts = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
 
-      const data = await getProducts();
+      const categoryParam =
+        selectedCategories.length > 0
+          ? selectedCategories.join(",")
+          : undefined;
 
-      setProducts(data);
+      const data = await getProducts({
+        page: currentPage,
+        pageSize: productsPerPage,
+        category: categoryParam,
+        search: search.trim() || undefined,
+        maxPrice: priceRange < 412000 ? priceRange : undefined,
+        minRating: minRating > 0 ? minRating : undefined,
+        sortBy: sort,
+      });
+
+      const items = Array.isArray(data) ? data : data?.items ?? [];
+      setProducts(items);
+      setTotalItems(data?.totalItems ?? items.length);
+      setTotalPages(
+        data?.totalPages ??
+          Math.max(1, Math.ceil((data?.totalItems ?? items.length) / productsPerPage))
+      );
+      if (data?.categoryCounts) {
+        setCategoryCounts(data.categoryCounts);
+      }
     } catch (err) {
       console.error("Failed to load products:", err);
 
       setError(
-        "Unable to load products. Please make sure the backend API is running.",
+        "Unable to load products. Please make sure the backend API is running."
       );
     } finally {
       setLoading(false);
       markAppReady();
     }
-  };
+  }, [
+    currentPage,
+    productsPerPage,
+    selectedCategories,
+    search,
+    priceRange,
+    minRating,
+    sort,
+    markAppReady,
+  ]);
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [loadProducts]);
 
-  // =========================
-  // FILTER + SORT PRODUCTS
-  // =========================
-
-  const visibleProducts = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return products
-      .filter((product) => {
-        const matchesCategory =
-          selectedCategories.length === 0 ||
-          selectedCategories.includes(product.category);
-
-        const matchesPrice = product.price <= priceRange;
-
-        const matchesRating = product.rating >= minRating;
-
-        const matchesSearch =
-          !query ||
-          [product.name, product.group, product.specs, product.category]
-            .join(" ")
-            .toLowerCase()
-            .includes(query);
-
-        return (
-          matchesCategory && matchesPrice && matchesRating && matchesSearch
-        );
-      })
-      .sort((a, b) => {
-        if (sort === "price-low") {
-          return a.price - b.price;
-        }
-
-        if (sort === "price-high") {
-          return b.price - a.price;
-        }
-
-        if (sort === "rating") {
-          return b.rating - a.rating;
-        }
-
-        return a.id - b.id;
-      });
-  }, [products, selectedCategories, priceRange, minRating, search, sort]);
-
-  // =========================
-  // PAGINATION CALCULATION
-  // =========================
-
-  const totalPages = Math.ceil(visibleProducts.length / productsPerPage);
-
-  const startIndex = (currentPage - 1) * productsPerPage;
-
-  const paginatedProducts = visibleProducts.slice(
-    startIndex,
-    startIndex + productsPerPage,
-  );
+  // Total count across all categories from server
+  const allCategoryTotal = useMemo(() => {
+    const counts = Object.values(categoryCounts);
+    if (counts.length > 0) {
+      return counts.reduce((acc, curr) => acc + curr, 0);
+    }
+    return totalItems;
+  }, [categoryCounts, totalItems]);
 
   // =========================
   // PROFESSIONAL PAGE NUMBERS
@@ -160,7 +134,6 @@ function ProductList() {
     }
 
     const start = Math.max(2, currentPage - 2);
-
     const end = Math.min(totalPages - 1, currentPage + 2);
 
     for (let page = start; page <= end; page++) {
@@ -175,14 +148,6 @@ function ProductList() {
 
     return pages;
   }, [currentPage, totalPages]);
-
-  // =========================
-  // RESET PAGE WHEN FILTER CHANGES
-  // =========================
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategories, priceRange, minRating, search, sort]);
 
   // =========================
   // ADD TO CART
@@ -239,7 +204,7 @@ function ProductList() {
   };
 
   // =========================
-  // PAGINATION
+  // PAGINATION NAVIGATION
   // =========================
 
   const goToPage = (page: number) => {
@@ -253,17 +218,13 @@ function ProductList() {
     }
   };
 
-
   // =========================
   // RESULT RANGE
   // =========================
 
-  const resultStart = visibleProducts.length > 0 ? startIndex + 1 : 0;
-
-  const resultEnd = Math.min(
-    startIndex + productsPerPage,
-    visibleProducts.length,
-  );
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const resultStart = totalItems > 0 ? startIndex + 1 : 0;
+  const resultEnd = Math.min(startIndex + products.length, totalItems);
 
   // =========================
   // UI
@@ -312,7 +273,7 @@ function ProductList() {
 
                     <span>All</span>
 
-                    <small>{products.length}</small>
+                    <small>{allCategoryTotal}</small>
                   </label>
 
                   {/* CATEGORIES */}
@@ -320,9 +281,7 @@ function ProductList() {
                   {categoryLabels
                     .filter((label) => label !== "All")
                     .map((label) => {
-                      const count = products.filter(
-                        (item) => item.category === label,
-                      ).length;
+                      const count = categoryCounts[label] ?? 0;
 
                       return (
                         <label key={label} className="nx-checkbox-row">
@@ -463,18 +422,16 @@ function ProductList() {
           ========================== */}
 
           <div className="nx-product-area">
-            
-
             {/* RESULT SUMMARY */}
 
-            {!loading && !error && visibleProducts.length > 0 && (
+            {!loading && !error && totalItems > 0 && (
               <div className="nx-result-summary">
                 <span>
                   Showing{" "}
                   <strong>
                     {resultStart}–{resultEnd}
                   </strong>{" "}
-                  of <strong>{visibleProducts.length}</strong> products
+                  of <strong>{totalItems}</strong> products
                 </span>
 
                 {(search ||
@@ -514,9 +471,9 @@ function ProductList() {
 
             {/* PRODUCT GRID */}
 
-            {!loading && !error && paginatedProducts.length > 0 && (
+            {!loading && !error && products.length > 0 && (
               <div className="nx-product-grid">
-                {paginatedProducts.map((product) => (
+                {products.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}
@@ -530,74 +487,71 @@ function ProductList() {
 
             {/* PAGINATION */}
 
-            {!loading &&
-              !error &&
-              visibleProducts.length > 0 &&
-              totalPages > 1 && (
-                <nav className="nx-pagination" aria-label="Product pagination">
-                  {/* PREVIOUS */}
+            {!loading && !error && products.length > 0 && totalPages > 1 && (
+              <nav className="nx-pagination" aria-label="Product pagination">
+                {/* PREVIOUS */}
 
-                  <button
-                    type="button"
-                    className="nx-pagination-nav"
-                    disabled={currentPage === 1}
-                    onClick={() => goToPage(currentPage - 1)}
-                    aria-label="Previous page"
-                  >
-                    <i className="bi bi-chevron-left"></i>
-                    <span>Previous</span>
-                  </button>
+                <button
+                  type="button"
+                  className="nx-pagination-nav"
+                  disabled={currentPage === 1}
+                  onClick={() => goToPage(currentPage - 1)}
+                  aria-label="Previous page"
+                >
+                  <i className="bi bi-chevron-left"></i>
+                  <span>Previous</span>
+                </button>
 
-                  {/* PAGE NUMBERS */}
+                {/* PAGE NUMBERS */}
 
-                  <div className="nx-pagination-pages">
-                    {paginationPages.map((page, index) => {
-                      if (page === "ellipsis") {
-                        return (
-                          <span
-                            key={`ellipsis-${index}`}
-                            className="nx-pagination-ellipsis"
-                            aria-hidden="true"
-                          >
-                            …
-                          </span>
-                        );
-                      }
-
+                <div className="nx-pagination-pages">
+                  {paginationPages.map((page, index) => {
+                    if (page === "ellipsis") {
                       return (
-                        <button
-                          key={page}
-                          type="button"
-                          className={currentPage === page ? "active" : ""}
-                          onClick={() => goToPage(page)}
-                          aria-current={
-                            currentPage === page ? "page" : undefined
-                          }
+                        <span
+                          key={`ellipsis-${index}`}
+                          className="nx-pagination-ellipsis"
+                          aria-hidden="true"
                         >
-                          {page}
-                        </button>
+                          …
+                        </span>
                       );
-                    })}
-                  </div>
+                    }
 
-                  {/* NEXT */}
+                    return (
+                      <button
+                        key={page}
+                        type="button"
+                        className={currentPage === page ? "active" : ""}
+                        onClick={() => goToPage(page)}
+                        aria-current={
+                          currentPage === page ? "page" : undefined
+                        }
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
 
-                  <button
-                    type="button"
-                    className="nx-pagination-nav"
-                    disabled={currentPage === totalPages}
-                    onClick={() => goToPage(currentPage + 1)}
-                    aria-label="Next page"
-                  >
-                    <span>Next</span>
-                    <i className="bi bi-chevron-right"></i>
-                  </button>
-                </nav>
-              )}
+                {/* NEXT */}
+
+                <button
+                  type="button"
+                  className="nx-pagination-nav"
+                  disabled={currentPage === totalPages}
+                  onClick={() => goToPage(currentPage + 1)}
+                  aria-label="Next page"
+                >
+                  <span>Next</span>
+                  <i className="bi bi-chevron-right"></i>
+                </button>
+              </nav>
+            )}
 
             {/* EMPTY STATE */}
 
-            {!loading && !error && !visibleProducts.length && (
+            {!loading && !error && products.length === 0 && (
               <div className="nx-empty-catalog">
                 <span className="material-symbols-outlined">search_off</span>
 

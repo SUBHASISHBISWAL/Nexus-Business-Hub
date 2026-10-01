@@ -25,9 +25,10 @@ function Home() {
     try {
       setLoading(true);
       setError("");
-      const data = await getProducts();
-      if (Array.isArray(data) && data.length > 0) {
-        setFeaturedProducts(data.slice(0, 4));
+      const data = await getProducts({ page: 1, pageSize: 4 });
+      const items = Array.isArray(data) ? data : data?.items ?? [];
+      if (items.length > 0) {
+        setFeaturedProducts(items.slice(0, 4));
       } else {
         setFeaturedProducts(fallbackProducts.slice(0, 4));
       }
