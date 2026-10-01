@@ -256,11 +256,12 @@ function AdminProducts() {
         }
       }
 
-      const apiData = await getProducts();
+      const apiData = await getProducts({ all: true, pageSize: 1000 });
+      const productList = Array.isArray(apiData) ? apiData : apiData?.items ?? [];
 
-      if (Array.isArray(apiData) && apiData.length > 0) {
+      if (productList.length > 0) {
         const mappedProducts: Product[] =
-          apiData.map((product) => ({
+          productList.map((product) => ({
             id: product.id,
             name: product.name,
             sku: `NEX-${
