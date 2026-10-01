@@ -1,8 +1,8 @@
 /* =========================================================
-   ADMIN PRODUCTS
+   ADMIN PRODUCTS PAGE
 ========================================================= */
 
-.nx-admin-products {
+.nx-admin-products-page {
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
@@ -12,7 +12,7 @@
    PAGE HEADER
 ========================================================= */
 
-.nx-admin-products-header {
+.nx-admin-page-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -20,27 +20,7 @@
   margin-bottom: 24px;
 }
 
-.nx-admin-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 9px;
-  color: #8b95a5;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.nx-admin-breadcrumb i {
-  font-size: 8px;
-  color: #b0b7c2;
-}
-
-.nx-admin-breadcrumb strong {
-  color: #526071;
-  font-weight: 600;
-}
-
-.nx-admin-products-header h1 {
+.nx-admin-page-header h1 {
   margin: 0;
   color: #172033;
   font-size: 26px;
@@ -48,7 +28,7 @@
   letter-spacing: -0.5px;
 }
 
-.nx-admin-products-header p {
+.nx-admin-page-header p {
   margin: 7px 0 0;
   color: #7c8796;
   font-size: 13px;
@@ -87,38 +67,80 @@
 }
 
 /* =========================================================
-   SUMMARY
+   SUCCESS MESSAGE
 ========================================================= */
 
-.nx-admin-products-summary {
+.nx-admin-success-message {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 16px;
+  padding: 0 13px;
+  border: 1px solid #bbf7d0;
+  border-radius: 7px;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.nx-admin-success-message i {
+  font-size: 14px;
+}
+
+/* =========================================================
+   SUMMARY CARDS
+========================================================= */
+
+.nx-admin-product-summary {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   margin-bottom: 18px;
 }
 
-.nx-admin-product-summary-box {
+.nx-admin-summary-card {
   min-height: 82px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  gap: 13px;
   padding: 15px 17px;
   border: 1px solid #e5e8ed;
   border-radius: 9px;
   background: #ffffff;
 }
 
-.nx-admin-product-summary-box span {
+.nx-admin-summary-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #f3f6fb;
+  color: #2563eb;
+  font-size: 16px;
+}
+
+.nx-admin-summary-card > div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-admin-summary-card span {
   color: #7d8795;
   font-size: 11px;
   font-weight: 500;
 }
 
-.nx-admin-product-summary-box strong {
-  margin-top: 6px;
+.nx-admin-summary-card strong {
+  margin-top: 5px;
   color: #172033;
   font-size: 21px;
   font-weight: 700;
+  line-height: 1;
 }
 
 /* =========================================================
@@ -127,8 +149,10 @@
 
 .nx-admin-products-card {
   width: 100%;
-  padding: 0;
   overflow: hidden;
+  border: 1px solid #e5e8ed;
+  border-radius: 9px;
+  background: #ffffff;
 }
 
 /* =========================================================
@@ -145,7 +169,11 @@
   border-bottom: 1px solid #e9ecf0;
 }
 
-.nx-admin-products-search {
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.nx-admin-search-box {
   width: 330px;
   height: 38px;
   display: flex;
@@ -161,18 +189,22 @@
     background 0.18s ease;
 }
 
-.nx-admin-products-search:focus-within {
+.nx-admin-search-box:focus-within {
   border-color: #8eaff2;
   background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.05);
 }
 
-.nx-admin-products-search > i {
+.nx-admin-search-box > i {
+  flex-shrink: 0;
   font-size: 13px;
 }
 
-.nx-admin-products-search input {
+.nx-admin-search-box input {
   flex: 1;
   min-width: 0;
+  height: 100%;
+  padding: 0;
   border: 0;
   outline: 0;
   background: transparent;
@@ -180,36 +212,43 @@
   font-size: 12px;
 }
 
-.nx-admin-products-search input::placeholder {
+.nx-admin-search-box input::placeholder {
   color: #9aa3af;
 }
 
-.nx-admin-products-search button {
+.nx-admin-search-clear {
   width: 24px;
   height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   padding: 0;
   border: 0;
   border-radius: 5px;
   background: transparent;
   color: #8b95a3;
+  font-size: 17px;
+  line-height: 1;
   cursor: pointer;
 }
 
-.nx-admin-products-search button:hover {
+.nx-admin-search-clear:hover {
   background: #eef1f5;
   color: #374151;
 }
 
-.nx-admin-product-filters {
+/* =========================================================
+   FILTERS
+========================================================= */
+
+.nx-admin-filter-group {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.nx-admin-product-filters select {
+.nx-admin-filter-group select {
   height: 38px;
   min-width: 150px;
   padding: 0 30px 0 11px;
@@ -223,47 +262,59 @@
   cursor: pointer;
 }
 
+.nx-admin-filter-group select:focus {
+  border-color: #8eaff2;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+}
+
+.nx-admin-clear-filter {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #dfe4ea;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #526071;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-clear-filter:hover {
+  border-color: #b9c1cb;
+  background: #f7f9fb;
+}
+
 /* =========================================================
    RESULT INFO
 ========================================================= */
 
-.nx-admin-products-result-info {
+.nx-admin-result-info {
   min-height: 48px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 18px;
   border-bottom: 1px solid #edf0f3;
   color: #8a94a3;
   font-size: 11px;
 }
 
-.nx-admin-products-result-info strong {
+.nx-admin-result-info strong {
   color: #4b5563;
-  font-weight: 600;
-}
-
-.nx-admin-products-result-info button {
-  border: 0;
-  background: transparent;
-  color: #2563eb;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.nx-admin-products-result-info button:hover {
-  text-decoration: underline;
 }
 
 /* =========================================================
-   TABLE
+   TABLE WRAPPER
 ========================================================= */
 
 .nx-admin-products-table-wrapper {
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
+
+/* =========================================================
+   TABLE
+========================================================= */
 
 .nx-admin-products-table {
   width: 100%;
@@ -307,7 +358,7 @@
 }
 
 /* =========================================================
-   PRODUCT CELL
+   PRODUCT
 ========================================================= */
 
 .nx-admin-product-cell {
@@ -324,6 +375,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
   border: 1px solid #e1e6ec;
   border-radius: 7px;
   background: #f6f8fa;
@@ -331,13 +383,20 @@
   font-size: 17px;
 }
 
-.nx-admin-product-cell > div:last-child {
+.nx-admin-product-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.nx-admin-product-info {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.nx-admin-product-cell strong {
+.nx-admin-product-info strong {
   overflow: hidden;
   color: #263142;
   font-size: 12px;
@@ -347,17 +406,22 @@
   white-space: nowrap;
 }
 
-.nx-admin-product-cell span {
+.nx-admin-product-info span {
+  max-width: 260px;
   margin-top: 4px;
+  overflow: hidden;
   color: #9aa3af;
   font-size: 10px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* =========================================================
-   SKU / CATEGORY / PRICE
+   SKU
 ========================================================= */
 
-.nx-admin-product-sku {
+.nx-admin-sku {
   color: #687486;
   font-family:
     "SFMono-Regular",
@@ -367,13 +431,21 @@
   font-size: 10px;
 }
 
-.nx-admin-product-category {
+/* =========================================================
+   CATEGORY
+========================================================= */
+
+.nx-admin-category {
   color: #596576;
   font-size: 11px;
   font-weight: 500;
 }
 
-.nx-admin-product-price {
+/* =========================================================
+   PRICE
+========================================================= */
+
+.nx-admin-price {
   color: #263142;
   font-size: 12px;
   font-weight: 600;
@@ -384,23 +456,14 @@
    STOCK
 ========================================================= */
 
-.nx-admin-product-stock {
-  display: inline-flex;
-  align-items: center;
+.nx-admin-stock {
+  color: #16805b;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
 }
 
-.nx-admin-product-stock.good {
-  color: #16805b;
-}
-
-.nx-admin-product-stock.low {
-  color: #b7791f;
-}
-
-.nx-admin-product-stock.out {
+.nx-admin-stock.empty {
   color: #c24141;
 }
 
@@ -408,7 +471,7 @@
    STATUS
 ========================================================= */
 
-.nx-admin-product-status {
+.nx-admin-status {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -420,44 +483,53 @@
   white-space: nowrap;
 }
 
-.nx-admin-product-status > span {
+.nx-admin-status-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
 }
 
-.nx-admin-product-status.active {
+.nx-admin-status.active {
   background: #ecfdf5;
   color: #16805b;
 }
 
-.nx-admin-product-status.active > span {
+.nx-admin-status.active .nx-admin-status-dot {
   background: #22a06b;
 }
 
-.nx-admin-product-status.draft {
+.nx-admin-status.draft {
   background: #f3f4f6;
   color: #687486;
 }
 
-.nx-admin-product-status.draft > span {
+.nx-admin-status.draft .nx-admin-status-dot {
   background: #8b95a3;
 }
 
-.nx-admin-product-status.out-of-stock {
+.nx-admin-status.inactive {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.nx-admin-status.inactive .nx-admin-status-dot {
+  background: #f97316;
+}
+
+.nx-admin-status.out-of-stock {
   background: #fef2f2;
   color: #c24141;
 }
 
-.nx-admin-product-status.out-of-stock > span {
+.nx-admin-status.out-of-stock .nx-admin-status-dot {
   background: #ef4444;
 }
 
 /* =========================================================
-   DATE
+   UPDATED
 ========================================================= */
 
-.nx-admin-product-date {
+.nx-admin-updated {
   color: #7d8795;
   font-size: 11px;
   white-space: nowrap;
@@ -474,7 +546,7 @@
   gap: 4px;
 }
 
-.nx-admin-product-actions button {
+.nx-admin-action-button {
   width: 30px;
   height: 30px;
   display: flex;
@@ -493,22 +565,36 @@
     border-color 0.15s ease;
 }
 
-.nx-admin-product-actions button:hover {
+.nx-admin-action-button:hover {
   border-color: #e1e5ea;
   background: #f5f7f9;
+}
+
+.nx-admin-action-button.view:hover,
+.nx-admin-action-button.edit:hover {
   color: #2563eb;
+}
+
+.nx-admin-action-button.delete:hover {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
 }
 
 /* =========================================================
    EMPTY STATE
 ========================================================= */
 
-.nx-admin-products-empty {
+.nx-admin-empty-cell {
+  padding: 0 !important;
+}
+
+.nx-admin-empty-state {
   padding: 58px 20px;
   text-align: center;
 }
 
-.nx-admin-products-empty > div {
+.nx-admin-empty-icon {
   width: 44px;
   height: 44px;
   display: flex;
@@ -521,20 +607,20 @@
   font-size: 17px;
 }
 
-.nx-admin-products-empty h3 {
+.nx-admin-empty-state h3 {
   margin: 0;
   color: #374151;
   font-size: 15px;
   font-weight: 600;
 }
 
-.nx-admin-products-empty p {
+.nx-admin-empty-state p {
   margin: 6px 0 14px;
   color: #8a94a3;
   font-size: 12px;
 }
 
-.nx-admin-products-empty button {
+.nx-admin-empty-state button {
   height: 34px;
   padding: 0 13px;
   border: 1px solid #dfe4ea;
@@ -546,7 +632,7 @@
   cursor: pointer;
 }
 
-.nx-admin-products-empty button:hover {
+.nx-admin-empty-state button:hover {
   border-color: #b9c1cb;
   background: #f8f9fb;
 }
@@ -555,24 +641,18 @@
    PAGINATION
 ========================================================= */
 
-.nx-admin-products-pagination {
+.nx-admin-pagination {
   min-height: 62px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 8px;
   padding: 0 18px;
   border-top: 1px solid #e9ecf0;
-  color: #8a94a3;
-  font-size: 11px;
 }
 
-.nx-admin-pagination-buttons {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.nx-admin-pagination-buttons button {
+.nx-admin-pagination-button,
+.nx-admin-page-number {
   min-width: 30px;
   height: 30px;
   display: flex;
@@ -588,32 +668,146 @@
   cursor: pointer;
 }
 
-.nx-admin-pagination-buttons button:hover:not(:disabled) {
+.nx-admin-pagination-button:hover:not(:disabled),
+.nx-admin-page-number:hover {
   border-color: #aeb8c5;
   background: #f7f9fb;
 }
 
-.nx-admin-pagination-buttons button.active {
+.nx-admin-page-number.active {
   border-color: #2563eb;
   background: #2563eb;
   color: #ffffff;
 }
 
-.nx-admin-pagination-buttons button:disabled {
+.nx-admin-pagination-button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.nx-admin-page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* =========================================================
+   DELETE MODAL BACKDROP
+========================================================= */
+
+.nx-admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(2px);
+}
+
+/* =========================================================
+   DELETE MODAL
+========================================================= */
+
+.nx-admin-delete-modal {
+  width: 100%;
+  max-width: 430px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.16),
+    0 5px 15px rgba(15, 23, 42, 0.08);
+}
+
+.nx-admin-delete-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 17px;
+}
+
+.nx-admin-delete-modal h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.nx-admin-delete-modal p {
+  margin: 9px 0 0;
+  color: #596576;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.nx-admin-delete-modal p strong {
+  color: #263142;
+  font-weight: 600;
+}
+
+.nx-admin-delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 22px;
+}
+
+.nx-admin-delete-actions button {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-admin-delete-cancel {
+  border: 1px solid #dfe4ea;
+  background: #ffffff;
+  color: #4b5563;
+}
+
+.nx-admin-delete-cancel:hover {
+  border-color: #cbd1d9;
+  background: #f8f9fb;
+}
+
+.nx-admin-delete-confirm {
+  border: 1px solid #dc2626;
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.nx-admin-delete-confirm:hover {
+  border-color: #b91c1c;
+  background: #b91c1c;
 }
 
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 900px) {
-  .nx-admin-products-summary {
+@media (max-width: 1200px) {
+  .nx-admin-product-summary {
     grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .nx-admin-products-header {
+@media (max-width: 900px) {
+  .nx-admin-page-header {
     align-items: flex-start;
   }
 
@@ -622,26 +816,26 @@
     flex-direction: column;
   }
 
-  .nx-admin-products-search {
+  .nx-admin-search-box {
     width: 100%;
   }
 
-  .nx-admin-product-filters {
+  .nx-admin-filter-group {
     width: 100%;
   }
 
-  .nx-admin-product-filters select {
+  .nx-admin-filter-group select {
     flex: 1;
   }
 }
 
 @media (max-width: 560px) {
-  .nx-admin-products-header {
+  .nx-admin-page-header {
     flex-direction: column;
     gap: 16px;
   }
 
-  .nx-admin-products-header h1 {
+  .nx-admin-page-header h1 {
     font-size: 23px;
   }
 
@@ -649,37 +843,52 @@
     width: 100%;
   }
 
-  .nx-admin-products-summary {
+  .nx-admin-product-summary {
     grid-template-columns: 1fr 1fr;
     gap: 9px;
   }
 
-  .nx-admin-product-summary-box {
+  .nx-admin-summary-card {
     min-height: 74px;
     padding: 12px;
   }
 
-  .nx-admin-product-summary-box strong {
+  .nx-admin-summary-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .nx-admin-summary-card strong {
     font-size: 18px;
   }
 
-  .nx-admin-product-filters {
+  .nx-admin-filter-group {
     flex-direction: column;
   }
 
-  .nx-admin-product-filters select {
+  .nx-admin-filter-group select,
+  .nx-admin-clear-filter {
     width: 100%;
   }
 
-  .nx-admin-products-result-info {
+  .nx-admin-result-info {
     padding: 0 13px;
   }
 
-  .nx-admin-products-pagination {
+  .nx-admin-pagination {
     padding: 0 13px;
   }
 
-  .nx-admin-products-pagination > span {
-    display: none;
+  .nx-admin-delete-modal {
+    padding: 20px;
+  }
+
+  .nx-admin-delete-actions {
+    flex-direction: column-reverse;
+  }
+
+  .nx-admin-delete-actions button {
+    width: 100%;
   }
 }

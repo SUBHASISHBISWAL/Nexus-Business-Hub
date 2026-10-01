@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import AdminGlobalSearch from "./AdminGlobalSearch";
 import "./AdminLayout.css";
 
@@ -15,36 +19,186 @@ type Section =
   | "administration"
   | "";
 
-function AdminLayout({ children }: AdminLayoutProps) {
+function AdminLayout({
+  children,
+}: AdminLayoutProps) {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] =
+    useState(false);
+
+  const [profileOpen, setProfileOpen] =
+    useState(false);
 
   const [openSection, setOpenSection] =
     useState<Section>("overview");
 
-  // Sidebar hide/show state
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    return (
-      localStorage.getItem("nexus-admin-sidebar-collapsed") ===
-      "true"
-    );
-  });
+  // =========================================================
+  // SIDEBAR COLLAPSED STATE
+  // =========================================================
+  const [sidebarCollapsed, setSidebarCollapsed] =
+    useState(() => {
+      return (
+        localStorage.getItem(
+          "nexus-admin-sidebar-collapsed"
+        ) === "true"
+      );
+    });
 
+  // =========================================================
+  // ROUTE → SIDEBAR SECTION
+  // =========================================================
+  const getSectionFromRoute = (
+    route: string
+  ): Section => {
+    if (
+      route.startsWith(
+        "/admin/dashboard"
+      )
+    ) {
+      return "overview";
+    }
+
+    if (
+      route.startsWith(
+        "/admin/products"
+      ) ||
+      route.startsWith(
+        "/admin/orders"
+      ) ||
+      route.startsWith(
+        "/admin/customers"
+      ) ||
+      route.startsWith(
+        "/admin/payments"
+      )
+    ) {
+      return "commerce";
+    }
+
+    if (
+      route.startsWith(
+        "/admin/shipments"
+      ) ||
+      route.startsWith(
+        "/admin/inventory"
+      ) ||
+      route.startsWith(
+        "/admin/returns"
+      ) ||
+      route.startsWith(
+        "/admin/tickets"
+      )
+    ) {
+      return "operations";
+    }
+
+    if (
+      route.startsWith(
+        "/admin/administrators"
+      ) ||
+      route.startsWith(
+        "/admin/settings"
+      )
+    ) {
+      return "administration";
+    }
+
+    return "";
+  };
+
+  // =========================================================
+  // NORMAL ROUTE CHANGE
+  // =========================================================
+  useEffect(() => {
+    const section =
+      getSectionFromRoute(
+        location.pathname
+      );
+
+    if (section) {
+      setOpenSection(section);
+    }
+  }, [location.pathname]);
+
+  // =========================================================
+  // GLOBAL SEARCH NAVIGATION
+  //
+  // Search result click:
+  // 1. Expand sidebar
+  // 2. Open correct section
+  // 3. Then navigate
+  // =========================================================
+  useEffect(() => {
+    const handleSearchNavigation = (
+      event: Event
+    ) => {
+      const customEvent =
+        event as CustomEvent<{
+          route?: string;
+        }>;
+
+      const route =
+        customEvent.detail?.route;
+
+      if (!route) {
+        return;
+      }
+
+      const section =
+        getSectionFromRoute(route);
+
+      // Open sidebar
+      setSidebarCollapsed(false);
+
+      localStorage.setItem(
+        "nexus-admin-sidebar-collapsed",
+        "false"
+      );
+
+      // Expand correct section
+      if (section) {
+        setOpenSection(section);
+      }
+    };
+
+    window.addEventListener(
+      "nexus-admin-search-navigation",
+      handleSearchNavigation
+    );
+
+    return () => {
+      window.removeEventListener(
+        "nexus-admin-search-navigation",
+        handleSearchNavigation
+      );
+    };
+  }, []);
+
+  // =========================================================
+  // MOBILE SIDEBAR CLOSE
+  // =========================================================
   const closeSidebar = () => {
     setSidebarOpen(false);
   };
 
+  // =========================================================
+  // SECTION TOGGLE
+  // =========================================================
   const toggleSection = (
     section: Exclude<Section, "">
   ) => {
     setOpenSection((previous) =>
-      previous === section ? "" : section
+      previous === section
+        ? ""
+        : section
     );
   };
 
-  // Hide / Show sidebar
+  // =========================================================
+  // SIDEBAR HIDE / SHOW
+  // =========================================================
   const toggleSidebar = () => {
     setSidebarCollapsed((previous) => {
       const next = !previous;
@@ -58,8 +212,12 @@ function AdminLayout({ children }: AdminLayoutProps) {
     });
   };
 
+  // =========================================================
+  // LOGOUT
+  // =========================================================
   const handleLogout = () => {
     localStorage.removeItem("isAdmin");
+
     setProfileOpen(false);
     setSidebarOpen(false);
 
@@ -70,7 +228,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="nx-admin-layout">
-      {/* ================= MOBILE OVERLAY ================= */}
+
+      {/* =====================================================
+          MOBILE OVERLAY
+      ====================================================== */}
       {sidebarOpen && (
         <button
           type="button"
@@ -80,17 +241,32 @@ function AdminLayout({ children }: AdminLayoutProps) {
         />
       )}
 
-      {/* ================= SIDEBAR ================= */}
+      {/* =====================================================
+          SIDEBAR
+      ====================================================== */}
       <aside
         className={`nx-admin-sidebar ${
-          sidebarOpen ? "nx-admin-sidebar-open" : ""
-        } ${sidebarCollapsed ? "is-collapsed" : ""}`}
+          sidebarOpen
+            ? "nx-admin-sidebar-open"
+            : ""
+        } ${
+          sidebarCollapsed
+            ? "is-collapsed"
+            : ""
+        }`}
       >
-        {/* ================= BRAND ================= */}
+
+        {/* ===================================================
+            BRAND
+        ==================================================== */}
         <div className="nx-admin-brand">
-          <div className="nx-admin-brand-mark">N</div>
+
+          <div className="nx-admin-brand-mark">
+            N
+          </div>
 
           <div className="nx-admin-brand-copy">
+
             <span className="nx-admin-brand-name">
               NEXUS
             </span>
@@ -98,9 +274,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
             <span className="nx-admin-brand-subtitle">
               BUSINESS HUB
             </span>
+
           </div>
 
-          {/* Mobile Close */}
+          {/* Mobile close */}
           <button
             type="button"
             className="nx-admin-sidebar-close"
@@ -109,18 +286,30 @@ function AdminLayout({ children }: AdminLayoutProps) {
           >
             <i className="bi bi-x-lg" />
           </button>
+
         </div>
 
-        {/* ================= NAVIGATION ================= */}
+        {/* ===================================================
+            NAVIGATION
+        ==================================================== */}
         <nav className="nx-admin-nav">
-          {/* ================= OVERVIEW ================= */}
+
+          {/* =================================================
+              OVERVIEW
+          ================================================== */}
           <div className="nx-admin-nav-section">
+
             <button
               type="button"
               className="nx-admin-nav-section-header"
-              onClick={() => toggleSection("overview")}
+              onClick={() =>
+                toggleSection(
+                  "overview"
+                )
+              }
               aria-expanded={
-                openSection === "overview"
+                openSection ===
+                "overview"
               }
             >
               <span className="nx-admin-nav-label">
@@ -129,20 +318,27 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
               <i
                 className={`bi ${
-                  openSection === "overview"
+                  openSection ===
+                  "overview"
                     ? "bi-chevron-down"
                     : "bi-chevron-right"
                 }`}
               />
             </button>
 
-            {openSection === "overview" && (
+            {openSection ===
+              "overview" && (
               <div className="nx-admin-nav-submenu">
+
                 <NavLink
                   to="/admin/dashboard"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -155,18 +351,28 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     Dashboard
                   </span>
                 </NavLink>
+
               </div>
             )}
+
           </div>
 
-          {/* ================= COMMERCE ================= */}
+          {/* =================================================
+              COMMERCE
+          ================================================== */}
           <div className="nx-admin-nav-section">
+
             <button
               type="button"
               className="nx-admin-nav-section-header"
-              onClick={() => toggleSection("commerce")}
+              onClick={() =>
+                toggleSection(
+                  "commerce"
+                )
+              }
               aria-expanded={
-                openSection === "commerce"
+                openSection ===
+                "commerce"
               }
             >
               <span className="nx-admin-nav-label">
@@ -175,21 +381,28 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
               <i
                 className={`bi ${
-                  openSection === "commerce"
+                  openSection ===
+                  "commerce"
                     ? "bi-chevron-down"
                     : "bi-chevron-right"
                 }`}
               />
             </button>
 
-            {openSection === "commerce" && (
+            {openSection ===
+              "commerce" && (
               <div className="nx-admin-nav-submenu">
+
                 {/* Products */}
                 <NavLink
                   to="/admin/products"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -206,9 +419,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 {/* Orders */}
                 <NavLink
                   to="/admin/orders"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -225,9 +442,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 {/* Customers */}
                 <NavLink
                   to="/admin/customers"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -244,9 +465,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 {/* Payments */}
                 <NavLink
                   to="/admin/payments"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -259,20 +484,28 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     Payments
                   </span>
                 </NavLink>
+
               </div>
             )}
+
           </div>
 
-          {/* ================= OPERATIONS ================= */}
+          {/* =================================================
+              OPERATIONS
+          ================================================== */}
           <div className="nx-admin-nav-section">
+
             <button
               type="button"
               className="nx-admin-nav-section-header"
               onClick={() =>
-                toggleSection("operations")
+                toggleSection(
+                  "operations"
+                )
               }
               aria-expanded={
-                openSection === "operations"
+                openSection ===
+                "operations"
               }
             >
               <span className="nx-admin-nav-label">
@@ -281,21 +514,28 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
               <i
                 className={`bi ${
-                  openSection === "operations"
+                  openSection ===
+                  "operations"
                     ? "bi-chevron-down"
                     : "bi-chevron-right"
                 }`}
               />
             </button>
 
-            {openSection === "operations" && (
+            {openSection ===
+              "operations" && (
               <div className="nx-admin-nav-submenu">
+
                 {/* Shipments */}
                 <NavLink
                   to="/admin/shipments"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -312,9 +552,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 {/* Inventory */}
                 <NavLink
                   to="/admin/inventory"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -328,12 +572,16 @@ function AdminLayout({ children }: AdminLayoutProps) {
                   </span>
                 </NavLink>
 
-                {/* Returns & Refunds */}
+                {/* Returns */}
                 <NavLink
                   to="/admin/returns"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -350,9 +598,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 {/* Support */}
                 <NavLink
                   to="/admin/tickets"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -365,20 +617,28 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     Support
                   </span>
                 </NavLink>
+
               </div>
             )}
+
           </div>
 
-          {/* ================= ADMINISTRATION ================= */}
+          {/* =================================================
+              ADMINISTRATION
+          ================================================== */}
           <div className="nx-admin-nav-section">
+
             <button
               type="button"
               className="nx-admin-nav-section-header"
               onClick={() =>
-                toggleSection("administration")
+                toggleSection(
+                  "administration"
+                )
               }
               aria-expanded={
-                openSection === "administration"
+                openSection ===
+                "administration"
               }
             >
               <span className="nx-admin-nav-label">
@@ -387,21 +647,28 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
               <i
                 className={`bi ${
-                  openSection === "administration"
+                  openSection ===
+                  "administration"
                     ? "bi-chevron-down"
                     : "bi-chevron-right"
                 }`}
               />
             </button>
 
-            {openSection === "administration" && (
+            {openSection ===
+              "administration" && (
               <div className="nx-admin-nav-submenu">
+
                 {/* Administrators */}
                 <NavLink
                   to="/admin/administrators"
-                  className={({ isActive }) =>
+                  className={({
+                    isActive,
+                  }) =>
                     `nx-admin-nav-item ${
-                      isActive ? "active" : ""
+                      isActive
+                        ? "active"
+                        : ""
                     }`
                   }
                   onClick={closeSidebar}
@@ -414,19 +681,29 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     Administrators
                   </span>
                 </NavLink>
+
               </div>
             )}
+
           </div>
+
         </nav>
 
-        {/* ================= SIDEBAR BOTTOM ================= */}
+        {/* ===================================================
+            SIDEBAR BOTTOM
+        ==================================================== */}
         <div className="nx-admin-sidebar-bottom">
+
           {/* Settings */}
           <NavLink
             to="/admin/settings"
-            className={({ isActive }) =>
+            className={({
+              isActive,
+            }) =>
               `nx-admin-nav-item ${
-                isActive ? "active" : ""
+                isActive
+                  ? "active"
+                  : ""
               }`
             }
             onClick={closeSidebar}
@@ -450,12 +727,18 @@ function AdminLayout({ children }: AdminLayoutProps) {
               <i className="bi bi-box-arrow-right" />
             </span>
 
-            <span>Logout</span>
+            <span>
+              Logout
+            </span>
           </button>
+
         </div>
+
       </aside>
 
-      {/* ================= MAIN ================= */}
+      {/* =====================================================
+          MAIN
+      ====================================================== */}
       <div
         className={`nx-admin-main ${
           sidebarCollapsed
@@ -463,14 +746,21 @@ function AdminLayout({ children }: AdminLayoutProps) {
             : ""
         }`}
       >
-        {/* ================= TOPBAR ================= */}
+
+        {/* ===================================================
+            TOPBAR
+        ==================================================== */}
         <header className="nx-admin-topbar">
+
           <div className="nx-admin-topbar-left">
+
             {/* Mobile Menu */}
             <button
               type="button"
               className="nx-admin-menu-button"
-              onClick={() => setSidebarOpen(true)}
+              onClick={() =>
+                setSidebarOpen(true)
+              }
               aria-label="Open navigation"
             >
               <i className="bi bi-list" />
@@ -503,10 +793,14 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Global Search */}
             <AdminGlobalSearch />
+
           </div>
 
-          {/* ================= TOPBAR RIGHT ================= */}
+          {/* =================================================
+              TOPBAR RIGHT
+          ================================================== */}
           <div className="nx-admin-topbar-right">
+
             {/* Notifications */}
             <button
               type="button"
@@ -514,7 +808,9 @@ function AdminLayout({ children }: AdminLayoutProps) {
               aria-label="Notifications"
               title="Notifications"
               onClick={() =>
-                navigate("/admin/notifications")
+                navigate(
+                  "/admin/notifications"
+                )
               }
             >
               <i className="bi bi-bell" />
@@ -526,40 +822,57 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Profile */}
             <div className="nx-admin-profile-wrapper">
+
               <button
                 type="button"
                 className="nx-admin-profile"
                 onClick={() =>
                   setProfileOpen(
-                    (previous) => !previous
+                    (previous) =>
+                      !previous
                   )
                 }
-                aria-expanded={profileOpen}
+                aria-expanded={
+                  profileOpen
+                }
               >
                 <div className="nx-admin-avatar">
                   A
                 </div>
 
                 <div className="nx-admin-profile-info">
-                  <strong>Admin</strong>
 
-                  <span>Administrator</span>
+                  <strong>
+                    Admin
+                  </strong>
+
+                  <span>
+                    Administrator
+                  </span>
+
                 </div>
 
                 <i
                   className={`bi bi-chevron-down ${
-                    profileOpen ? "open" : ""
+                    profileOpen
+                      ? "open"
+                      : ""
                   }`}
                 />
+
               </button>
 
               {/* Profile Dropdown */}
               {profileOpen && (
                 <div className="nx-admin-profile-menu">
+
                   <button
                     type="button"
                     onClick={() => {
-                      setProfileOpen(false);
+                      setProfileOpen(
+                        false
+                      );
+
                       navigate(
                         "/admin/administrators"
                       );
@@ -572,8 +885,13 @@ function AdminLayout({ children }: AdminLayoutProps) {
                   <button
                     type="button"
                     onClick={() => {
-                      setProfileOpen(false);
-                      navigate("/admin/settings");
+                      setProfileOpen(
+                        false
+                      );
+
+                      navigate(
+                        "/admin/settings"
+                      );
                     }}
                   >
                     <i className="bi bi-gear" />
@@ -590,16 +908,23 @@ function AdminLayout({ children }: AdminLayoutProps) {
                     <i className="bi bi-box-arrow-right" />
                     Logout
                   </button>
+
                 </div>
               )}
+
             </div>
+
           </div>
+
         </header>
 
-        {/* ================= PAGE CONTENT ================= */}
+        {/* ===================================================
+            PAGE CONTENT
+        ==================================================== */}
         <main className="nx-admin-content">
           {children}
         </main>
+
       </div>
     </div>
   );

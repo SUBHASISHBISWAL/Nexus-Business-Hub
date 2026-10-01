@@ -1,15 +1,23 @@
+/* =========================================================
+   ADD PRODUCT PAGE
+========================================================= */
+
 .nx-add-product-page {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding-bottom: 40px;
+  padding-bottom: 32px;
 }
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
 
 .nx-page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .nx-page-header h1 {
@@ -40,8 +48,12 @@
   color: #1d4ed8;
 }
 
+/* =========================================================
+   SUCCESS
+========================================================= */
+
 .nx-success-message {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   padding: 13px 16px;
   border: 1px solid #bbf7d0;
   border-radius: 8px;
@@ -51,26 +63,37 @@
   font-weight: 500;
 }
 
-.nx-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+/* =========================================================
+   FORM
+========================================================= */
+
+.nx-add-product-form {
+  width: 100%;
 }
 
 .nx-form-card {
-  padding: 22px;
+  height: 100%;
+  padding: 20px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #ffffff;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
-.nx-full-width {
-  grid-column: 1 / -1;
+.nx-image-card {
+  min-width: 0;
 }
 
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
 .nx-form-card-header {
-  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 16px;
 }
 
 .nx-form-card-header h2 {
@@ -86,15 +109,20 @@
   font-size: 13px;
 }
 
-.nx-fields-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+.nx-image-count {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border: 1px solid #dbe3ec;
+  border-radius: 5px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
 }
 
-.nx-single-column {
-  grid-template-columns: 1fr;
-}
+/* =========================================================
+   FIELDS
+========================================================= */
 
 .nx-field {
   display: flex;
@@ -158,6 +186,20 @@
   font-size: 12px;
 }
 
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.nx-description-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =========================================================
+   PRICE INPUT
+========================================================= */
+
 .nx-input-prefix {
   position: relative;
 }
@@ -176,11 +218,338 @@
   padding-left: 30px;
 }
 
+/* =========================================================
+   UPLOAD IMAGE GRID
+========================================================= */
+
+.nx-image-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.nx-image-input-card {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fafbfc;
+}
+
+.nx-image-input-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.nx-image-input-title span {
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nx-image-input-title small {
+  color: #9ca3af;
+  font-size: 10px;
+}
+
+.nx-image-preview {
+  position: relative;
+  width: 100%;
+  height: 130px;
+  overflow: hidden;
+  border: 1px solid #e1e5e9;
+  border-radius: 7px;
+  background: #ffffff;
+}
+
+.nx-image-preview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.nx-image-upload-placeholder {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.nx-image-upload-placeholder i {
+  font-size: 24px;
+  color: #94a3b8;
+}
+
+.nx-image-upload-placeholder span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nx-image-upload-placeholder small {
+  color: #a1a9b3;
+  font-size: 10px;
+}
+
+.nx-hidden-file-input {
+  display: none;
+}
+
+.nx-upload-button {
+  width: 100%;
+  height: 34px;
+  margin-top: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.nx-upload-button:hover {
+  background: #f8fafc;
+  border-color: #9ca3af;
+}
+
+.nx-remove-image {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 27px;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.75);
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.nx-remove-image:hover {
+  background: #dc2626;
+}
+
+/* =========================================================
+   URL IMAGE SECTION
+========================================================= */
+
+.nx-url-image-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.nx-url-image-row {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  align-items: center;
+  gap: 11px;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fafbfc;
+}
+
+.nx-url-image-preview {
+  width: 78px;
+  height: 68px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.nx-url-image-preview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.nx-url-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: #a1a9b3;
+  text-align: center;
+}
+
+.nx-url-placeholder i {
+  font-size: 19px;
+}
+
+.nx-url-placeholder span {
+  font-size: 9px;
+}
+
+.nx-url-input-area {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nx-url-input-area label {
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nx-url-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nx-url-input-wrapper > i {
+  position: absolute;
+  left: 11px;
+  color: #94a3b8;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.nx-url-input-wrapper input {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 36px 0 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #111827;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.nx-url-input-wrapper input::placeholder {
+  color: #9ca3af;
+}
+
+.nx-url-input-wrapper input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.nx-clear-url {
+  position: absolute;
+  right: 7px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.nx-clear-url:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.nx-url-error {
+  color: #dc2626;
+  font-size: 11px;
+}
+
+/* =========================================================
+   IMAGE SUMMARY / VALIDATION
+========================================================= */
+
+.nx-image-summary {
+  padding: 11px 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.nx-image-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.nx-image-summary-top > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nx-image-summary strong {
+  color: #374151;
+  font-size: 13px;
+}
+
+.nx-image-summary-top > div:first-child span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nx-image-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #b45309;
+  font-size: 11px;
+}
+
+.nx-image-status.complete {
+  color: #15803d;
+}
+
+.nx-image-validation-error {
+  margin: 7px 0 0;
+  color: #dc2626;
+  font-size: 11px;
+}
+
+/* =========================================================
+   FORM ACTIONS
+========================================================= */
+
 .nx-form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 22px;
+  margin-top: 18px;
 }
 
 .nx-cancel-button,
@@ -220,15 +589,19 @@
   border-color: #1d4ed8;
 }
 
-@media (max-width: 900px) {
-  .nx-form-grid {
-    grid-template-columns: 1fr;
-  }
+/* =========================================================
+   TABLET
+========================================================= */
 
-  .nx-full-width {
-    grid-column: auto;
+@media (max-width: 991px) {
+  .nx-image-card {
+    height: auto !important;
   }
 }
+
+/* =========================================================
+   MOBILE
+========================================================= */
 
 @media (max-width: 640px) {
   .nx-add-product-page {
@@ -243,8 +616,18 @@
     padding: 18px;
   }
 
-  .nx-fields-grid {
-    grid-template-columns: 1fr;
+  .nx-image-upload-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nx-url-image-row {
+    grid-template-columns: 78px minmax(0, 1fr);
+  }
+
+  .nx-image-summary-top {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .nx-form-actions {
@@ -254,5 +637,36 @@
   .nx-cancel-button,
   .nx-save-button {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .nx-image-upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-url-image-row {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-url-image-preview {
+    width: 100%;
+    height: 110px;
+  }
+}
+
+@media (max-width: 420px) {
+  .nx-form-card {
+    padding: 15px;
+  }
+
+  .nx-image-preview {
+    height: 155px;
+  }
+
+  .nx-image-summary-top > div:first-child {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
 }

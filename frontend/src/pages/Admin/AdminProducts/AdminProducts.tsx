@@ -1,11 +1,22 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminProducts.css";
 
-type ProductStatus = "Active" | "Draft" | "Out of Stock";
+const PRODUCTS_STORAGE_KEY = "nexus_business_products";
+
+type ProductStatus =
+  | "Active"
+  | "Draft"
+  | "Inactive"
+  | "Out of Stock";
+
+type ProductImage = {
+  src: string;
+  type: "upload" | "url";
+};
 
 type Product = {
-  id: number;
+  id: string | number;
   name: string;
   sku: string;
   category: string;
@@ -13,173 +24,272 @@ type Product = {
   stock: number;
   status: ProductStatus;
   updated: string;
+  shortDescription?: string;
+  description?: string;
+  specifications?: string;
+  images?: ProductImage[];
 };
 
-const products: Product[] = [
+const initialProducts: Product[] = [
   {
     id: 1,
-    name: "Smart IoT Gateway Pro",
-    sku: "NEX-IOT-001",
+    name: "Business Laptop Pro",
+    sku: "NX-LAP-001",
     category: "Electronics",
-    price: 24999,
-    stock: 42,
+    price: 55000,
+    stock: 24,
     status: "Active",
-    updated: "22 Sep 2026",
+    updated: "10 Sep 2026",
+    images: [],
   },
   {
     id: 2,
-    name: "EdgeCompute R500",
-    sku: "NEX-HW-002",
-    category: "Hardware",
-    price: 78500,
-    stock: 18,
+    name: "Enterprise Smartphone",
+    sku: "NX-PHN-002",
+    category: "Electronics",
+    price: 25000,
+    stock: 36,
     status: "Active",
-    updated: "22 Sep 2026",
+    updated: "10 Sep 2026",
+    images: [],
   },
   {
     id: 3,
-    name: "NexusOS Fleet Control",
-    sku: "NEX-SW-003",
-    category: "Software",
-    price: 12400,
-    stock: 0,
-    status: "Out of Stock",
-    updated: "21 Sep 2026",
+    name: "Ergonomic Office Chair",
+    sku: "NX-CHR-003",
+    category: "Hardware",
+    price: 8000,
+    stock: 18,
+    status: "Active",
+    updated: "09 Sep 2026",
+    images: [],
   },
   {
     id: 4,
-    name: "Rugged M12 Sensor Cable",
-    sku: "NEX-ACC-004",
+    name: "Mechanical Keyboard",
+    sku: "NX-KBD-004",
     category: "Accessories",
-    price: 2150,
-    stock: 76,
+    price: 1500,
+    stock: 42,
     status: "Active",
-    updated: "21 Sep 2026",
+    updated: "08 Sep 2026",
+    images: [],
   },
   {
     id: 5,
-    name: "Thermal Vision Array",
-    sku: "NEX-IOT-005",
-    category: "Electronics",
-    price: 46800,
-    stock: 24,
+    name: "Wireless Mouse Pro",
+    sku: "NX-MOU-005",
+    category: "Accessories",
+    price: 1200,
+    stock: 55,
     status: "Active",
-    updated: "20 Sep 2026",
+    updated: "08 Sep 2026",
+    images: [],
   },
   {
     id: 6,
-    name: "Nexus Rail Mount Kit",
-    sku: "NEX-ACC-006",
-    category: "Accessories",
-    price: 1890,
-    stock: 58,
+    name: "24 Inch Business Monitor",
+    sku: "NX-MON-006",
+    category: "Electronics",
+    price: 14500,
+    stock: 20,
     status: "Active",
-    updated: "20 Sep 2026",
+    updated: "07 Sep 2026",
+    images: [],
   },
   {
     id: 7,
-    name: "Industrial PoE Switch 8P",
-    sku: "NEX-NET-007",
-    category: "Hardware",
-    price: 32800,
-    stock: 31,
+    name: "USB-C Docking Station",
+    sku: "NX-DCK-007",
+    category: "Accessories",
+    price: 6500,
+    stock: 15,
     status: "Active",
-    updated: "19 Sep 2026",
+    updated: "07 Sep 2026",
+    images: [],
   },
   {
     id: 8,
-    name: "SignalBridge CAN Module",
-    sku: "NEX-MOD-008",
-    category: "Electronics",
-    price: 5799,
-    stock: 0,
-    status: "Draft",
-    updated: "18 Sep 2026",
+    name: "Enterprise Wi-Fi Router",
+    sku: "NX-RTR-008",
+    category: "Hardware",
+    price: 7200,
+    stock: 12,
+    status: "Active",
+    updated: "06 Sep 2026",
+    images: [],
   },
   {
     id: 9,
-    name: "PredictiveOps Studio",
-    sku: "NEX-SW-009",
+    name: "Business Antivirus License",
+    sku: "NX-AV-009",
     category: "Software",
-    price: 18900,
-    stock: 14,
+    price: 3200,
+    stock: 100,
     status: "Active",
-    updated: "18 Sep 2026",
+    updated: "06 Sep 2026",
+    images: [],
   },
   {
     id: 10,
-    name: "NX-12 Embedded Controller",
-    sku: "NEX-HW-010",
-    category: "Hardware",
-    price: 44200,
-    stock: 9,
+    name: "Cloud Backup License",
+    sku: "NX-CLD-010",
+    category: "Software",
+    price: 4500,
+    stock: 75,
     status: "Active",
-    updated: "17 Sep 2026",
+    updated: "05 Sep 2026",
+    images: [],
   },
   {
     id: 11,
-    name: "SecureLink VPN Gateway",
-    sku: "NEX-SW-011",
+    name: "Office Productivity Suite",
+    sku: "NX-OFF-011",
     category: "Software",
-    price: 9600,
-    stock: 21,
+    price: 6800,
+    stock: 48,
     status: "Active",
-    updated: "17 Sep 2026",
+    updated: "05 Sep 2026",
+    images: [],
   },
   {
     id: 12,
-    name: "Nexus Enterprise HSM Rack",
-    sku: "NEX-HSM-012",
+    name: "Enterprise SSD 1TB",
+    sku: "NX-SSD-012",
     category: "Hardware",
-    price: 412000,
-    stock: 3,
+    price: 8900,
+    stock: 10,
+    status: "Active",
+    updated: "04 Sep 2026",
+    images: [],
+  },
+  {
+    id: 13,
+    name: "Network Security Firewall",
+    sku: "NX-FWL-013",
+    category: "Hardware",
+    price: 18500,
+    stock: 6,
     status: "Draft",
-    updated: "16 Sep 2026",
+    updated: "03 Sep 2026",
+    images: [],
+  },
+  {
+    id: 14,
+    name: "Project Management Software",
+    sku: "NX-PMS-014",
+    category: "Software",
+    price: 5600,
+    stock: 0,
+    status: "Out of Stock",
+    updated: "02 Sep 2026",
+    images: [],
   },
 ];
-
-const categories = [
-  "All Categories",
-  "Electronics",
-  "Hardware",
-  "Software",
-  "Accessories",
-];
-
-const statuses = [
-  "All Status",
-  "Active",
-  "Draft",
-  "Out of Stock",
-];
-
-const ITEMS_PER_PAGE = 8;
 
 function AdminProducts() {
   const navigate = useNavigate();
 
+  const [products, setProducts] =
+    useState<Product[]>(initialProducts);
+
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All Categories");
-  const [status, setStatus] = useState("All Status");
+  const [categoryFilter, setCategoryFilter] =
+    useState("All Categories");
+
+  const [statusFilter, setStatusFilter] =
+    useState("All Status");
+
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [deleteProduct, setDeleteProduct] =
+    useState<Product | null>(null);
+
+  const [deleteSuccess, setDeleteSuccess] =
+    useState(false);
+
+  const itemsPerPage = 8;
+
+  /* =========================
+     LOAD PRODUCTS
+  ========================= */
+
+  useEffect(() => {
+    const storedProducts =
+      localStorage.getItem(PRODUCTS_STORAGE_KEY);
+
+    if (!storedProducts) {
+      return;
+    }
+
+    try {
+      const parsedProducts: Product[] =
+        JSON.parse(storedProducts);
+
+      if (Array.isArray(parsedProducts)) {
+        setProducts(parsedProducts);
+      }
+    } catch (error) {
+      console.error(
+        "Unable to load products from localStorage:",
+        error
+      );
+    }
+  }, []);
+
+  /* =========================
+     SAVE PRODUCTS
+  ========================= */
+
+  useEffect(() => {
+    localStorage.setItem(
+      PRODUCTS_STORAGE_KEY,
+      JSON.stringify(products)
+    );
+  }, [products]);
+
+  /* =========================
+     CATEGORIES
+  ========================= */
+
+  const categories = useMemo(() => {
+    const categorySet = new Set(
+      products
+        .map((product) => product.category)
+        .filter(Boolean)
+    );
+
+    return Array.from(categorySet);
+  }, [products]);
+
+  /* =========================
+     FILTER PRODUCTS
+  ========================= */
+
   const filteredProducts = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    const searchValue =
+      search.trim().toLowerCase();
 
     return products.filter((product) => {
       const matchesSearch =
-        !query ||
-        product.name.toLowerCase().includes(query) ||
-        product.sku.toLowerCase().includes(query) ||
-        product.category.toLowerCase().includes(query);
+        !searchValue ||
+        product.name
+          .toLowerCase()
+          .includes(searchValue) ||
+        product.sku
+          .toLowerCase()
+          .includes(searchValue) ||
+        product.category
+          .toLowerCase()
+          .includes(searchValue);
 
       const matchesCategory =
-        category === "All Categories" ||
-        product.category === category;
+        categoryFilter === "All Categories" ||
+        product.category === categoryFilter;
 
       const matchesStatus =
-        status === "All Status" ||
-        product.status === status;
+        statusFilter === "All Status" ||
+        product.status === statusFilter;
 
       return (
         matchesSearch &&
@@ -187,11 +297,23 @@ function AdminProducts() {
         matchesStatus
       );
     });
-  }, [search, category, status]);
+  }, [
+    products,
+    search,
+    categoryFilter,
+    statusFilter,
+  ]);
+
+  /* =========================
+     PAGINATION
+  ========================= */
 
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredProducts.length / ITEMS_PER_PAGE)
+    Math.ceil(
+      filteredProducts.length /
+        itemsPerPage
+    )
   );
 
   const safeCurrentPage = Math.min(
@@ -200,50 +322,202 @@ function AdminProducts() {
   );
 
   const startIndex =
-    (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+    (safeCurrentPage - 1) *
+    itemsPerPage;
 
-  const visibleProducts = filteredProducts.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
+  const endIndex =
+    startIndex + itemsPerPage;
 
-  const resetPage = () => {
+  const paginatedProducts =
+    filteredProducts.slice(
+      startIndex,
+      endIndex
+    );
+
+  /* =========================
+     SUMMARY
+  ========================= */
+
+  const totalProducts =
+    products.length;
+
+  const activeProducts =
+    products.filter(
+      (product) =>
+        product.status === "Active"
+    ).length;
+
+  const outOfStockProducts =
+    products.filter(
+      (product) =>
+        product.status ===
+          "Out of Stock" ||
+        product.stock === 0
+    ).length;
+
+  const draftProducts =
+    products.filter(
+      (product) =>
+        product.status === "Draft"
+    ).length;
+
+  /* =========================
+     HANDLERS
+  ========================= */
+
+  const handleSearchChange = (
+    value: string
+  ) => {
+    setSearch(value);
     setCurrentPage(1);
   };
 
-  const formatPrice = (price: number) => {
-    return `₹${price.toLocaleString("en-IN")}`;
+  const handleCategoryChange = (
+    value: string
+  ) => {
+    setCategoryFilter(value);
+    setCurrentPage(1);
   };
 
-  const getStockClass = (stock: number) => {
-    if (stock === 0) {
-      return "out";
+  const handleStatusChange = (
+    value: string
+  ) => {
+    setStatusFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setCategoryFilter(
+      "All Categories"
+    );
+    setStatusFilter("All Status");
+    setCurrentPage(1);
+  };
+
+  const handleViewProduct = (
+    productId: string | number
+  ) => {
+    navigate(
+      `/admin/products/${productId}`
+    );
+  };
+
+  const handleEditProduct = (
+    productId: string | number
+  ) => {
+    navigate(
+      `/admin/products/${productId}/edit`
+    );
+  };
+
+  const handleDeleteClick = (
+    product: Product
+  ) => {
+    setDeleteProduct(product);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteProduct(null);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!deleteProduct) {
+      return;
     }
 
-    if (stock <= 10) {
-      return "low";
-    }
+    const updatedProducts =
+      products.filter(
+        (product) =>
+          String(product.id) !==
+          String(deleteProduct.id)
+      );
 
-    return "good";
+    setProducts(updatedProducts);
+
+    localStorage.setItem(
+      PRODUCTS_STORAGE_KEY,
+      JSON.stringify(updatedProducts)
+    );
+
+    setDeleteProduct(null);
+
+    setDeleteSuccess(true);
+
+    const newTotalPages = Math.max(
+      1,
+      Math.ceil(
+        updatedProducts.length /
+          itemsPerPage
+      )
+    );
+
+    setCurrentPage((previousPage) =>
+      Math.min(
+        previousPage,
+        newTotalPages
+      )
+    );
+
+    window.setTimeout(() => {
+      setDeleteSuccess(false);
+    }, 2500);
+  };
+
+  const getStatusClass = (
+    status: ProductStatus
+  ) => {
+    switch (status) {
+      case "Active":
+        return "active";
+
+      case "Draft":
+        return "draft";
+
+      case "Inactive":
+        return "inactive";
+
+      case "Out of Stock":
+        return "out-of-stock";
+
+      default:
+        return "";
+    }
+  };
+
+  const pageNumbers = Array.from(
+    { length: totalPages },
+    (_, index) =>
+      index + 1
+  );
+
+  const formatPrice = (
+    price: number
+  ) => {
+    return new Intl.NumberFormat(
+      "en-IN",
+      {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      }
+    ).format(price);
   };
 
   return (
-    <div className="nx-admin-products">
+    <div className="nx-admin-products-page">
 
-      {/* PAGE HEADER */}
-      <div className="nx-admin-products-header">
+      {/* =========================
+          HEADER
+      ========================= */}
+
+      <div className="nx-admin-page-header">
         <div>
-          <div className="nx-admin-breadcrumb">
-            <span>Commerce</span>
-            <i className="bi bi-chevron-right" />
-            <strong>Products</strong>
-          </div>
-
           <h1>Products</h1>
 
           <p>
-            Manage your product catalog, inventory and
-            product information.
+            Manage your product catalog,
+            inventory and product information.
           </p>
         </div>
 
@@ -251,7 +525,9 @@ function AdminProducts() {
           type="button"
           className="nx-admin-primary-button"
           onClick={() =>
-            navigate("/admin/products/add")
+            navigate(
+              "/admin/products/add"
+            )
           }
         >
           <i className="bi bi-plus-lg" />
@@ -259,379 +535,605 @@ function AdminProducts() {
         </button>
       </div>
 
-      {/* SUMMARY */}
-      <div className="nx-admin-products-summary">
-        <div className="nx-admin-product-summary-box">
-          <span>Total Products</span>
-          <strong>{products.length}</strong>
+      {/* =========================
+          SUCCESS MESSAGE
+      ========================= */}
+
+      {deleteSuccess && (
+        <div className="nx-admin-success-message">
+          <i className="bi bi-check-circle-fill" />
+
+          <span>
+            Product deleted successfully.
+          </span>
+        </div>
+      )}
+
+      {/* =========================
+          SUMMARY
+      ========================= */}
+
+      <div className="nx-admin-product-summary">
+
+        <div className="nx-admin-summary-card">
+          <div className="nx-admin-summary-icon">
+            <i className="bi bi-box-seam" />
+          </div>
+
+          <div>
+            <span>Total Products</span>
+            <strong>
+              {totalProducts}
+            </strong>
+          </div>
         </div>
 
-        <div className="nx-admin-product-summary-box">
-          <span>Active</span>
-          <strong>
-            {
-              products.filter(
-                (product) => product.status === "Active"
-              ).length
-            }
-          </strong>
+        <div className="nx-admin-summary-card">
+          <div className="nx-admin-summary-icon">
+            <i className="bi bi-check-circle" />
+          </div>
+
+          <div>
+            <span>Active Products</span>
+            <strong>
+              {activeProducts}
+            </strong>
+          </div>
         </div>
 
-        <div className="nx-admin-product-summary-box">
-          <span>Draft</span>
-          <strong>
-            {
-              products.filter(
-                (product) => product.status === "Draft"
-              ).length
-            }
-          </strong>
+        <div className="nx-admin-summary-card">
+          <div className="nx-admin-summary-icon">
+            <i className="bi bi-file-earmark" />
+          </div>
+
+          <div>
+            <span>Draft Products</span>
+            <strong>
+              {draftProducts}
+            </strong>
+          </div>
         </div>
 
-        <div className="nx-admin-product-summary-box">
-          <span>Out of Stock</span>
-          <strong>
-            {
-              products.filter(
-                (product) =>
-                  product.status === "Out of Stock"
-              ).length
-            }
-          </strong>
+        <div className="nx-admin-summary-card">
+          <div className="nx-admin-summary-icon">
+            <i className="bi bi-exclamation-circle" />
+          </div>
+
+          <div>
+            <span>Out of Stock</span>
+            <strong>
+              {outOfStockProducts}
+            </strong>
+          </div>
         </div>
+
       </div>
 
-      {/* PRODUCT CARD */}
-      <section className="nx-admin-card nx-admin-products-card">
+      {/* =========================
+          PRODUCTS CARD
+      ========================= */}
+
+      <div className="nx-admin-products-card">
 
         {/* TOOLBAR */}
+
         <div className="nx-admin-products-toolbar">
 
-          <div className="nx-admin-products-search">
+          <div className="nx-admin-search-box">
             <i className="bi bi-search" />
 
             <input
-              type="search"
+              type="text"
               value={search}
-              placeholder="Search products, SKU..."
-              onChange={(event) => {
-                setSearch(event.target.value);
-                resetPage();
-              }}
+              onChange={(event) =>
+                handleSearchChange(
+                  event.target.value
+                )
+              }
+              placeholder="Search products or SKU..."
             />
 
             {search && (
               <button
                 type="button"
+                className="nx-admin-search-clear"
+                onClick={() =>
+                  handleSearchChange("")
+                }
                 aria-label="Clear search"
-                onClick={() => {
-                  setSearch("");
-                  resetPage();
-                }}
               >
-                <i className="bi bi-x-lg" />
+                ×
               </button>
             )}
           </div>
 
-          <div className="nx-admin-product-filters">
+          <div className="nx-admin-filter-group">
 
             <select
-              value={category}
-              onChange={(event) => {
-                setCategory(event.target.value);
-                resetPage();
-              }}
+              value={categoryFilter}
+              onChange={(event) =>
+                handleCategoryChange(
+                  event.target.value
+                )
+              }
               aria-label="Filter by category"
             >
-              {categories.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
+              <option value="All Categories">
+                All Categories
+              </option>
+
+              {categories.map(
+                (category) => (
+                  <option
+                    key={category}
+                    value={category}
+                  >
+                    {category}
+                  </option>
+                )
+              )}
             </select>
 
             <select
-              value={status}
-              onChange={(event) => {
-                setStatus(event.target.value);
-                resetPage();
-              }}
+              value={statusFilter}
+              onChange={(event) =>
+                handleStatusChange(
+                  event.target.value
+                )
+              }
               aria-label="Filter by status"
             >
-              {statuses.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
+              <option value="All Status">
+                All Status
+              </option>
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Draft">
+                Draft
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+              <option value="Out of Stock">
+                Out of Stock
+              </option>
             </select>
+
+            {(search ||
+              categoryFilter !==
+                "All Categories" ||
+              statusFilter !==
+                "All Status") && (
+              <button
+                type="button"
+                className="nx-admin-clear-filter"
+                onClick={
+                  handleClearFilters
+                }
+              >
+                Clear
+              </button>
+            )}
 
           </div>
         </div>
 
-        {/* RESULTS INFO */}
-        <div className="nx-admin-products-result-info">
+        {/* RESULT INFO */}
+
+        <div className="nx-admin-result-info">
           <span>
             Showing{" "}
-            <strong>
-              {filteredProducts.length === 0
-                ? 0
-                : startIndex + 1}
-              -
-              {Math.min(
-                startIndex + ITEMS_PER_PAGE,
-                filteredProducts.length
-              )}
-            </strong>{" "}
+            {filteredProducts.length === 0
+              ? 0
+              : startIndex + 1}
+            -
+            {Math.min(
+              endIndex,
+              filteredProducts.length
+            )}{" "}
             of{" "}
-            <strong>{filteredProducts.length}</strong>{" "}
+            {filteredProducts.length}{" "}
             products
           </span>
-
-          {(search ||
-            category !== "All Categories" ||
-            status !== "All Status") && (
-            <button
-              type="button"
-              onClick={() => {
-                setSearch("");
-                setCategory("All Categories");
-                setStatus("All Status");
-                resetPage();
-              }}
-            >
-              Clear filters
-            </button>
-          )}
         </div>
 
         {/* TABLE */}
+
         <div className="nx-admin-products-table-wrapper">
+
           <table className="nx-admin-products-table">
 
             <thead>
               <tr>
-                <th>Product</th>
+                <th>PRODUCT</th>
                 <th>SKU</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Updated</th>
-                <th />
+                <th>CATEGORY</th>
+                <th>PRICE</th>
+                <th>STOCK</th>
+                <th>STATUS</th>
+                <th>UPDATED</th>
+                <th className="nx-action-column">
+                  ACTIONS
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              {visibleProducts.map((product) => (
-                <tr key={product.id}>
 
-                  {/* PRODUCT */}
-                  <td>
-                    <div className="nx-admin-product-cell">
-                      <div className="nx-admin-product-image">
+              {paginatedProducts.length >
+              0 ? (
+
+                paginatedProducts.map(
+                  (product) => (
+
+                    <tr
+                      key={product.id}
+                    >
+
+                      <td>
+                        <div className="nx-admin-product-cell">
+
+                          <div className="nx-admin-product-image">
+
+                            {product.images?.[0]
+                              ?.src ? (
+
+                              <img
+                                src={
+                                  product
+                                    .images[0]
+                                    .src
+                                }
+                                alt={
+                                  product.name
+                                }
+                              />
+
+                            ) : (
+
+                              <i className="bi bi-box-seam" />
+
+                            )}
+
+                          </div>
+
+                          <div className="nx-admin-product-info">
+
+                            <strong>
+                              {product.name}
+                            </strong>
+
+                            {product.shortDescription && (
+                              <span>
+                                {
+                                  product.shortDescription
+                                }
+                              </span>
+                            )}
+
+                          </div>
+
+                        </div>
+                      </td>
+
+                      <td>
+                        <span className="nx-admin-sku">
+                          {product.sku}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span className="nx-admin-category">
+                          {product.category}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span className="nx-admin-price">
+                          {formatPrice(
+                            Number(
+                              product.price
+                            ) || 0
+                          )}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span
+                          className={`nx-admin-stock ${
+                            product.stock === 0
+                              ? "empty"
+                              : ""
+                          }`}
+                        >
+                          {product.stock}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span
+                          className={`nx-admin-status ${getStatusClass(
+                            product.status
+                          )}`}
+                        >
+                          <span className="nx-admin-status-dot" />
+
+                          {product.status}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span className="nx-admin-updated">
+                          {product.updated ||
+                            "—"}
+                        </span>
+                      </td>
+
+                      <td>
+
+                        <div className="nx-admin-product-actions">
+
+                          <button
+                            type="button"
+                            className="nx-admin-action-button view"
+                            onClick={() =>
+                              handleViewProduct(
+                                product.id
+                              )
+                            }
+                            title="View Product"
+                            aria-label="View Product"
+                          >
+                            <i className="bi bi-eye" />
+                          </button>
+
+                          <button
+                            type="button"
+                            className="nx-admin-action-button edit"
+                            onClick={() =>
+                              handleEditProduct(
+                                product.id
+                              )
+                            }
+                            title="Edit Product"
+                            aria-label="Edit Product"
+                          >
+                            <i className="bi bi-pencil" />
+                          </button>
+
+                          <button
+                            type="button"
+                            className="nx-admin-action-button delete"
+                            onClick={() =>
+                              handleDeleteClick(
+                                product
+                              )
+                            }
+                            title="Delete Product"
+                            aria-label="Delete Product"
+                          >
+                            <i className="bi bi-trash3" />
+                          </button>
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+
+                  )
+                )
+
+              ) : (
+
+                <tr>
+
+                  <td
+                    colSpan={8}
+                    className="nx-admin-empty-cell"
+                  >
+
+                    <div className="nx-admin-empty-state">
+
+                      <div className="nx-admin-empty-icon">
                         <i className="bi bi-box-seam" />
                       </div>
 
-                      <div>
-                        <strong>{product.name}</strong>
-                        <span>
-                          Product ID #{product.id}
-                        </span>
-                      </div>
-                    </div>
-                  </td>
+                      <h3>
+                        No products found
+                      </h3>
 
-                  {/* SKU */}
-                  <td>
-                    <span className="nx-admin-product-sku">
-                      {product.sku}
-                    </span>
-                  </td>
+                      <p>
+                        Try changing your
+                        search or filter
+                        criteria.
+                      </p>
 
-                  {/* CATEGORY */}
-                  <td>
-                    <span className="nx-admin-product-category">
-                      {product.category}
-                    </span>
-                  </td>
+                      {(search ||
+                        categoryFilter !==
+                          "All Categories" ||
+                        statusFilter !==
+                          "All Status") && (
 
-                  {/* PRICE */}
-                  <td>
-                    <strong className="nx-admin-product-price">
-                      {formatPrice(product.price)}
-                    </strong>
-                  </td>
+                        <button
+                          type="button"
+                          onClick={
+                            handleClearFilters
+                          }
+                        >
+                          Clear Filters
+                        </button>
 
-                  {/* STOCK */}
-                  <td>
-                    <span
-                      className={`nx-admin-product-stock ${getStockClass(
-                        product.stock
-                      )}`}
-                    >
-                      {product.stock === 0
-                        ? "Out of stock"
-                        : `${product.stock} units`}
-                    </span>
-                  </td>
-
-                  {/* STATUS */}
-                  <td>
-                    <span
-                      className={`nx-admin-product-status ${product.status
-                        .toLowerCase()
-                        .replace(" ", "-")}`}
-                    >
-                      <span />
-                      {product.status}
-                    </span>
-                  </td>
-
-                  {/* UPDATED */}
-                  <td>
-                    <span className="nx-admin-product-date">
-                      {product.updated}
-                    </span>
-                  </td>
-
-                  {/* ACTIONS */}
-                  <td>
-                    <div className="nx-admin-product-actions">
-
-                      <button
-                        type="button"
-                        title="View product"
-                        aria-label={`View ${product.name}`}
-                        onClick={() =>
-                          navigate(
-                            `/admin/products/${product.id}`
-                          )
-                        }
-                      >
-                        <i className="bi bi-eye" />
-                      </button>
-
-                      <button
-                        type="button"
-                        title="Edit product"
-                        aria-label={`Edit ${product.name}`}
-                        onClick={() =>
-                          navigate(
-                            `/admin/products/${product.id}/edit`
-                          )
-                        }
-                      >
-                        <i className="bi bi-pencil" />
-                      </button>
-
-                      <button
-                        type="button"
-                        title="More options"
-                        aria-label={`More options for ${product.name}`}
-                      >
-                        <i className="bi bi-three-dots" />
-                      </button>
+                      )}
 
                     </div>
+
                   </td>
 
                 </tr>
-              ))}
+
+              )}
+
             </tbody>
+
           </table>
+
         </div>
 
-        {/* EMPTY STATE */}
-        {visibleProducts.length === 0 && (
-          <div className="nx-admin-products-empty">
-            <div>
-              <i className="bi bi-search" />
-            </div>
+        {/* =========================
+            PAGINATION
+        ========================= */}
 
-            <h3>No products found</h3>
+        {filteredProducts.length > 0 &&
+          totalPages > 1 && (
 
-            <p>
-              Try changing your search or filter
-              criteria.
-            </p>
+          <div className="nx-admin-pagination">
 
             <button
               type="button"
-              onClick={() => {
-                setSearch("");
-                setCategory("All Categories");
-                setStatus("All Status");
-                resetPage();
-              }}
+              className="nx-admin-pagination-button"
+              disabled={
+                safeCurrentPage === 1
+              }
+              onClick={() =>
+                setCurrentPage(
+                  (previous) =>
+                    Math.max(
+                      1,
+                      previous - 1
+                    )
+                )
+              }
+              aria-label="Previous page"
             >
-              Reset filters
+              <i className="bi bi-chevron-left" />
             </button>
+
+            <div className="nx-admin-page-numbers">
+
+              {pageNumbers.map(
+                (page) => (
+
+                  <button
+                    key={page}
+                    type="button"
+                    className={`nx-admin-page-number ${
+                      safeCurrentPage ===
+                      page
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      setCurrentPage(
+                        page
+                      )
+                    }
+                  >
+                    {page}
+                  </button>
+
+                )
+              )}
+
+            </div>
+
+            <button
+              type="button"
+              className="nx-admin-pagination-button"
+              disabled={
+                safeCurrentPage ===
+                totalPages
+              }
+              onClick={() =>
+                setCurrentPage(
+                  (previous) =>
+                    Math.min(
+                      totalPages,
+                      previous + 1
+                    )
+                )
+              }
+              aria-label="Next page"
+            >
+              <i className="bi bi-chevron-right" />
+            </button>
+
           </div>
+
         )}
 
-        {/* PAGINATION */}
-        {filteredProducts.length > 0 && (
-          <div className="nx-admin-products-pagination">
+      </div>
 
-            <span>
-              Page {safeCurrentPage} of {totalPages}
-            </span>
+      {/* =========================
+          DELETE MODAL
+      ========================= */}
 
-            <div className="nx-admin-pagination-buttons">
+      {deleteProduct && (
+
+        <div
+          className="nx-admin-modal-backdrop"
+          onClick={handleDeleteCancel}
+        >
+
+          <div
+            className="nx-admin-delete-modal"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
+
+            <div className="nx-admin-delete-icon">
+              <i className="bi bi-trash3" />
+            </div>
+
+            <h2>
+              Delete Product?
+            </h2>
+
+            <p>
+              Are you sure you want to delete{" "}
+              <strong>
+                {deleteProduct.name}
+              </strong>
+              ? This action cannot be
+              undone.
+            </p>
+
+            <div className="nx-admin-delete-actions">
 
               <button
                 type="button"
-                disabled={safeCurrentPage === 1}
-                onClick={() =>
-                  setCurrentPage(
-                    (page) => Math.max(1, page - 1)
-                  )
+                className="nx-admin-delete-cancel"
+                onClick={
+                  handleDeleteCancel
                 }
-                aria-label="Previous page"
               >
-                <i className="bi bi-chevron-left" />
+                Cancel
               </button>
 
-              {Array.from(
-                { length: totalPages },
-                (_, index) => index + 1
-              ).map((page) => (
-                <button
-                  type="button"
-                  key={page}
-                  className={
-                    safeCurrentPage === page
-                      ? "active"
-                      : ""
-                  }
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </button>
-              ))}
-
               <button
                 type="button"
-                disabled={
-                  safeCurrentPage === totalPages
+                className="nx-admin-delete-confirm"
+                onClick={
+                  handleDeleteConfirm
                 }
-                onClick={() =>
-                  setCurrentPage(
-                    (page) =>
-                      Math.min(totalPages, page + 1)
-                  )
-                }
-                aria-label="Next page"
               >
-                <i className="bi bi-chevron-right" />
+                Delete Product
               </button>
 
             </div>
-          </div>
-        )}
 
-      </section>
+          </div>
+
+        </div>
+
+      )}
+
     </div>
   );
 }

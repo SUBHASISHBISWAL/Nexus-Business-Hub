@@ -1,326 +1,753 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import "./ProductDetails.css";
 
-type Product = {
-  id: string;
+type ProductImage = {
+  src: string;
+  type: "upload" | "url";
+};
+
+type StoredProduct = {
+  id: string | number;
   name: string;
   sku: string;
   category: string;
-  price: string;
-  stock: number;
+  price: string | number;
+  stock: string | number;
   status: string;
-  image: string;
-  shortDescription: string;
-  description: string;
-  specifications: string[];
-  createdAt: string;
-  updatedAt: string;
+  shortDescription?: string;
+  description?: string;
+  specifications?: string;
+  images?: ProductImage[];
+  updated: string;
 };
 
-const products: Record<string, Product> = {
-  "1": {
-    id: "1",
-    name: "Smart IoT Gateway Pro",
-    sku: "NX-IOT-001",
-    category: "Electronics",
-    price: "₹24,999",
-    stock: 48,
-    status: "Active",
-    image: "/product1.jpg",
-    shortDescription:
-      "Industrial-grade IoT gateway for connected device management.",
-    description:
-      "Smart IoT Gateway Pro provides reliable connectivity, secure device communication and centralized industrial IoT management for enterprise environments.",
-    specifications: [
-      "Quad ARM A53 1.8GHz",
-      "Dual GbE",
-      "TPM 2.0",
-      "Industrial IoT connectivity",
-      "Remote device management",
-    ],
-    createdAt: "10 Sep 2026",
-    updatedAt: "18 Sep 2026",
-  },
+const PRODUCTS_STORAGE_KEY =
+  "nexus_business_products";
 
-  "2": {
-    id: "2",
-    name: "EdgeCompute R500",
-    sku: "NX-EDGE-002",
-    category: "Hardware",
-    price: "₹78,500",
-    stock: 24,
-    status: "Active",
-    image: "/product2.jpg",
-    shortDescription:
-      "Compact edge computing server for industrial workloads.",
-    description:
-      "EdgeCompute R500 delivers dependable edge processing with ECC memory and NVMe storage for enterprise deployments.",
-    specifications: [
-      "AMD Ryzen Embedded",
-      "32GB ECC",
-      "NVMe RAID",
-      "IP40 rated",
-      "Industrial edge computing",
-    ],
-    createdAt: "08 Sep 2026",
-    updatedAt: "17 Sep 2026",
-  },
-
-  "3": {
-    id: "3",
-    name: "NexusOS Fleet Control",
-    sku: "NX-SW-003",
-    category: "Software",
-    price: "₹12,400",
-    stock: 100,
-    status: "Active",
-    image: "/product3.jpg",
-    shortDescription:
-      "Centralized fleet and device management platform.",
-    description:
-      "NexusOS Fleet Control provides remote OTA updates, device telemetry and role-based management controls.",
-    specifications: [
-      "Remote OTA",
-      "Device telemetry",
-      "Role-based controls",
-      "Annual licensing",
-      "Enterprise management",
-    ],
-    createdAt: "06 Sep 2026",
-    updatedAt: "16 Sep 2026",
-  },
-};
-
-const defaultProduct: Product = {
-  id: "7",
-  name: "Industrial PoE Switch 8P",
-  sku: "NX-NET-007",
-  category: "Hardware",
-  price: "₹32,800",
-  stock: 36,
+const fallbackProduct: StoredProduct = {
+  id: "1",
+  name: "Business Laptop Pro",
+  sku: "NX-LAP-001",
+  category: "Electronics",
+  price: 55000,
+  stock: 24,
   status: "Active",
-  image: "/product7.jpg",
   shortDescription:
-    "Managed industrial PoE switch with redundant power support.",
+    "Professional business laptop for enterprise productivity.",
   description:
-    "Industrial PoE Switch 8P provides reliable network connectivity for industrial environments with PoE+ and SFP support.",
-  specifications: [
-    "8 × GbE PoE+",
-    "2 × SFP",
-    "Redundant power",
-    "Managed switch",
-    "Industrial networking",
-  ],
-  createdAt: "04 Sep 2026",
-  updatedAt: "18 Sep 2026",
+    "Business Laptop Pro is designed for professional users with reliable performance, security and productivity features.",
+  specifications:
+    "Intel Core i7\n16GB RAM\n512GB SSD\nWi-Fi 6\nWindows 11 Pro",
+  images: [],
+  updated: "10 Sep 2026",
 };
 
 function ProductDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const product = products[id ?? ""] ?? defaultProduct;
+  const [product, setProduct] =
+    useState<StoredProduct | null>(null);
+
+  const [selectedImage, setSelectedImage] =
+    useState(0);
+
+  const [notFound, setNotFound] =
+    useState(false);
+
+  /* =========================
+     LOAD PRODUCT
+  ========================= */
+
+  useEffect(() => {
+    if (!id) {
+      setNotFound(true);
+      return;
+    }
+
+    const storedData =
+      localStorage.getItem(
+        PRODUCTS_STORAGE_KEY
+      );
+
+    if (!storedData) {
+      /*
+       * Keep fallback product for the
+       * original demo product.
+       */
+      if (String(id) === "1") {
+        setProduct(fallbackProduct);
+        setNotFound(false);
+      } else {
+        setNotFound(true);
+      }
+
+      return;
+    }
+
+    try {
+      const storedProducts: StoredProduct[] =
+        JSON.parse(storedData);
+
+      if (!Array.isArray(storedProducts)) {
+        setNotFound(true);
+        return;
+      }
+
+      const foundProduct =
+        storedProducts.find(
+          (item) =>
+            String(item.id) === String(id)
+        );
+
+      if (!foundProduct) {
+        /*
+         * Fallback for old demo route.
+         */
+        if (String(id) === "1") {
+          setProduct(fallbackProduct);
+          setNotFound(false);
+        } else {
+          setNotFound(true);
+        }
+
+        return;
+      }
+
+      setProduct(foundProduct);
+      setNotFound(false);
+      setSelectedImage(0);
+    } catch (error) {
+      console.error(
+        "Unable to load product:",
+        error
+      );
+
+      setNotFound(true);
+    }
+  }, [id]);
+
+  /* =========================
+     PREPARE IMAGES
+  ========================= */
+
+  const productImages =
+    product?.images?.filter(
+      (image) =>
+        image &&
+        typeof image.src === "string" &&
+        image.src.trim() !== ""
+    ) || [];
+
+  /*
+   * Show all saved images.
+   * If no localStorage images exist,
+   * use the fallback placeholder.
+   */
+  const hasImages =
+    productImages.length > 0;
+
+  const activeImage =
+    hasImages
+      ? productImages[
+          Math.min(
+            selectedImage,
+            productImages.length - 1
+          )
+        ]
+      : null;
+
+  /* =========================
+     SPECIFICATIONS
+  ========================= */
+
+  const specifications =
+    product?.specifications
+      ? product.specifications
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : [];
+
+  /* =========================
+     FORMAT PRICE
+  ========================= */
+
+  const formatPrice = (
+    price: string | number
+  ) => {
+    const numericPrice =
+      Number(price) || 0;
+
+    return new Intl.NumberFormat(
+      "en-IN",
+      {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      }
+    ).format(numericPrice);
+  };
+
+  /* =========================
+     NOT FOUND
+  ========================= */
+
+  if (notFound || !product) {
+    return (
+      <div className="nx-product-details-page">
+
+        <div className="nx-product-details-not-found">
+
+          <div className="nx-product-not-found-icon">
+            <i className="bi bi-box-seam" />
+          </div>
+
+          <h2>
+            Product not found
+          </h2>
+
+          <p>
+            The product you are trying to
+            view does not exist.
+          </p>
+
+          <button
+            type="button"
+            onClick={() =>
+              navigate(
+                "/admin/products"
+              )
+            }
+          >
+            Back to Products
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
 
   return (
     <div className="nx-product-details-page">
-      {/* HEADER */}
+
+      {/* =========================
+          HEADER
+      ========================= */}
+
       <div className="nx-product-details-header">
+
         <div>
+
           <button
             type="button"
             className="nx-details-back"
-            onClick={() => navigate("/admin/products")}
+            onClick={() =>
+              navigate(
+                "/admin/products"
+              )
+            }
           >
             ← Back to Products
           </button>
 
           <div className="nx-details-title-row">
+
             <div>
-              <h1>{product.name}</h1>
+
+              <h1>
+                {product.name}
+              </h1>
 
               <p>
-                Product details, inventory and specifications
+                Product details, inventory
+                and specifications
               </p>
+
             </div>
 
             <span
               className={`nx-product-status ${
-                product.status.toLowerCase() === "active"
-                  ? "active"
-                  : "inactive"
+                product.status
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")
               }`}
             >
               {product.status}
             </span>
+
           </div>
+
         </div>
 
         <button
           type="button"
           className="nx-edit-product-button"
           onClick={() =>
-            navigate(`/admin/products/${product.id}/edit`)
+            navigate(
+              `/admin/products/${product.id}/edit`
+            )
           }
         >
+          <i className="bi bi-pencil" />
           Edit Product
         </button>
+
       </div>
 
-      {/* MAIN */}
-      <div className="nx-product-details-grid">
-        {/* IMAGE */}
-        <section className="nx-details-card nx-product-image-card">
-          <div className="nx-product-image-wrapper">
-            <img
-              src={product.image}
-              alt={product.name}
-              onError={(event) => {
-                event.currentTarget.style.display = "none";
-                event.currentTarget.parentElement?.classList.add(
-                  "image-fallback"
-                );
-              }}
-            />
+      {/* =========================
+          MAIN GRID
+      ========================= */}
 
-            <div className="nx-image-placeholder">
-              <span>Product Image</span>
+      <div className="nx-product-details-grid">
+
+        {/* =========================
+            IMAGE GALLERY
+        ========================= */}
+
+        <section className="nx-details-card nx-product-image-card">
+
+          <div className="nx-product-gallery">
+
+            {/* MAIN IMAGE */}
+
+            <div className="nx-product-main-image">
+
+              {activeImage ? (
+
+                <img
+                  src={activeImage.src}
+                  alt={`${product.name} ${
+                    selectedImage + 1
+                  }`}
+                  onError={(event) => {
+                    event.currentTarget.style.display =
+                      "none";
+
+                    event.currentTarget.parentElement?.classList.add(
+                      "image-fallback"
+                    );
+                  }}
+                />
+
+              ) : (
+
+                <div className="nx-product-main-placeholder">
+
+                  <i className="bi bi-image" />
+
+                  <span>
+                    No Product Image
+                  </span>
+
+                </div>
+
+              )}
+
             </div>
+
+            {/* THUMBNAILS */}
+
+            {hasImages && (
+              <div className="nx-product-thumbnails">
+
+                {productImages.map(
+                  (image, index) => (
+
+                    <button
+                      type="button"
+                      key={`${image.src}-${index}`}
+                      className={`nx-product-thumbnail ${
+                        selectedImage === index
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setSelectedImage(
+                          index
+                        )
+                      }
+                      aria-label={`View product image ${
+                        index + 1
+                      }`}
+                    >
+
+                      <img
+                        src={image.src}
+                        alt={`${product.name} thumbnail ${
+                          index + 1
+                        }`}
+                        onError={(
+                          event
+                        ) => {
+                          event.currentTarget.style.display =
+                            "none";
+                        }}
+                      />
+
+                      <span>
+                        {index + 1}
+                      </span>
+
+                    </button>
+
+                  )
+                )}
+
+              </div>
+            )}
+
+            {/* IMAGE COUNT */}
+
+            <div className="nx-product-image-count">
+
+              {hasImages
+                ? `${selectedImage + 1} / ${productImages.length}`
+                : "0 / 4"}
+
+            </div>
+
           </div>
+
         </section>
 
-        {/* BASIC INFO */}
+        {/* =========================
+            BASIC INFO
+        ========================= */}
+
         <section className="nx-details-card">
+
           <div className="nx-details-card-heading">
-            <h2>Product Information</h2>
-            <p>Basic product and catalog information.</p>
+
+            <h2>
+              Product Information
+            </h2>
+
+            <p>
+              Basic product and catalog
+              information.
+            </p>
+
           </div>
 
           <div className="nx-info-list">
+
             <div className="nx-info-row">
-              <span>Product Name</span>
-              <strong>{product.name}</strong>
+
+              <span>
+                Product Name
+              </span>
+
+              <strong>
+                {product.name}
+              </strong>
+
             </div>
 
             <div className="nx-info-row">
-              <span>SKU</span>
-              <strong>{product.sku}</strong>
+
+              <span>
+                SKU
+              </span>
+
+              <strong>
+                {product.sku}
+              </strong>
+
             </div>
 
             <div className="nx-info-row">
-              <span>Category</span>
-              <strong>{product.category}</strong>
+
+              <span>
+                Category
+              </span>
+
+              <strong>
+                {product.category}
+              </strong>
+
             </div>
 
             <div className="nx-info-row">
-              <span>Status</span>
-              <strong>{product.status}</strong>
+
+              <span>
+                Status
+              </span>
+
+              <strong>
+                {product.status}
+              </strong>
+
             </div>
+
           </div>
+
         </section>
 
-        {/* PRICING */}
+        {/* =========================
+            PRICING
+        ========================= */}
+
         <section className="nx-details-card">
+
           <div className="nx-details-card-heading">
-            <h2>Pricing & Inventory</h2>
-            <p>Current product availability.</p>
+
+            <h2>
+              Pricing & Inventory
+            </h2>
+
+            <p>
+              Current product availability.
+            </p>
+
           </div>
 
           <div className="nx-metric-grid">
+
             <div className="nx-detail-metric">
-              <span>Current Price</span>
-              <strong>{product.price}</strong>
+
+              <span>
+                Current Price
+              </span>
+
+              <strong>
+                {formatPrice(
+                  product.price
+                )}
+              </strong>
+
             </div>
 
             <div className="nx-detail-metric">
-              <span>Stock Quantity</span>
-              <strong>{product.stock}</strong>
+
+              <span>
+                Stock Quantity
+              </span>
+
+              <strong>
+                {product.stock}
+              </strong>
+
             </div>
+
           </div>
 
           <div className="nx-stock-indicator">
+
             <div className="nx-stock-label">
-              <span>Inventory Level</span>
-              <strong>
-                {product.stock > 20 ? "Healthy" : "Low Stock"}
+
+              <span>
+                Inventory Level
+              </span>
+
+              <strong
+                className={
+                  Number(
+                    product.stock
+                  ) <= 20
+                    ? "low-stock"
+                    : ""
+                }
+              >
+                {Number(
+                  product.stock
+                ) === 0
+                  ? "Out of Stock"
+                  : Number(
+                      product.stock
+                    ) <= 20
+                  ? "Low Stock"
+                  : "Healthy"}
               </strong>
+
             </div>
 
             <div className="nx-stock-bar">
+
               <div
                 className={`nx-stock-fill ${
-                  product.stock <= 20 ? "low" : ""
+                  Number(
+                    product.stock
+                  ) <= 20
+                    ? "low"
+                    : ""
                 }`}
                 style={{
-                  width: `${Math.min(product.stock, 100)}%`,
+                  width: `${Math.min(
+                    Number(
+                      product.stock
+                    ) || 0,
+                    100
+                  )}%`,
                 }}
               />
+
             </div>
+
           </div>
+
         </section>
 
-        {/* DESCRIPTION */}
+        {/* =========================
+            DESCRIPTION
+        ========================= */}
+
         <section className="nx-details-card nx-details-full">
+
           <div className="nx-details-card-heading">
-            <h2>Description</h2>
-            <p>Product overview and detailed information.</p>
+
+            <h2>
+              Description
+            </h2>
+
+            <p>
+              Product overview and detailed
+              information.
+            </p>
+
           </div>
 
           <div className="nx-description-block">
-            <h3>Short Description</h3>
-            <p>{product.shortDescription}</p>
+
+            <h3>
+              Short Description
+            </h3>
+
+            <p>
+              {product.shortDescription ||
+                "No short description available."}
+            </p>
+
           </div>
 
           <div className="nx-description-block">
-            <h3>Product Description</h3>
-            <p>{product.description}</p>
+
+            <h3>
+              Product Description
+            </h3>
+
+            <p>
+              {product.description ||
+                "No product description available."}
+            </p>
+
           </div>
+
         </section>
 
-        {/* SPECIFICATIONS */}
+        {/* =========================
+            SPECIFICATIONS
+        ========================= */}
+
         <section className="nx-details-card">
+
           <div className="nx-details-card-heading">
-            <h2>Specifications</h2>
-            <p>Technical product specifications.</p>
+
+            <h2>
+              Specifications
+            </h2>
+
+            <p>
+              Technical product
+              specifications.
+            </p>
+
           </div>
 
           <div className="nx-specification-list">
-            {product.specifications.map((specification, index) => (
-              <div
-                className="nx-specification-item"
-                key={`${specification}-${index}`}
-              >
-                <span className="nx-spec-dot" />
-                <span>{specification}</span>
+
+            {specifications.length > 0 ? (
+
+              specifications.map(
+                (
+                  specification,
+                  index
+                ) => (
+
+                  <div
+                    className="nx-specification-item"
+                    key={`${specification}-${index}`}
+                  >
+
+                    <span className="nx-spec-dot" />
+
+                    <span>
+                      {specification}
+                    </span>
+
+                  </div>
+
+                )
+              )
+
+            ) : (
+
+              <div className="nx-no-specifications">
+                No specifications available.
               </div>
-            ))}
+
+            )}
+
           </div>
+
         </section>
 
-        {/* RECORD INFORMATION */}
+        {/* =========================
+            RECORD INFORMATION
+        ========================= */}
+
         <section className="nx-details-card">
+
           <div className="nx-details-card-heading">
-            <h2>Record Information</h2>
-            <p>Product catalog timestamps.</p>
+
+            <h2>
+              Record Information
+            </h2>
+
+            <p>
+              Product catalog timestamps.
+            </p>
+
           </div>
 
           <div className="nx-info-list">
+
             <div className="nx-info-row">
-              <span>Product ID</span>
-              <strong>#{product.id}</strong>
+
+              <span>
+                Product ID
+              </span>
+
+              <strong>
+                #{product.id}
+              </strong>
+
             </div>
 
             <div className="nx-info-row">
-              <span>Created</span>
-              <strong>{product.createdAt}</strong>
+
+              <span>
+                Last Updated
+              </span>
+
+              <strong>
+                {product.updated ||
+                  "—"}
+              </strong>
+
             </div>
 
-            <div className="nx-info-row">
-              <span>Last Updated</span>
-              <strong>{product.updatedAt}</strong>
-            </div>
           </div>
+
         </section>
+
       </div>
+
     </div>
   );
 }

@@ -1,9 +1,17 @@
+/* =========================================================
+   PRODUCT DETAILS
+========================================================= */
+
 .nx-product-details-page {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding-bottom: 40px;
 }
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .nx-product-details-header {
   display: flex;
@@ -18,7 +26,7 @@
   border: none;
   background: transparent;
   color: #2563eb;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -45,17 +53,22 @@
 .nx-details-title-row p {
   margin: 0;
   color: #6b7280;
-  font-size: 14px;
+  font-size: 13px;
 }
+
+/* =========================================================
+   STATUS
+========================================================= */
 
 .nx-product-status {
   display: inline-flex;
   align-items: center;
-  height: 28px;
+  height: 27px;
   padding: 0 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .nx-product-status.active {
@@ -63,20 +76,38 @@
   color: #166534;
 }
 
+.nx-product-status.draft {
+  background: #fef3c7;
+  color: #92400e;
+}
+
 .nx-product-status.inactive {
   background: #f3f4f6;
   color: #4b5563;
 }
 
+.nx-product-status.out-of-stock {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* =========================================================
+   EDIT BUTTON
+========================================================= */
+
 .nx-edit-product-button {
-  height: 40px;
-  padding: 0 18px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 16px;
   border: 1px solid #2563eb;
   border-radius: 7px;
   background: #2563eb;
   color: #ffffff;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -86,83 +117,192 @@
   background: #1d4ed8;
 }
 
+/* =========================================================
+   MAIN GRID
+========================================================= */
+
 .nx-product-details-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(
+    2,
+    minmax(0, 1fr)
+  );
+  gap: 16px;
 }
 
 .nx-details-card {
   min-width: 0;
-  padding: 22px;
+  padding: 18px;
   border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border-radius: 9px;
   background: #ffffff;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
 .nx-details-full {
   grid-column: 1 / -1;
 }
 
+/* =========================================================
+   PRODUCT GALLERY
+========================================================= */
+
 .nx-product-image-card {
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 365px;
 }
 
-.nx-product-image-wrapper {
+.nx-product-gallery {
   position: relative;
   width: 100%;
-  height: 280px;
+}
+
+/* MAIN IMAGE */
+
+.nx-product-main-image {
+  position: relative;
+  width: 100%;
+  height: 285px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  background: #f9fafb;
+  background: #f8fafc;
 }
 
-.nx-product-image-wrapper img {
+.nx-product-main-image img {
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: contain;
-  padding: 20px;
+  padding: 16px;
   box-sizing: border-box;
 }
 
-.nx-image-placeholder {
-  display: none;
+.nx-product-main-placeholder {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  color: #9ca3af;
+}
+
+.nx-product-main-placeholder i {
+  font-size: 30px;
+}
+
+.nx-product-main-placeholder span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   THUMBNAILS
+========================================================= */
+
+.nx-product-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(
+    4,
+    minmax(0, 1fr)
+  );
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.nx-product-thumbnail {
+  position: relative;
+  height: 68px;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid #e1e6ec;
+  border-radius: 6px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.nx-product-thumbnail:hover {
+  border-color: #93b4ef;
+}
+
+.nx-product-thumbnail.active {
+  border: 2px solid #2563eb;
+  box-shadow:
+    0 0 0 2px rgba(
+      37,
+      99,
+      235,
+      0.08
+    );
+}
+
+.nx-product-thumbnail img {
   width: 100%;
   height: 100%;
-  color: #9ca3af;
-  font-size: 14px;
+  display: block;
+  object-fit: cover;
 }
 
-.nx-product-image-wrapper.image-fallback
-  .nx-image-placeholder {
+.nx-product-thumbnail span {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  min-width: 16px;
+  height: 16px;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background: rgba(
+    15,
+    23,
+    42,
+    0.72
+  );
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
 }
+
+/* IMAGE COUNT */
+
+.nx-product-image-count {
+  margin-top: 8px;
+  color: #8a94a3;
+  font-size: 10px;
+  text-align: right;
+}
+
+/* =========================================================
+   CARD HEADING
+========================================================= */
 
 .nx-details-card-heading {
-  margin-bottom: 20px;
+  margin-bottom: 17px;
 }
 
 .nx-details-card-heading h2 {
   margin: 0 0 5px;
   color: #111827;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .nx-details-card-heading p {
   margin: 0;
   color: #6b7280;
-  font-size: 13px;
+  font-size: 11px;
 }
+
+/* =========================================================
+   INFO
+========================================================= */
 
 .nx-info-list {
   display: flex;
@@ -174,7 +314,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  min-height: 44px;
+  min-height: 42px;
   border-bottom: 1px solid #f3f4f6;
 }
 
@@ -184,26 +324,35 @@
 
 .nx-info-row span {
   color: #6b7280;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .nx-info-row strong {
+  max-width: 65%;
   color: #111827;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   text-align: right;
+  word-break: break-word;
 }
+
+/* =========================================================
+   PRICING
+========================================================= */
 
 .nx-metric-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(
+    2,
+    1fr
+  );
+  gap: 10px;
 }
 
 .nx-detail-metric {
-  padding: 16px;
+  padding: 14px;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 7px;
   background: #f9fafb;
 }
 
@@ -211,17 +360,21 @@
   display: block;
   margin-bottom: 7px;
   color: #6b7280;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .nx-detail-metric strong {
   color: #111827;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 }
 
+/* =========================================================
+   STOCK
+========================================================= */
+
 .nx-stock-indicator {
-  margin-top: 20px;
+  margin-top: 17px;
 }
 
 .nx-stock-label {
@@ -232,17 +385,21 @@
 
 .nx-stock-label span {
   color: #6b7280;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .nx-stock-label strong {
   color: #166534;
-  font-size: 12px;
+  font-size: 10px;
+}
+
+.nx-stock-label strong.low-stock {
+  color: #b45309;
 }
 
 .nx-stock-bar {
   width: 100%;
-  height: 7px;
+  height: 6px;
   overflow: hidden;
   border-radius: 999px;
   background: #e5e7eb;
@@ -258,8 +415,12 @@
   background: #f59e0b;
 }
 
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
 .nx-description-block {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .nx-description-block:last-child {
@@ -267,40 +428,98 @@
 }
 
 .nx-description-block h3 {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
   color: #374151;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .nx-description-block p {
   margin: 0;
   color: #4b5563;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.7;
 }
+
+/* =========================================================
+   SPECIFICATIONS
+========================================================= */
 
 .nx-specification-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 11px;
 }
 
 .nx-specification-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   color: #374151;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .nx-spec-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   flex-shrink: 0;
   border-radius: 50%;
   background: #2563eb;
 }
+
+.nx-no-specifications {
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+/* =========================================================
+   NOT FOUND
+========================================================= */
+
+.nx-product-details-not-found {
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.nx-product-not-found-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #f3f5f7;
+  color: #64748b;
+}
+
+.nx-product-details-not-found h2 {
+  margin: 0;
+  color: #263142;
+  font-size: 17px;
+}
+
+.nx-product-details-not-found p {
+  margin: 7px 0 15px;
+  color: #8a94a3;
+  font-size: 12px;
+}
+
+.nx-product-details-not-found button {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid #dfe4ea;
+  border-radius: 6px;
+  background: #fff;
+  color: #4b5563;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 900px) {
   .nx-product-details-grid {
@@ -324,7 +543,7 @@
   }
 
   .nx-details-title-row h1 {
-    font-size: 24px;
+    font-size: 23px;
   }
 
   .nx-edit-product-button {
@@ -332,15 +551,19 @@
   }
 
   .nx-details-card {
-    padding: 18px;
+    padding: 15px;
   }
 
   .nx-product-image-card {
-    min-height: 260px;
+    min-height: 330px;
   }
 
-  .nx-product-image-wrapper {
-    height: 220px;
+  .nx-product-main-image {
+    height: 245px;
+  }
+
+  .nx-product-thumbnail {
+    height: 58px;
   }
 
   .nx-metric-grid {

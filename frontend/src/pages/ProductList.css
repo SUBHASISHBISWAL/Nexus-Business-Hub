@@ -1054,7 +1054,7 @@
 
   .nx-pagination-nav {
     min-width: 30px !important;
-    padding: 0 7px !important;
+    padding: 0 7px !important;  
   }
 
   .nx-pagination-ellipsis {
@@ -1062,3 +1062,4 @@
     height: 30px;
   }
 }
+
