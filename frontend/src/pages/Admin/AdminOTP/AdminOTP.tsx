@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminOTP.css";
@@ -17,8 +16,22 @@ export default function AdminOTP() {
 
     setError("");
 
+    const pendingAdminOtp = localStorage.getItem(
+      "nexus_admin_pending_otp"
+    );
+
+    if (pendingAdminOtp !== "true") {
+      navigate("/login");
+      return;
+    }
+
     if (!otp.trim()) {
       setError("Please enter the verification code.");
+      return;
+    }
+
+    if (otp.length !== 6) {
+      setError("Please enter a valid 6-digit OTP.");
       return;
     }
 
@@ -30,18 +43,38 @@ export default function AdminOTP() {
     setIsLoading(true);
 
     setTimeout(() => {
+      localStorage.removeItem("nexus_admin_pending_otp");
+
       localStorage.setItem("isAdmin", "true");
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userRole", "Admin");
+      localStorage.setItem(
+        "authToken",
+        "local-admin-demo-token"
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          userId: "local-admin-001",
+          firstName: "Admin",
+          lastName: "User",
+          email: "admin@nexus.com",
+          phoneNumber: "",
+          role: "Admin",
+        })
+      );
+
+      window.dispatchEvent(new Event("userUpdated"));
+
       setIsLoading(false);
+
       navigate("/admin/dashboard");
     }, 700);
   };
 
   return (
     <div className="admin-otp-page">
-
-      {/* =====================================================
-          BACKGROUND
-      ===================================================== */}
 
       <div className="admin-otp-background">
         <span className="admin-otp-orb otp-orb-one"></span>
@@ -52,15 +85,7 @@ export default function AdminOTP() {
         <span className="admin-otp-grid-line otp-line-two"></span>
       </div>
 
-      {/* =====================================================
-          MAIN CARD
-      ===================================================== */}
-
       <div className="admin-otp-container">
-
-        {/* ===================================================
-            BRAND PANEL
-        =================================================== */}
 
         <div className="admin-otp-brand">
 
@@ -142,13 +167,8 @@ export default function AdminOTP() {
 
         </div>
 
-        {/* ===================================================
-            OTP FORM PANEL
-        =================================================== */}
-
         <div className="admin-otp-card">
 
-          {/* Back */}
           <button
             type="button"
             className="admin-otp-back-btn"
@@ -159,7 +179,6 @@ export default function AdminOTP() {
             Back to Login
           </button>
 
-          {/* Header */}
           <div className="admin-otp-header">
 
             <div className="admin-otp-icon">
@@ -181,7 +200,6 @@ export default function AdminOTP() {
 
           </div>
 
-          {/* Form */}
           <form onSubmit={handleVerify}>
 
             <div className="admin-otp-form-group">
@@ -224,7 +242,6 @@ export default function AdminOTP() {
 
             </div>
 
-            {/* Error */}
             {error && (
               <div className="admin-otp-error">
                 <i className="bi bi-exclamation-circle"></i>
@@ -235,7 +252,6 @@ export default function AdminOTP() {
               </div>
             )}
 
-            {/* Submit */}
             <button
               type="submit"
               className="admin-otp-submit"
@@ -262,7 +278,6 @@ export default function AdminOTP() {
 
           </form>
 
-          {/* Security */}
           <div className="admin-otp-footer">
 
             <i className="bi bi-shield-check"></i>
@@ -279,4 +294,3 @@ export default function AdminOTP() {
     </div>
   );
 }
-

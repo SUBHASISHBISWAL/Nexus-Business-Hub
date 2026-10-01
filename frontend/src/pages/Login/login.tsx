@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 import {
   loginUser,
   registerUser,
@@ -8,6 +9,7 @@ import {
   verifyResetOtp,
   resetPassword,
 } from "../../services/authService";
+
 import "./login.css";
 
 export default function Login() {
@@ -15,22 +17,35 @@ export default function Login() {
 
   const [isRegister, setIsRegister] = useState(false);
 
-  // Login Form States
+  // =========================================================
+  // LOGIN FORM STATES
+  // =========================================================
+
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
-  const [loginErrors, setLoginErrors] = useState<{ identifier?: string; password?: string }>({});
+
+  const [loginErrors, setLoginErrors] = useState<{
+    identifier?: string;
+    password?: string;
+  }>({});
+
   const [loginGeneralError, setLoginGeneralError] = useState("");
   const [loginSuccessMessage, setLoginSuccessMessage] = useState("");
 
-  // Register Form States
+  // =========================================================
+  // REGISTER FORM STATES
+  // =========================================================
+
   const [registerFullName, setRegisterFullName] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPhone, setRegisterPhone] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [registerErrors, setRegisterErrors] = useState<{
     fullName?: string;
     email?: string;
@@ -38,74 +53,99 @@ export default function Login() {
     password?: string;
     confirmPassword?: string;
   }>({});
+
   const [registerGeneralError, setRegisterGeneralError] = useState("");
 
-  // Forgot Password Flow States
+  // =========================================================
+  // FORGOT PASSWORD FLOW STATES
+  // =========================================================
+
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotStep, setForgotStep] = useState<1 | 2 | 3>(1);
+
   const [forgotIdentifier, setForgotIdentifier] = useState("");
   const [forgotOtp, setForgotOtp] = useState("");
   const [forgotResetToken, setForgotResetToken] = useState("");
+
   const [forgotNewPassword, setForgotNewPassword] = useState("");
   const [forgotConfirmPassword, setForgotConfirmPassword] = useState("");
+
   const [showForgotNewPassword, setShowForgotNewPassword] = useState(false);
-  const [showForgotConfirmPassword, setShowForgotConfirmPassword] = useState(false);
+  const [showForgotConfirmPassword, setShowForgotConfirmPassword] =
+    useState(false);
+
   const [forgotError, setForgotError] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotCooldown, setForgotCooldown] = useState(0);
 
-  useEffect(() => {
-    if (forgotCooldown <= 0) return;
-    const timer = setInterval(() => {
-      setForgotCooldown((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [forgotCooldown]);
-
   const [isLoading, setIsLoading] = useState(false);
 
   // =========================================================
-  // CLIENT-SIDE VALIDATION LOGIC
+  // FORGOT PASSWORD COOLDOWN
+  // =========================================================
+
+  useEffect(() => {
+    if (forgotCooldown <= 0) return;
+
+    const timer = setInterval(() => {
+      setForgotCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [forgotCooldown]);
+
+  // =========================================================
+  // CLIENT-SIDE VALIDATION
   // =========================================================
 
   const validateFullName = (name: string): string => {
     const trimmed = name.trim();
+
     if (!trimmed) {
       return "Full name is required.";
     }
+
     if (/\d/.test(trimmed)) {
       return "Full name cannot contain numbers.";
     }
-    // Allow normal alphabetic names, spaces, apostrophes, hyphens, dots
+
     if (!/^[a-zA-Z\s.'-]+$/.test(trimmed) || !/[a-zA-Z]/.test(trimmed)) {
       return "Full name can only contain alphabetic characters and spaces.";
     }
+
     if (trimmed.length < 2) {
       return "Full name must be at least 2 characters.";
     }
+
     return "";
   };
 
   const validateEmail = (email: string): string => {
     const trimmed = email.trim();
+
     if (!trimmed) {
       return "Email address is required.";
     }
-    // Standard email validation requiring domain with dot and at least 2 TLD chars
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    const emailRegex =
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
     if (!emailRegex.test(trimmed)) {
       return "Please enter a valid email address.";
     }
+
     return "";
   };
 
   const validateIndianPhone = (phone: string): string => {
     const trimmed = phone.trim();
+
     if (!trimmed) {
       return "Phone number is required.";
     }
-    // Strip spaces, dashes, and optional leading +91 or 0
+
     let cleanPhone = trimmed.replace(/[\s-]/g, "");
+
     if (cleanPhone.startsWith("+91")) {
       cleanPhone = cleanPhone.substring(3);
     } else if (cleanPhone.startsWith("91") && cleanPhone.length === 12) {
@@ -117,6 +157,7 @@ export default function Login() {
     if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
       return "Please enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9).";
     }
+
     return "";
   };
 
@@ -124,18 +165,23 @@ export default function Login() {
     if (!password) {
       return "Password is required.";
     }
+
     if (password.length < 8) {
       return "Password must be at least 8 characters long.";
     }
+
     if (!/[A-Z]/.test(password)) {
       return "Password must contain at least one uppercase letter.";
     }
+
     if (!/[a-z]/.test(password)) {
       return "Password must contain at least one lowercase letter.";
     }
+
     if (!/\d/.test(password)) {
       return "Password must contain at least one number.";
     }
+
     return "";
   };
 
@@ -144,104 +190,195 @@ export default function Login() {
   // =========================================================
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (isLoading) return;
+  if (isLoading) return;
 
-    setLoginGeneralError("");
-    setLoginSuccessMessage("");
+  setLoginGeneralError("");
+  setLoginSuccessMessage("");
 
-    const errors: { identifier?: string; password?: string } = {};
+  const errors: {
+    identifier?: string;
+    password?: string;
+  } = {};
 
-    const trimmedIdentifier = loginEmail.trim();
-    if (!trimmedIdentifier) {
-      errors.identifier = "Email or phone number is required.";
-    }
+  const trimmedIdentifier = loginEmail.trim();
 
-    if (!loginPassword) {
-      errors.password = "Password is required.";
-    }
+  if (!trimmedIdentifier) {
+    errors.identifier = "Email or phone number is required.";
+  }
 
-    if (Object.keys(errors).length > 0) {
-      setLoginErrors(errors);
-      return;
-    }
+  if (!loginPassword) {
+    errors.password = "Password is required.";
+  }
 
-    setLoginErrors({});
+  if (Object.keys(errors).length > 0) {
+    setLoginErrors(errors);
+    return;
+  }
 
-    // Demo Admin shortcut preservation
+  setLoginErrors({});
+  setIsLoading(true);
+
+  // =====================================================
+  // LOCAL DEMO ADMIN LOGIN
+  // =====================================================
+
+  const isDummyAdmin =
+    trimmedIdentifier.toLowerCase() === "admin@nexus.com" &&
+    loginPassword === "Admin@123";
+
+  if (isDummyAdmin) {
+    localStorage.setItem(
+      "nexus_admin_pending_otp",
+      "true"
+    );
+
+    localStorage.setItem(
+      "userRole",
+      "Admin"
+    );
+
+    localStorage.setItem(
+      "isLoggedIn",
+      "true"
+    );
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        userId: "local-admin-001",
+        firstName: "Admin",
+        lastName: "User",
+        email: "admin@nexus.com",
+        phoneNumber: "",
+        role: "Admin",
+      })
+    );
+
+    setIsLoading(false);
+
+    navigate("/admin/verify-otp");
+
+    return;
+  }
+
+  // =====================================================
+  // NORMAL BACKEND LOGIN
+  // =====================================================
+
+  try {
+    const response = await loginUser({
+      email: trimmedIdentifier,
+      identifier: trimmedIdentifier,
+      password: loginPassword,
+    });
+
+    // ===================================================
+    // BACKEND ADMIN LOGIN
+    // ===================================================
+
     if (
-      trimmedIdentifier.toLowerCase() === "admin@nexus.com" &&
-      loginPassword === "Admin@123"
+      response.role === "Admin" ||
+      response.requiresOtp
     ) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        navigate("/admin/verify-otp");
-      }, 500);
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await loginUser({
-        email: trimmedIdentifier,
-        identifier: trimmedIdentifier,
-        password: loginPassword,
-      });
-
-      if (response.role === "Admin" || response.requiresOtp) {
-        setIsLoading(false);
-        navigate("/admin/verify-otp");
-        return;
-      }
-
-      // Customer Login Success
-      localStorage.setItem("authToken", response.token);
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userRole", response.role);
       localStorage.setItem(
-        "user",
-        JSON.stringify({
-          userId: response.userId,
-          firstName: response.firstName,
-          lastName: response.lastName,
-          email: response.email,
-          phoneNumber: response.phoneNumber || "",
-          role: response.role,
-        })
+        "nexus_admin_pending_otp",
+        "true"
       );
 
-      window.dispatchEvent(new Event("userUpdated"));
+      localStorage.setItem(
+        "userRole",
+        "Admin"
+      );
 
       setIsLoading(false);
-      navigate("/");
-    } catch (err: unknown) {
-      setIsLoading(false);
 
-      if (axios.isAxiosError(err)) {
-        if (err.response) {
-          const status = err.response.status;
-          const data = err.response.data as { message?: string };
+      navigate("/admin/verify-otp");
 
-          if (status === 401) {
-            setLoginGeneralError("Invalid email/phone or password.");
-          } else if (status === 400) {
-            setLoginGeneralError(data?.message || "Invalid credentials provided.");
-          } else if (status === 500) {
-            setLoginGeneralError("Server error. Please try again later.");
-          } else {
-            setLoginGeneralError(data?.message || "Login failed. Please try again.");
-          }
+      return;
+    }
+
+    // ===================================================
+    // CUSTOMER LOGIN
+    // ===================================================
+
+    localStorage.setItem(
+      "authToken",
+      response.token
+    );
+
+    localStorage.setItem(
+      "isLoggedIn",
+      "true"
+    );
+
+    localStorage.setItem(
+      "userRole",
+      response.role
+    );
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        userId: response.userId,
+        firstName: response.firstName,
+        lastName: response.lastName,
+        email: response.email,
+        phoneNumber: response.phoneNumber || "",
+        role: response.role,
+      })
+    );
+
+    window.dispatchEvent(
+      new Event("userUpdated")
+    );
+
+    setIsLoading(false);
+
+    navigate("/");
+  } catch (err: unknown) {
+    setIsLoading(false);
+
+    if (axios.isAxiosError(err)) {
+      if (err.response) {
+        const status = err.response.status;
+
+        const data = err.response.data as {
+          message?: string;
+        };
+
+        if (status === 401) {
+          setLoginGeneralError(
+            "Invalid email/phone or password."
+          );
+        } else if (status === 400) {
+          setLoginGeneralError(
+            data?.message ||
+              "Invalid credentials provided."
+          );
+        } else if (status === 500) {
+          setLoginGeneralError(
+            "Server error. Please try again later."
+          );
         } else {
-          setLoginGeneralError("Unable to connect to the server. Please try again.");
+          setLoginGeneralError(
+            data?.message ||
+              "Login failed. Please try again."
+          );
         }
       } else {
-        setLoginGeneralError("An unexpected error occurred. Please try again.");
+        setLoginGeneralError(
+          "Unable to connect to the server. Please try again."
+        );
       }
+    } else {
+      setLoginGeneralError(
+        "An unexpected error occurred. Please try again."
+      );
     }
-  };
+  }
+};
 
   // =========================================================
   // REGISTER SUBMISSION
@@ -290,12 +427,25 @@ export default function Login() {
     setIsLoading(true);
 
     const cleanEmail = registerEmail.trim().toLowerCase();
+
     let cleanPhone = registerPhone.trim().replace(/[\s-]/g, "");
-    if (cleanPhone.startsWith("+91")) cleanPhone = cleanPhone.substring(3);
-    else if (cleanPhone.startsWith("91") && cleanPhone.length === 12) cleanPhone = cleanPhone.substring(2);
-    else if (cleanPhone.startsWith("0") && cleanPhone.length === 11) cleanPhone = cleanPhone.substring(1);
+
+    if (cleanPhone.startsWith("+91")) {
+      cleanPhone = cleanPhone.substring(3);
+    } else if (
+      cleanPhone.startsWith("91") &&
+      cleanPhone.length === 12
+    ) {
+      cleanPhone = cleanPhone.substring(2);
+    } else if (
+      cleanPhone.startsWith("0") &&
+      cleanPhone.length === 11
+    ) {
+      cleanPhone = cleanPhone.substring(1);
+    }
 
     const nameParts = registerFullName.trim().split(/\s+/);
+
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
 
@@ -319,13 +469,15 @@ export default function Login() {
       setConfirmPassword("");
       setRegisterErrors({});
 
-      // Set registered email into login form and show success
+      // Put registered email into login form
       setLoginEmail(cleanEmail);
       setLoginPassword("");
       setLoginGeneralError("");
-      setLoginSuccessMessage("Registration successful. Please login.");
 
-      // Switch to Login tab
+      setLoginSuccessMessage(
+        "Registration successful. Please login."
+      );
+
       setIsRegister(false);
     } catch (err: unknown) {
       setIsLoading(false);
@@ -336,19 +488,34 @@ export default function Login() {
           const data = err.response.data as { message?: string };
 
           if (status === 409) {
-            setRegisterGeneralError(data?.message || "An account with this email or phone number already exists.");
+            setRegisterGeneralError(
+              data?.message ||
+                "An account with this email or phone number already exists."
+            );
           } else if (status === 400) {
-            setRegisterGeneralError(data?.message || "Invalid registration information.");
+            setRegisterGeneralError(
+              data?.message ||
+                "Invalid registration information."
+            );
           } else if (status === 500) {
-            setRegisterGeneralError("Server error. Please try again later.");
+            setRegisterGeneralError(
+              "Server error. Please try again later."
+            );
           } else {
-            setRegisterGeneralError(data?.message || "Registration failed. Please try again.");
+            setRegisterGeneralError(
+              data?.message ||
+                "Registration failed. Please try again."
+            );
           }
         } else {
-          setRegisterGeneralError("Unable to connect to the server. Please try again.");
+          setRegisterGeneralError(
+            "Unable to connect to the server. Please try again."
+          );
         }
       } else {
-        setRegisterGeneralError("An unexpected error occurred. Please try again.");
+        setRegisterGeneralError(
+          "An unexpected error occurred. Please try again."
+        );
       }
     }
   };
@@ -359,35 +526,43 @@ export default function Login() {
 
   const openRegister = () => {
     if (isLoading) return;
+
     setLoginGeneralError("");
     setRegisterGeneralError("");
     setLoginSuccessMessage("");
     setRegisterErrors({});
+
     setIsRegister(true);
   };
 
   const openLogin = () => {
     if (isLoading) return;
+
     setLoginGeneralError("");
     setRegisterGeneralError("");
     setLoginErrors({});
+
     setIsRegister(false);
   };
 
   // =========================================================
-  // FORGOT PASSWORD FLOW
+  // FORGOT PASSWORD MODAL
   // =========================================================
 
   const openForgotPasswordModal = () => {
     setShowForgotPassword(true);
     setForgotStep(1);
+
     setForgotIdentifier(loginEmail.trim());
     setForgotOtp("");
     setForgotResetToken("");
+
     setForgotNewPassword("");
     setForgotConfirmPassword("");
+
     setShowForgotNewPassword(false);
     setShowForgotConfirmPassword(false);
+
     setForgotError("");
     setForgotLoading(false);
   };
@@ -395,62 +570,115 @@ export default function Login() {
   const closeForgotPasswordModal = () => {
     setShowForgotPassword(false);
     setForgotStep(1);
+
     setForgotResetToken("");
     setForgotOtp("");
+
     setForgotNewPassword("");
     setForgotConfirmPassword("");
+
     setShowForgotNewPassword(false);
     setShowForgotConfirmPassword(false);
+
     setForgotError("");
     setForgotLoading(false);
   };
 
-  const getApiErrorMessage = (err: unknown, defaultMsg: string): string => {
+  const getApiErrorMessage = (
+    err: unknown,
+    defaultMsg: string
+  ): string => {
     if (axios.isAxiosError(err)) {
       if (!err.response) {
         return "Unable to connect to the server. Please check your network connection.";
       }
+
       const status = err.response.status;
-      const data = err.response.data as { message?: string; error?: string };
+
+      const data = err.response.data as {
+        message?: string;
+        error?: string;
+      };
+
       if (status === 429) {
-        return data?.message || "Too many requests. Please wait a moment before trying again.";
+        return (
+          data?.message ||
+          "Too many requests. Please wait a moment before trying again."
+        );
       }
+
       if (status === 404) {
-        return data?.message || "Requested account or resource not found.";
+        return (
+          data?.message ||
+          "Requested account or resource not found."
+        );
       }
+
       if (status === 401) {
-        return data?.message || "Verification code is invalid or expired.";
+        return (
+          data?.message ||
+          "Verification code is invalid or expired."
+        );
       }
+
       if (status === 409) {
-        return data?.message || "Conflict occurred. Please try again.";
+        return (
+          data?.message ||
+          "Conflict occurred. Please try again."
+        );
       }
+
       if (status === 400) {
-        return data?.message || "Invalid request. Please check the provided information.";
+        return (
+          data?.message ||
+          "Invalid request. Please check the provided information."
+        );
       }
+
       if (status === 502) {
-        return data?.message || "Email service error. Please try again later.";
+        return (
+          data?.message ||
+          "Email service error. Please try again later."
+        );
       }
+
       if (status >= 500) {
-        return data?.message || "Server error. Please try again later.";
+        return (
+          data?.message ||
+          "Server error. Please try again later."
+        );
       }
+
       return data?.message || defaultMsg;
     }
+
     return defaultMsg;
   };
 
+  // =========================================================
+  // FORGOT PASSWORD - STEP 1
+  // =========================================================
+
   const handleForgotStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (forgotLoading) return;
+
     setForgotError("");
 
     const trimmed = forgotIdentifier.trim();
+
     if (!trimmed) {
-      setForgotError("Please enter your registered email or phone number.");
+      setForgotError(
+        "Please enter your registered email or phone number."
+      );
       return;
     }
 
     if (trimmed.includes("@")) {
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const emailRegex =
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
       if (!emailRegex.test(trimmed)) {
         setForgotError("Please enter a valid email address.");
         return;
@@ -458,66 +686,118 @@ export default function Login() {
     }
 
     setForgotLoading(true);
+
     try {
       await forgotPassword(trimmed);
+
       setForgotLoading(false);
       setForgotStep(2);
       setForgotCooldown(60);
     } catch (err: unknown) {
       setForgotLoading(false);
-      setForgotError(getApiErrorMessage(err, "Failed to send verification code. Please try again."));
+
+      setForgotError(
+        getApiErrorMessage(
+          err,
+          "Failed to send verification code. Please try again."
+        )
+      );
     }
   };
 
+  // =========================================================
+  // RESEND OTP
+  // =========================================================
+
   const handleResendForgotOtp = async () => {
     if (forgotLoading || forgotCooldown > 0) return;
+
     setForgotError("");
     setForgotLoading(true);
+
     try {
       await forgotPassword(forgotIdentifier.trim());
+
       setForgotLoading(false);
       setForgotCooldown(60);
     } catch (err: unknown) {
       setForgotLoading(false);
-      setForgotError(getApiErrorMessage(err, "Failed to resend verification code. Please try again."));
+
+      setForgotError(
+        getApiErrorMessage(
+          err,
+          "Failed to resend verification code. Please try again."
+        )
+      );
     }
   };
 
+  // =========================================================
+  // FORGOT PASSWORD - STEP 2
+  // =========================================================
+
   const handleForgotStep2 = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (forgotLoading) return;
+
     setForgotError("");
 
     const trimmedOtp = forgotOtp.trim();
+
     if (!trimmedOtp) {
       setForgotError("Please enter the verification code.");
       return;
     }
 
-    if (trimmedOtp.length !== 6 || !/^\d{6}$/.test(trimmedOtp)) {
-      setForgotError("Please enter a valid 6-digit verification code.");
+    if (
+      trimmedOtp.length !== 6 ||
+      !/^\d{6}$/.test(trimmedOtp)
+    ) {
+      setForgotError(
+        "Please enter a valid 6-digit verification code."
+      );
       return;
     }
 
     setForgotLoading(true);
+
     try {
-      const result = await verifyResetOtp(forgotIdentifier.trim(), trimmedOtp);
+      const result = await verifyResetOtp(
+        forgotIdentifier.trim(),
+        trimmedOtp
+      );
+
       setForgotLoading(false);
-      // Store ephemeral reset token in React state (NEVER in localStorage/sessionStorage)
+
+      // Keep reset token only in React memory.
       setForgotResetToken(result.resetToken);
       setForgotStep(3);
     } catch (err: unknown) {
       setForgotLoading(false);
-      setForgotError(getApiErrorMessage(err, "Invalid or expired verification code."));
+
+      setForgotError(
+        getApiErrorMessage(
+          err,
+          "Invalid or expired verification code."
+        )
+      );
     }
   };
 
+  // =========================================================
+  // FORGOT PASSWORD - STEP 3
+  // =========================================================
+
   const handleForgotStep3 = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (forgotLoading) return;
+
     setForgotError("");
 
     const pwdErr = validatePassword(forgotNewPassword);
+
     if (pwdErr) {
       setForgotError(pwdErr);
       return;
@@ -529,37 +809,62 @@ export default function Login() {
     }
 
     if (!forgotResetToken) {
-      setForgotError("Password reset session has expired. Please restart the request.");
+      setForgotError(
+        "Password reset session has expired. Please restart the request."
+      );
       return;
     }
 
     setForgotLoading(true);
+
     try {
-      await resetPassword(forgotResetToken, forgotNewPassword);
+      await resetPassword(
+        forgotResetToken,
+        forgotNewPassword
+      );
+
       setForgotLoading(false);
 
-      // Clean up sensitive state in memory
+      // Clear sensitive state
       setShowForgotPassword(false);
+
       setForgotResetToken("");
       setForgotOtp("");
       setForgotNewPassword("");
       setForgotConfirmPassword("");
+
       setShowForgotNewPassword(false);
       setShowForgotConfirmPassword(false);
 
-      // Password Reset Complete
-      setLoginSuccessMessage("Password reset successfully. Please login with your new password.");
+      setLoginSuccessMessage(
+        "Password reset successfully. Please login with your new password."
+      );
+
       setLoginEmail(forgotIdentifier.trim());
       setLoginPassword("");
       setLoginGeneralError("");
     } catch (err: unknown) {
       setForgotLoading(false);
-      setForgotError(getApiErrorMessage(err, "Failed to reset password. Please try again."));
+
+      setForgotError(
+        getApiErrorMessage(
+          err,
+          "Failed to reset password. Please try again."
+        )
+      );
     }
   };
 
+  // =========================================================
+  // UI
+  // =========================================================
+
   return (
-    <div className={`auth-page ${isRegister ? "register-mode" : ""}`}>
+    <div
+      className={`auth-page ${
+        isRegister ? "register-mode" : ""
+      }`}
+    >
       {/* Background Elements */}
       <div className="auth-background">
         <span className="auth-orb orb-one"></span>
@@ -572,8 +877,10 @@ export default function Login() {
 
       {/* Auth Card */}
       <div className="auth-card">
+
         {/* Brand / Information Panel */}
         <div className="auth-brand-panel">
+
           <div className="brand-glow brand-glow-one"></div>
           <div className="brand-glow brand-glow-two"></div>
 
@@ -590,20 +897,27 @@ export default function Login() {
 
           <div
             className={`auth-brand-content ${
-              isRegister ? "brand-content-register" : "brand-content-login"
+              isRegister
+                ? "brand-content-register"
+                : "brand-content-login"
             }`}
           >
+
             {/* Logo */}
             <div className="auth-brand-logo">
               <i
                 className={
-                  isRegister ? "bi bi-person-plus" : "bi bi-hdd-network"
+                  isRegister
+                    ? "bi bi-person-plus"
+                    : "bi bi-hdd-network"
                 }
               ></i>
             </div>
 
             {/* Eyebrow */}
-            <span className="brand-eyebrow">NEXUS TECHNOLOGIES</span>
+            <span className="brand-eyebrow">
+              NEXUS TECHNOLOGIES
+            </span>
 
             {/* Heading */}
             <h1>
@@ -621,19 +935,25 @@ export default function Login() {
 
             {/* Features */}
             <div className="brand-features">
+
               <div className="brand-feature">
                 <div className="brand-feature-icon">
                   <i
                     className={
-                      isRegister ? "bi bi-person-check" : "bi bi-shield-check"
+                      isRegister
+                        ? "bi bi-person-check"
+                        : "bi bi-shield-check"
                     }
                   ></i>
                 </div>
 
                 <div className="brand-feature-text">
                   <strong>
-                    {isRegister ? "Easy Onboarding" : "Secure Platform"}
+                    {isRegister
+                      ? "Easy Onboarding"
+                      : "Secure Platform"}
                   </strong>
+
                   <span>
                     {isRegister
                       ? "Get started in minutes"
@@ -646,7 +966,9 @@ export default function Login() {
                 <div className="brand-feature-icon">
                   <i
                     className={
-                      isRegister ? "bi bi-diagram-3" : "bi bi-lightning-charge"
+                      isRegister
+                        ? "bi bi-diagram-3"
+                        : "bi bi-lightning-charge"
                     }
                   ></i>
                 </div>
@@ -657,6 +979,7 @@ export default function Login() {
                       ? "One Connected Platform"
                       : "Connected Operations"}
                   </strong>
+
                   <span>
                     {isRegister
                       ? "Manage everything in one place"
@@ -664,6 +987,7 @@ export default function Login() {
                   </span>
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -672,24 +996,34 @@ export default function Login() {
             <span></span>
             Enterprise Business Platform
           </div>
+
         </div>
 
         {/* Form Panel */}
         <div className="auth-form-panel">
+
           {/* =================================================
               LOGIN FORM
           ================================================= */}
+
           <div className="auth-form login-form">
+
             <div className="auth-heading">
+
               <div className="heading-icon">
                 <i className="bi bi-person-lock"></i>
               </div>
 
-              <span className="auth-small-title">Welcome Back</span>
+              <span className="auth-small-title">
+                Welcome Back
+              </span>
 
               <h2>Sign in to your account</h2>
 
-              <p>Enter your details to continue to Nexus Technologies.</p>
+              <p>
+                Enter your details to continue to Nexus Technologies.
+              </p>
+
             </div>
 
             {/* Login General Error */}
@@ -700,7 +1034,7 @@ export default function Login() {
               </div>
             )}
 
-            {/* Login Success Alert */}
+            {/* Login Success */}
             {loginSuccessMessage && (
               <div className="auth-alert-success" role="alert">
                 <i className="bi bi-check-circle-fill"></i>
@@ -709,13 +1043,19 @@ export default function Login() {
             )}
 
             <form onSubmit={handleLogin} noValidate>
+
               {/* Email or Phone */}
               <div className="auth-field">
-                <label htmlFor="login-email">Email or Phone Number</label>
+
+                <label htmlFor="login-email">
+                  Email or Phone Number
+                </label>
 
                 <div
                   className={`auth-input ${
-                    loginErrors.identifier ? "has-error" : ""
+                    loginErrors.identifier
+                      ? "has-error"
+                      : ""
                   }`}
                 >
                   <i className="bi bi-envelope input-icon"></i>
@@ -727,26 +1067,39 @@ export default function Login() {
                     value={loginEmail}
                     onChange={(e) => {
                       setLoginEmail(e.target.value);
+
                       if (loginErrors.identifier) {
-                        setLoginErrors({ ...loginErrors, identifier: undefined });
+                        setLoginErrors({
+                          ...loginErrors,
+                          identifier: undefined,
+                        });
                       }
-                      if (loginGeneralError) setLoginGeneralError("");
+
+                      if (loginGeneralError) {
+                        setLoginGeneralError("");
+                      }
                     }}
                     autoComplete="username"
                     required
                   />
                 </div>
+
                 {loginErrors.identifier && (
                   <span className="field-error-message">
                     {loginErrors.identifier}
                   </span>
                 )}
+
               </div>
 
               {/* Password */}
               <div className="auth-field">
+
                 <div className="auth-label-row">
-                  <label htmlFor="login-password">Password</label>
+
+                  <label htmlFor="login-password">
+                    Password
+                  </label>
 
                   <button
                     type="button"
@@ -755,26 +1108,41 @@ export default function Login() {
                   >
                     Forgot Password?
                   </button>
+
                 </div>
 
                 <div
                   className={`auth-input ${
-                    loginErrors.password ? "has-error" : ""
+                    loginErrors.password
+                      ? "has-error"
+                      : ""
                   }`}
                 >
+
                   <i className="bi bi-lock input-icon"></i>
 
                   <input
                     id="login-password"
-                    type={showLoginPassword ? "text" : "password"}
+                    type={
+                      showLoginPassword
+                        ? "text"
+                        : "password"
+                    }
                     placeholder="Enter your password"
                     value={loginPassword}
                     onChange={(e) => {
                       setLoginPassword(e.target.value);
+
                       if (loginErrors.password) {
-                        setLoginErrors({ ...loginErrors, password: undefined });
+                        setLoginErrors({
+                          ...loginErrors,
+                          password: undefined,
+                        });
                       }
-                      if (loginGeneralError) setLoginGeneralError("");
+
+                      if (loginGeneralError) {
+                        setLoginGeneralError("");
+                      }
                     }}
                     autoComplete="current-password"
                     required
@@ -783,27 +1151,38 @@ export default function Login() {
                   <button
                     type="button"
                     className="password-toggle"
-                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    onClick={() =>
+                      setShowLoginPassword(
+                        !showLoginPassword
+                      )
+                    }
                     aria-label="Toggle password visibility"
                   >
                     <i
                       className={
-                        showLoginPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                        showLoginPassword
+                          ? "bi bi-eye-slash"
+                          : "bi bi-eye"
                       }
                     ></i>
                   </button>
+
                 </div>
+
                 {loginErrors.password && (
                   <span className="field-error-message">
                     {loginErrors.password}
                   </span>
                 )}
+
               </div>
 
               {/* Login Button */}
               <button
                 type="submit"
-                className={`auth-submit-btn ${isLoading ? "loading" : ""}`}
+                className={`auth-submit-btn ${
+                  isLoading ? "loading" : ""
+                }`}
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -818,39 +1197,53 @@ export default function Login() {
                   </>
                 )}
               </button>
+
             </form>
 
             {/* Security */}
             <div className="auth-security-note">
               <i className="bi bi-shield-check"></i>
-              <span>Secure authentication protected by Nexus</span>
+              <span>
+                Secure authentication protected by Nexus
+              </span>
             </div>
 
             {/* Switch to Register */}
             <div className="auth-switch">
               <span>Don't have an account?</span>
-              <button type="button" onClick={openRegister}>
+
+              <button
+                type="button"
+                onClick={openRegister}
+              >
                 Create Account
                 <i className="bi bi-arrow-up-right"></i>
               </button>
             </div>
+
           </div>
 
           {/* =================================================
               REGISTER FORM
           ================================================= */}
+
           <div className="auth-form register-form">
+
             <div className="auth-heading register-heading">
-              <span className="auth-small-title">Get Started</span>
+
+              <span className="auth-small-title">
+                Get Started
+              </span>
 
               <h2>Create your account</h2>
 
               <p>
                 Create your Nexus account and start managing your business.
               </p>
+
             </div>
 
-            {/* Register General Error */}
+            {/* Register Error */}
             {registerGeneralError && (
               <div className="auth-alert-error" role="alert">
                 <i className="bi bi-exclamation-circle-fill"></i>
@@ -859,13 +1252,19 @@ export default function Login() {
             )}
 
             <form onSubmit={handleRegister} noValidate>
+
               {/* Full Name */}
               <div className="auth-field">
-                <label htmlFor="register-name">Full Name</label>
+
+                <label htmlFor="register-name">
+                  Full Name
+                </label>
 
                 <div
                   className={`auth-input ${
-                    registerErrors.fullName ? "has-error" : ""
+                    registerErrors.fullName
+                      ? "has-error"
+                      : ""
                   }`}
                 >
                   <i className="bi bi-person input-icon"></i>
@@ -877,32 +1276,43 @@ export default function Login() {
                     value={registerFullName}
                     onChange={(e) => {
                       setRegisterFullName(e.target.value);
+
                       if (registerErrors.fullName) {
                         setRegisterErrors({
                           ...registerErrors,
                           fullName: undefined,
                         });
                       }
-                      if (registerGeneralError) setRegisterGeneralError("");
+
+                      if (registerGeneralError) {
+                        setRegisterGeneralError("");
+                      }
                     }}
                     autoComplete="name"
                     required
                   />
                 </div>
+
                 {registerErrors.fullName && (
                   <span className="field-error-message">
                     {registerErrors.fullName}
                   </span>
                 )}
+
               </div>
 
               {/* Email */}
               <div className="auth-field">
-                <label htmlFor="register-email">Email Address</label>
+
+                <label htmlFor="register-email">
+                  Email Address
+                </label>
 
                 <div
                   className={`auth-input ${
-                    registerErrors.email ? "has-error" : ""
+                    registerErrors.email
+                      ? "has-error"
+                      : ""
                   }`}
                 >
                   <i className="bi bi-envelope input-icon"></i>
@@ -914,32 +1324,43 @@ export default function Login() {
                     value={registerEmail}
                     onChange={(e) => {
                       setRegisterEmail(e.target.value);
+
                       if (registerErrors.email) {
                         setRegisterErrors({
                           ...registerErrors,
                           email: undefined,
                         });
                       }
-                      if (registerGeneralError) setRegisterGeneralError("");
+
+                      if (registerGeneralError) {
+                        setRegisterGeneralError("");
+                      }
                     }}
                     autoComplete="email"
                     required
                   />
                 </div>
+
                 {registerErrors.email && (
                   <span className="field-error-message">
                     {registerErrors.email}
                   </span>
                 )}
+
               </div>
 
               {/* Phone */}
               <div className="auth-field">
-                <label htmlFor="register-phone">Phone Number</label>
+
+                <label htmlFor="register-phone">
+                  Phone Number
+                </label>
 
                 <div
                   className={`auth-input ${
-                    registerErrors.phone ? "has-error" : ""
+                    registerErrors.phone
+                      ? "has-error"
+                      : ""
                   }`}
                 >
                   <i className="bi bi-telephone input-icon"></i>
@@ -951,50 +1372,70 @@ export default function Login() {
                     value={registerPhone}
                     onChange={(e) => {
                       setRegisterPhone(e.target.value);
+
                       if (registerErrors.phone) {
                         setRegisterErrors({
                           ...registerErrors,
                           phone: undefined,
                         });
                       }
-                      if (registerGeneralError) setRegisterGeneralError("");
+
+                      if (registerGeneralError) {
+                        setRegisterGeneralError("");
+                      }
                     }}
                     autoComplete="tel"
                     required
                   />
                 </div>
+
                 {registerErrors.phone && (
                   <span className="field-error-message">
                     {registerErrors.phone}
                   </span>
                 )}
+
               </div>
 
               {/* Password */}
               <div className="auth-field">
-                <label htmlFor="register-password">Password</label>
+
+                <label htmlFor="register-password">
+                  Password
+                </label>
 
                 <div
                   className={`auth-input ${
-                    registerErrors.password ? "has-error" : ""
+                    registerErrors.password
+                      ? "has-error"
+                      : ""
                   }`}
                 >
+
                   <i className="bi bi-lock input-icon"></i>
 
                   <input
                     id="register-password"
-                    type={showRegisterPassword ? "text" : "password"}
+                    type={
+                      showRegisterPassword
+                        ? "text"
+                        : "password"
+                    }
                     placeholder="Create a password (min 8 chars, A-Z, a-z, 0-9)"
                     value={registerPassword}
                     onChange={(e) => {
                       setRegisterPassword(e.target.value);
+
                       if (registerErrors.password) {
                         setRegisterErrors({
                           ...registerErrors,
                           password: undefined,
                         });
                       }
-                      if (registerGeneralError) setRegisterGeneralError("");
+
+                      if (registerGeneralError) {
+                        setRegisterGeneralError("");
+                      }
                     }}
                     autoComplete="new-password"
                     required
@@ -1004,49 +1445,70 @@ export default function Login() {
                     type="button"
                     className="password-toggle"
                     onClick={() =>
-                      setShowRegisterPassword(!showRegisterPassword)
+                      setShowRegisterPassword(
+                        !showRegisterPassword
+                      )
                     }
                     aria-label="Toggle password visibility"
                   >
                     <i
                       className={
-                        showRegisterPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                        showRegisterPassword
+                          ? "bi bi-eye-slash"
+                          : "bi bi-eye"
                       }
                     ></i>
                   </button>
+
                 </div>
+
                 {registerErrors.password && (
                   <span className="field-error-message">
                     {registerErrors.password}
                   </span>
                 )}
+
               </div>
 
               {/* Confirm Password */}
               <div className="auth-field">
-                <label htmlFor="confirm-password">Confirm Password</label>
+
+                <label htmlFor="confirm-password">
+                  Confirm Password
+                </label>
 
                 <div
                   className={`auth-input ${
-                    registerErrors.confirmPassword ? "has-error" : ""
+                    registerErrors.confirmPassword
+                      ? "has-error"
+                      : ""
                   }`}
                 >
+
                   <i className="bi bi-shield-lock input-icon"></i>
 
                   <input
                     id="confirm-password"
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={
+                      showConfirmPassword
+                        ? "text"
+                        : "password"
+                    }
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => {
                       setConfirmPassword(e.target.value);
+
                       if (registerErrors.confirmPassword) {
                         setRegisterErrors({
                           ...registerErrors,
                           confirmPassword: undefined,
                         });
                       }
-                      if (registerGeneralError) setRegisterGeneralError("");
+
+                      if (registerGeneralError) {
+                        setRegisterGeneralError("");
+                      }
                     }}
                     autoComplete="new-password"
                     required
@@ -1056,28 +1518,37 @@ export default function Login() {
                     type="button"
                     className="password-toggle"
                     onClick={() =>
-                      setShowConfirmPassword(!showConfirmPassword)
+                      setShowConfirmPassword(
+                        !showConfirmPassword
+                      )
                     }
                     aria-label="Toggle password visibility"
                   >
                     <i
                       className={
-                        showConfirmPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                        showConfirmPassword
+                          ? "bi bi-eye-slash"
+                          : "bi bi-eye"
                       }
                     ></i>
                   </button>
+
                 </div>
+
                 {registerErrors.confirmPassword && (
                   <span className="field-error-message">
                     {registerErrors.confirmPassword}
                   </span>
                 )}
+
               </div>
 
               {/* Create Account Button */}
               <button
                 type="submit"
-                className={`auth-submit-btn ${isLoading ? "loading" : ""}`}
+                className={`auth-submit-btn ${
+                  isLoading ? "loading" : ""
+                }`}
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -1092,29 +1563,39 @@ export default function Login() {
                   </>
                 )}
               </button>
+
             </form>
 
             {/* Security */}
             <div className="auth-security-note">
               <i className="bi bi-shield-check"></i>
-              <span>Your information is securely protected</span>
+              <span>
+                Your information is securely protected
+              </span>
             </div>
 
             {/* Switch to Login */}
             <div className="auth-switch">
               <span>Already have an account?</span>
-              <button type="button" onClick={openLogin}>
+
+              <button
+                type="button"
+                onClick={openLogin}
+              >
                 Login
                 <i className="bi bi-arrow-up-right"></i>
               </button>
             </div>
+
           </div>
+
         </div>
       </div>
 
       {/* =========================================================
           FORGOT PASSWORD MODAL FLOW
       ========================================================= */}
+
       {showForgotPassword && (
         <div
           className="forgot-password-overlay"
@@ -1124,6 +1605,7 @@ export default function Login() {
             className="forgot-password-card"
             onClick={(e) => e.stopPropagation()}
           >
+
             <button
               type="button"
               className="forgot-close-btn"
@@ -1134,22 +1616,64 @@ export default function Login() {
             </button>
 
             <div className="forgot-header">
+
               <h3>Reset Password</h3>
+
               <p>
-                {forgotStep === 1 && "Enter your email or phone number to receive an OTP."}
-                {forgotStep === 2 && "Enter the verification code sent to your email/phone."}
-                {forgotStep === 3 && "Create a new secure password for your account."}
+                {forgotStep === 1 &&
+                  "Enter your email or phone number to receive an OTP."}
+
+                {forgotStep === 2 &&
+                  "Enter the verification code sent to your email/phone."}
+
+                {forgotStep === 3 &&
+                  "Create a new secure password for your account."}
               </p>
+
             </div>
 
+            {/* Steps */}
             <div className="forgot-steps-indicator">
-              <span className={`step-dot ${forgotStep >= 1 ? "active" : ""}`}>1</span>
-              <span className={`step-line ${forgotStep >= 2 ? "active" : ""}`}></span>
-              <span className={`step-dot ${forgotStep >= 2 ? "active" : ""}`}>2</span>
-              <span className={`step-line ${forgotStep >= 3 ? "active" : ""}`}></span>
-              <span className={`step-dot ${forgotStep >= 3 ? "active" : ""}`}>3</span>
+
+              <span
+                className={`step-dot ${
+                  forgotStep >= 1 ? "active" : ""
+                }`}
+              >
+                1
+              </span>
+
+              <span
+                className={`step-line ${
+                  forgotStep >= 2 ? "active" : ""
+                }`}
+              ></span>
+
+              <span
+                className={`step-dot ${
+                  forgotStep >= 2 ? "active" : ""
+                }`}
+              >
+                2
+              </span>
+
+              <span
+                className={`step-line ${
+                  forgotStep >= 3 ? "active" : ""
+                }`}
+              ></span>
+
+              <span
+                className={`step-dot ${
+                  forgotStep >= 3 ? "active" : ""
+                }`}
+              >
+                3
+              </span>
+
             </div>
 
+            {/* Forgot Password Error */}
             {forgotError && (
               <div className="auth-alert-error" role="alert">
                 <i className="bi bi-exclamation-circle-fill"></i>
@@ -1157,143 +1681,299 @@ export default function Login() {
               </div>
             )}
 
-            {/* STEP 1: Email / Phone */}
+            {/* =================================================
+                STEP 1
+            ================================================= */}
+
             {forgotStep === 1 && (
               <form onSubmit={handleForgotStep1}>
+
                 <div className="auth-field">
-                  <label htmlFor="forgot-identifier">Email or Phone</label>
+
+                  <label htmlFor="forgot-identifier">
+                    Email or Phone
+                  </label>
+
                   <div className="auth-input">
+
                     <i className="bi bi-envelope input-icon"></i>
+
                     <input
                       id="forgot-identifier"
                       type="text"
                       placeholder="Enter registered email or phone"
                       value={forgotIdentifier}
-                      onChange={(e) => setForgotIdentifier(e.target.value)}
+                      onChange={(e) =>
+                        setForgotIdentifier(e.target.value)
+                      }
                       required
                       autoFocus
                     />
+
                   </div>
+
                 </div>
 
-                <button type="submit" className="auth-submit-btn" disabled={forgotLoading}>
-                  <span>{forgotLoading ? "Sending OTP..." : "Send OTP"}</span>
+                <button
+                  type="submit"
+                  className="auth-submit-btn"
+                  disabled={forgotLoading}
+                >
+                  <span>
+                    {forgotLoading
+                      ? "Sending OTP..."
+                      : "Send OTP"}
+                  </span>
+
                   <i className="bi bi-arrow-right"></i>
                 </button>
+
               </form>
             )}
 
-            {/* STEP 2: OTP */}
+            {/* =================================================
+                STEP 2
+            ================================================= */}
+
             {forgotStep === 2 && (
               <form onSubmit={handleForgotStep2}>
+
                 <div className="auth-field">
-                  <label htmlFor="forgot-otp">Verification Code (OTP)</label>
+
+                  <label htmlFor="forgot-otp">
+                    Verification Code (OTP)
+                  </label>
+
                   <div className="auth-input">
+
                     <i className="bi bi-shield-check input-icon"></i>
+
                     <input
                       id="forgot-otp"
                       type="text"
                       placeholder="Enter 6-digit code"
                       value={forgotOtp}
-                      onChange={(e) => setForgotOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      onChange={(e) =>
+                        setForgotOtp(
+                          e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 6)
+                        )
+                      }
                       maxLength={6}
                       required
                       autoFocus
                     />
+
                   </div>
+
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", fontSize: "12px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "16px",
+                    fontSize: "12px",
+                  }}
+                >
+
                   <button
                     type="button"
-                    onClick={() => { setForgotStep(1); setForgotError(""); }}
-                    style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", textDecoration: "underline", padding: 0 }}
-                  >
-                    Change Email/Phone
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleResendForgotOtp}
-                    disabled={forgotCooldown > 0 || forgotLoading}
+                    onClick={() => {
+                      setForgotStep(1);
+                      setForgotError("");
+                    }}
                     style={{
                       background: "none",
                       border: "none",
-                      color: forgotCooldown > 0 ? "#94a3b8" : "#2563eb",
-                      cursor: forgotCooldown > 0 ? "not-allowed" : "pointer",
-                      fontWeight: 600,
-                      padding: 0
+                      color: "#64748b",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      padding: 0,
                     }}
                   >
-                    {forgotCooldown > 0 ? `Resend in ${forgotCooldown}s` : "Resend OTP"}
+                    Change Email/Phone
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={handleResendForgotOtp}
+                    disabled={
+                      forgotCooldown > 0 ||
+                      forgotLoading
+                    }
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color:
+                        forgotCooldown > 0
+                          ? "#94a3b8"
+                          : "#2563eb",
+                      cursor:
+                        forgotCooldown > 0
+                          ? "not-allowed"
+                          : "pointer",
+                      fontWeight: 600,
+                      padding: 0,
+                    }}
+                  >
+                    {forgotCooldown > 0
+                      ? `Resend in ${forgotCooldown}s`
+                      : "Resend OTP"}
+                  </button>
+
                 </div>
 
-                <button type="submit" className="auth-submit-btn" disabled={forgotLoading}>
-                  <span>{forgotLoading ? "Verifying..." : "Verify OTP"}</span>
+                <button
+                  type="submit"
+                  className="auth-submit-btn"
+                  disabled={forgotLoading}
+                >
+                  <span>
+                    {forgotLoading
+                      ? "Verifying..."
+                      : "Verify OTP"}
+                  </span>
+
                   <i className="bi bi-arrow-right"></i>
                 </button>
+
               </form>
             )}
 
-            {/* STEP 3: New Password & Confirm Password */}
+            {/* =================================================
+                STEP 3
+            ================================================= */}
+
             {forgotStep === 3 && (
               <form onSubmit={handleForgotStep3}>
+
+                {/* New Password */}
                 <div className="auth-field">
-                  <label htmlFor="forgot-new-password">New Password</label>
+
+                  <label htmlFor="forgot-new-password">
+                    New Password
+                  </label>
+
                   <div className="auth-input">
+
                     <i className="bi bi-lock input-icon"></i>
+
                     <input
                       id="forgot-new-password"
-                      type={showForgotNewPassword ? "text" : "password"}
+                      type={
+                        showForgotNewPassword
+                          ? "text"
+                          : "password"
+                      }
                       placeholder="New password (min 8 chars, A-Z, a-z, 0-9)"
                       value={forgotNewPassword}
-                      onChange={(e) => setForgotNewPassword(e.target.value)}
+                      onChange={(e) =>
+                        setForgotNewPassword(
+                          e.target.value
+                        )
+                      }
                       required
                       autoFocus
                     />
+
                     <button
                       type="button"
                       className="password-toggle"
-                      onClick={() => setShowForgotNewPassword(!showForgotNewPassword)}
+                      onClick={() =>
+                        setShowForgotNewPassword(
+                          !showForgotNewPassword
+                        )
+                      }
                       aria-label="Toggle new password visibility"
                     >
-                      <i className={showForgotNewPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>
+                      <i
+                        className={
+                          showForgotNewPassword
+                            ? "bi bi-eye-slash"
+                            : "bi bi-eye"
+                        }
+                      ></i>
                     </button>
+
                   </div>
+
                 </div>
 
+                {/* Confirm Password */}
                 <div className="auth-field">
-                  <label htmlFor="forgot-confirm-password">Confirm New Password</label>
+
+                  <label htmlFor="forgot-confirm-password">
+                    Confirm New Password
+                  </label>
+
                   <div className="auth-input">
+
                     <i className="bi bi-shield-lock input-icon"></i>
+
                     <input
                       id="forgot-confirm-password"
-                      type={showForgotConfirmPassword ? "text" : "password"}
+                      type={
+                        showForgotConfirmPassword
+                          ? "text"
+                          : "password"
+                      }
                       placeholder="Confirm new password"
                       value={forgotConfirmPassword}
-                      onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                      onChange={(e) =>
+                        setForgotConfirmPassword(
+                          e.target.value
+                        )
+                      }
                       required
                     />
+
                     <button
                       type="button"
                       className="password-toggle"
-                      onClick={() => setShowForgotConfirmPassword(!showForgotConfirmPassword)}
+                      onClick={() =>
+                        setShowForgotConfirmPassword(
+                          !showForgotConfirmPassword
+                        )
+                      }
                       aria-label="Toggle confirm password visibility"
                     >
-                      <i className={showForgotConfirmPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>
+                      <i
+                        className={
+                          showForgotConfirmPassword
+                            ? "bi bi-eye-slash"
+                            : "bi bi-eye"
+                        }
+                      ></i>
                     </button>
+
                   </div>
+
                 </div>
 
-                <button type="submit" className="auth-submit-btn" disabled={forgotLoading}>
-                  <span>{forgotLoading ? "Resetting Password..." : "Reset Password"}</span>
+                <button
+                  type="submit"
+                  className="auth-submit-btn"
+                  disabled={forgotLoading}
+                >
+                  <span>
+                    {forgotLoading
+                      ? "Resetting Password..."
+                      : "Reset Password"}
+                  </span>
+
                   <i className="bi bi-arrow-right"></i>
                 </button>
+
               </form>
             )}
+
           </div>
         </div>
       )}
+
     </div>
   );
 }

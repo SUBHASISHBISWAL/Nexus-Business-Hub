@@ -23,8 +23,12 @@ builder.Services.AddControllers();
 
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? "NexusBusinessHub_SecretKey_For_Jwt_Authentication_2026_Minimum_32_Characters!";
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "NexusBusinessHub";
-var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "NexusBusinessHubClient";
+
+var jwtIssuer = builder.Configuration["Jwt:Issuer"]
+    ?? "NexusBusinessHub";
+
+var jwtAudience = builder.Configuration["Jwt:Audience"]
+    ?? "NexusBusinessHubClient";
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -87,12 +91,8 @@ builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 // Password Hasher
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-// Email Service (Brevo) via IHttpClientFactory
-builder.Services.AddHttpClient("BrevoClient", client =>
-{
-    client.Timeout = TimeSpan.FromSeconds(15);
-});
-builder.Services.AddScoped<IEmailService, BrevoEmailService>();
+// Email Service - Gmail SMTP
+builder.Services.AddScoped<IEmailService, GmailEmailService>();
 
 // Authentication
 builder.Services.AddScoped<IAuthService, AuthService>();

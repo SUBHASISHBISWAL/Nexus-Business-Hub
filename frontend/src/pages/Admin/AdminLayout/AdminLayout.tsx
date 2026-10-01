@@ -221,7 +221,7 @@ function AdminLayout({
     setProfileOpen(false);
     setSidebarOpen(false);
 
-    navigate("/admin/login", {
+    navigate("/login", {
       replace: true,
     });
   };

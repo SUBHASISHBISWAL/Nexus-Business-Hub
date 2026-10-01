@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-// Login/Register
+// Login / Register
 import Login from "../pages/Login/login";
 
 // Main Pages
@@ -9,68 +9,88 @@ import ProductList from "../pages/ProductList";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
 import About from "../pages/About/About";
 
+// Profile / Settings
+import Profile from "../pages/Profile/Profile";
+import Settings from "../pages/Settings/Settings";
+
 // Cart & Purchase
 import Cart from "../pages/Cart/Cart";
 import Wishlist from "../pages/Wishlist/Wishlist";
 import Checkout from "../pages/Checkout/Checkout";
 import Payment from "../pages/Payment/Payment";
 
-// Orders
+// Customer Orders
 import Orders from "../pages/Orders/Orders";
 import CustomerOrderDetails from "../pages/Orders/OrderDetails";
 import OrderTracking from "../pages/Orders/OrderTracking";
 import OrderHistory from "../pages/OrderHistory/OrderHistory";
 
-// Support
+// Customer Support
 import Support from "../pages/Support/Support";
 import CreateTicket from "../pages/Support/CreateTicket";
 import SupportTickets from "../pages/Support/SupportTickets";
 import SupportTicketDetails from "../pages/Support/SupportTicketDetails";
 
-// Admin
+// Admin Layout & Dashboard
 import AdminLayout from "../pages/Admin/AdminLayout/AdminLayout";
 import AdminDashboard from "../pages/Admin/AdminDashboard/AdminDashboard";
 
+// Admin Products
 import AdminProducts from "../pages/Admin/AdminProducts/AdminProducts";
 import AddProduct from "../pages/Admin/AdminProducts/AddProduct/AddProduct";
 import EditProduct from "../pages/Admin/AdminProducts/EditProduct/EditProduct";
 import AdminProductDetails from "../pages/Admin/AdminProducts/ProductDetails/ProductDetails";
 
+// Admin Orders
 import AdminOrders from "../pages/Admin/AdminOrders/AdminOrders";
 import AdminOrderDetails from "../pages/Admin/AdminOrders/OrderDetails/OrderDetails";
 
+// Admin Shipments
 import AdminShipments from "../pages/Admin/AdminShipments/AdminShipments";
 import ShipmentDetails from "../pages/Admin/AdminShipments/ShipmentDetails/ShipmentDetails";
 
+// Admin Tickets
 import AdminTickets from "../pages/Admin/AdminTickets/AdminTickets";
 import TicketDetails from "../pages/Admin/AdminTickets/TicketDetails/TicketDetails";
 
+// Admin Settings
 import AdminSettings from "../pages/Admin/AdminSettings/AdminSettings";
 
-import AdminLogin from "../pages/Admin/AdminLogin/AdminLogin";
+// Admin OTP
 import AdminOTP from "../pages/Admin/AdminOTP/AdminOTP";
 
+// Admin Protection
 import AdminProtectedRoute from "./AdminProtectedRoute";
+
+// Admin Notifications
 import AdminNotifications from "../pages/Admin/AdminNotifications/AdminNotifications";
 
+// Admin Administrators
 import AdminAdministrators from "../pages/Admin/AdminAdministrators/AdminAdministrators";
-import AdminPayments from "../pages/Admin/AdminPayments/AdminPayments";
 
+// Admin Payments
+import AdminPayments from "../pages/Admin/AdminPayments/AdminPayments";
 import PaymentDetails from "../pages/Admin/AdminPayments/PaymentDetails/PaymentDetails";
+
+// Admin Customers
 import AdminCustomers from "../pages/Admin/AdminCustomers/AdminCustomers";
 import CustomerDetails from "../pages/Admin/AdminCustomers/CustomerDetails/CustomerDetails";
+
+// Admin Inventory
 import AdminInventory from "../pages/Admin/AdminInventory/AdminInventory";
+
+// Admin Returns
 import AdminReturns from "../pages/Admin/AdminReturns/AdminReturns";
 import AdminReturnDetails from "../pages/Admin/AdminReturnDetails/AdminReturnDetails";
 
-import Profile from "../pages/Profile/Profile";
-import Settings from "../pages/Settings/Settings";
 
 function AppRoutes() {
   return (
     <Routes>
 
-      {/* ==================== LOGIN / REGISTER ==================== */}
+      {/* =====================================================
+          LOGIN / REGISTER
+      ===================================================== */}
 
       <Route
         path="/login"
@@ -82,7 +102,10 @@ function AppRoutes() {
         element={<Login />}
       />
 
-      {/* ==================== MAIN ==================== */}
+
+      {/* =====================================================
+          MAIN
+      ===================================================== */}
 
       <Route
         path="/"
@@ -114,7 +137,10 @@ function AppRoutes() {
         element={<Settings />}
       />
 
-      {/* ==================== SHOPPING ==================== */}
+
+      {/* =====================================================
+          SHOPPING
+      ===================================================== */}
 
       <Route
         path="/cart"
@@ -126,7 +152,10 @@ function AppRoutes() {
         element={<Wishlist />}
       />
 
-      {/* ==================== CHECKOUT ==================== */}
+
+      {/* =====================================================
+          CHECKOUT
+      ===================================================== */}
 
       <Route
         path="/checkout"
@@ -138,7 +167,10 @@ function AppRoutes() {
         element={<Payment />}
       />
 
-      {/* ==================== CUSTOMER ORDERS ==================== */}
+
+      {/* =====================================================
+          CUSTOMER ORDERS
+      ===================================================== */}
 
       <Route
         path="/orders"
@@ -160,7 +192,10 @@ function AppRoutes() {
         element={<OrderHistory />}
       />
 
-      {/* ==================== SUPPORT ==================== */}
+
+      {/* =====================================================
+          CUSTOMER SUPPORT
+      ===================================================== */}
 
       <Route
         path="/support"
@@ -182,23 +217,29 @@ function AppRoutes() {
         element={<SupportTicketDetails />}
       />
 
-      {/* ==================== ADMIN AUTH ==================== */}
 
-      <Route
-        path="/admin/login"
-        element={<AdminLogin />}
-      />
+      {/* =====================================================
+          ADMIN AUTH
+          
+          This route MUST stay outside AdminProtectedRoute
+          because admin reaches OTP immediately after login.
+      ===================================================== */}
 
       <Route
         path="/admin/verify-otp"
         element={<AdminOTP />}
       />
 
-      {/* ==================== PROTECTED ADMIN ==================== */}
+
+      {/* =====================================================
+          PROTECTED ADMIN ROUTES
+      ===================================================== */}
 
       <Route element={<AdminProtectedRoute />}>
 
-        {/* ==================== ADMIN DASHBOARD ==================== */}
+        {/* =================================================
+            ADMIN DASHBOARD
+        ================================================= */}
 
         <Route
           path="/admin/dashboard"
@@ -209,7 +250,10 @@ function AppRoutes() {
           }
         />
 
-        {/* ==================== ADMIN PRODUCTS ==================== */}
+
+        {/* =================================================
+            ADMIN PRODUCTS
+        ================================================= */}
 
         <Route
           path="/admin/products"
@@ -220,8 +264,6 @@ function AppRoutes() {
           }
         />
 
-        {/* Add Product */}
-
         <Route
           path="/admin/products/add"
           element={
@@ -230,8 +272,6 @@ function AppRoutes() {
             </AdminLayout>
           }
         />
-
-        {/* Edit Product */}
 
         <Route
           path="/admin/products/:id/edit"
@@ -242,8 +282,6 @@ function AppRoutes() {
           }
         />
 
-        {/* Product Details */}
-
         <Route
           path="/admin/products/:id"
           element={
@@ -253,7 +291,10 @@ function AppRoutes() {
           }
         />
 
-        {/* ==================== ADMIN ORDERS ==================== */}
+
+        {/* =================================================
+            ADMIN ORDERS
+        ================================================= */}
 
         <Route
           path="/admin/orders"
@@ -264,8 +305,6 @@ function AppRoutes() {
           }
         />
 
-        {/* Order Details */}
-
         <Route
           path="/admin/orders/:id"
           element={
@@ -275,7 +314,10 @@ function AppRoutes() {
           }
         />
 
-        {/* ==================== ADMIN SHIPMENTS ==================== */}
+
+        {/* =================================================
+            ADMIN SHIPMENTS
+        ================================================= */}
 
         <Route
           path="/admin/shipments"
@@ -286,8 +328,6 @@ function AppRoutes() {
           }
         />
 
-        {/* Shipment Details */}
-
         <Route
           path="/admin/shipments/:id"
           element={
@@ -297,7 +337,10 @@ function AppRoutes() {
           }
         />
 
-        {/* ==================== ADMIN TICKETS ==================== */}
+
+        {/* =================================================
+            ADMIN TICKETS
+        ================================================= */}
 
         <Route
           path="/admin/tickets"
@@ -308,8 +351,6 @@ function AppRoutes() {
           }
         />
 
-        {/* Ticket Details */}
-
         <Route
           path="/admin/tickets/:id"
           element={
@@ -319,7 +360,10 @@ function AppRoutes() {
           }
         />
 
-        {/* ==================== ADMIN SETTINGS ==================== */}
+
+        {/* =================================================
+            ADMIN SETTINGS
+        ================================================= */}
 
         <Route
           path="/admin/settings"
@@ -330,100 +374,118 @@ function AppRoutes() {
           }
         />
 
+
+        {/* =================================================
+            ADMIN ADMINISTRATORS
+        ================================================= */}
+
+        <Route
+          path="/admin/administrators"
+          element={
+            <AdminLayout>
+              <AdminAdministrators />
+            </AdminLayout>
+          }
+        />
+
+
+        {/* =================================================
+            ADMIN NOTIFICATIONS
+        ================================================= */}
+
+        <Route
+          path="/admin/notifications"
+          element={
+            <AdminLayout>
+              <AdminNotifications />
+            </AdminLayout>
+          }
+        />
+
+
+        {/* =================================================
+            ADMIN PAYMENTS
+        ================================================= */}
+
+        <Route
+          path="/admin/payments"
+          element={
+            <AdminLayout>
+              <AdminPayments />
+            </AdminLayout>
+          }
+        />
+
+        <Route
+          path="/admin/payments/:paymentId"
+          element={
+            <AdminLayout>
+              <PaymentDetails />
+            </AdminLayout>
+          }
+        />
+
+
+        {/* =================================================
+            ADMIN CUSTOMERS
+        ================================================= */}
+
+        <Route
+          path="/admin/customers"
+          element={
+            <AdminLayout>
+              <AdminCustomers />
+            </AdminLayout>
+          }
+        />
+
+        <Route
+          path="/admin/customers/:customerId"
+          element={
+            <AdminLayout>
+              <CustomerDetails />
+            </AdminLayout>
+          }
+        />
+
+
+        {/* =================================================
+            ADMIN INVENTORY
+        ================================================= */}
+
+        <Route
+          path="/admin/inventory"
+          element={
+            <AdminLayout>
+              <AdminInventory />
+            </AdminLayout>
+          }
+        />
+
+
+        {/* =================================================
+            ADMIN RETURNS
+        ================================================= */}
+
+        <Route
+          path="/admin/returns"
+          element={
+            <AdminLayout>
+              <AdminReturns />
+            </AdminLayout>
+          }
+        />
+
+        <Route
+          path="/admin/returns/:returnId"
+          element={
+            <AdminLayout>
+              <AdminReturnDetails />
+            </AdminLayout>
+          }
+        />
+
       </Route>
-
-      {/* ==================== ADMIN ADMINISTRATORS ==================== */}
-
-      <Route
-        path="/admin/administrators"
-        element={
-          <AdminLayout>
-            <AdminAdministrators />
-          </AdminLayout>
-        }
-      />
-
-      {/* ==================== ADMIN NOTIFICATIONS ==================== */}
-
-      <Route
-        path="/admin/notifications"
-        element={
-          <AdminLayout>
-            <AdminNotifications />
-          </AdminLayout>
-        }
-      />
-
-      {/* ==================== ADMIN PAYMENTS ==================== */}
-
-      <Route
-        path="/admin/payments"
-        element={
-          <AdminLayout>
-            <AdminPayments />
-          </AdminLayout>
-        }
-      />
-
-      <Route
-        path="/admin/payments/:paymentId"
-        element={
-          <AdminLayout>
-            <PaymentDetails />
-          </AdminLayout>
-        }
-      />
-
-      {/* ==================== ADMIN CUSTOMERS ==================== */}
-
-      <Route
-        path="/admin/customers"
-        element={
-          <AdminLayout>
-            <AdminCustomers />
-          </AdminLayout>
-        }
-      />
-
-      <Route
-        path="/admin/customers/:customerId"
-        element={
-          <AdminLayout>
-            <CustomerDetails />
-          </AdminLayout>
-        }
-      />
-
-      {/* ==================== ADMIN INVENTORY ==================== */}
-
-      <Route
-        path="/admin/inventory"
-        element={
-          <AdminLayout>
-            <AdminInventory />
-          </AdminLayout>
-        }
-      />
-
-      {/* ==================== ADMIN RETURNS ==================== */}
-
-      <Route
-        path="/admin/returns"
-        element={
-          <AdminLayout>
-            <AdminReturns />
-          </AdminLayout>
-        }
-      />
-
-      <Route
-        path="/admin/returns/:returnId"
-        element={
-          <AdminLayout>
-            <AdminReturnDetails />
-          </AdminLayout>
-        }
-      />
 
     </Routes>
   );
