@@ -24,5 +24,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.PhoneNumber)
             .IsRequired();
+
+        builder.HasIndex(u => u.Email)
+            .IsUnique();
+
+        builder.HasIndex(u => u.PhoneNumber)
+            .IsUnique();
     }
 }

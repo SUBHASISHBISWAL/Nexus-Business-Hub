@@ -1,18 +1,16 @@
-
-/* =========================================================
-   NEXUS ADMIN OTP
-   Enterprise Authentication Experience
-========================================================= */
-
 .admin-otp-page {
   width: 100%;
   min-height: 100vh;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   position: relative;
   overflow: hidden;
+
   padding: 24px;
+
   background:
     radial-gradient(
       circle at 15% 20%,
@@ -27,27 +25,33 @@
     #f4f7fb;
 }
 
-/* =========================================================
-   BACKGROUND
-========================================================= */
-
 .admin-otp-background {
   position: absolute;
   inset: 0;
+
   overflow: hidden;
+
   pointer-events: none;
 }
 
 .admin-otp-orb {
   position: absolute;
+
   border-radius: 50%;
+
   opacity: 0.35;
-  animation: adminOtpOrbFloat 10s ease-in-out infinite;
+
+  animation:
+    adminOtpOrbFloat
+    10s
+    ease-in-out
+    infinite;
 }
 
 .otp-orb-one {
   width: 220px;
   height: 220px;
+
   top: -80px;
   left: -60px;
 
@@ -62,6 +66,7 @@
 .otp-orb-two {
   width: 280px;
   height: 280px;
+
   right: -100px;
   bottom: -100px;
 
@@ -78,6 +83,7 @@
 .otp-orb-three {
   width: 160px;
   height: 160px;
+
   top: 45%;
   left: 48%;
 
@@ -104,8 +110,10 @@
 
 .admin-otp-grid-line {
   position: absolute;
+
   width: 1px;
   height: 100%;
+
   top: 0;
 
   background:
@@ -126,17 +134,20 @@
 }
 
 /* =========================================================
-   MAIN CONTAINER
+   CONTAINER
 ========================================================= */
 
 .admin-otp-container {
   width: min(940px, 92vw);
-  height: 570px;
+  min-height: 570px;
 
   display: grid;
-  grid-template-columns: 30% 70%;
+
+  grid-template-columns:
+    30% 70%;
 
   position: relative;
+
   overflow: hidden;
 
   border-radius: 24px;
@@ -149,16 +160,20 @@
 }
 
 /* =========================================================
-   BRAND PANEL
+   BRAND
 ========================================================= */
 
 .admin-otp-brand {
   min-width: 0;
+
   position: relative;
+
   overflow: hidden;
 
   display: flex;
+
   flex-direction: column;
+
   justify-content: space-between;
 
   padding: 40px 34px;
@@ -176,7 +191,9 @@
 
 .otp-brand-glow {
   position: absolute;
+
   border-radius: 50%;
+
   pointer-events: none;
 }
 
@@ -210,12 +227,9 @@
     );
 }
 
-/* =========================================================
-   NETWORK DECORATION
-========================================================= */
-
 .otp-brand-network {
   position: absolute;
+
   inset: 0;
 
   pointer-events: none;
@@ -237,7 +251,10 @@
     0 0 12px rgba(96, 165, 250, 0.7);
 
   animation:
-    otpNetworkPulse 3s ease-in-out infinite;
+    otpNetworkPulse
+    3s
+    ease-in-out
+    infinite;
 }
 
 .otp-node-one {
@@ -284,6 +301,7 @@
 
 .otp-network-line-one {
   width: 130px;
+
   top: 22%;
   right: 15%;
 
@@ -292,6 +310,7 @@
 
 .otp-network-line-two {
   width: 100px;
+
   top: 40%;
   right: 8%;
 
@@ -300,6 +319,7 @@
 
 .otp-network-line-three {
   width: 150px;
+
   bottom: 21%;
   left: 10%;
 
@@ -310,24 +330,21 @@
   0%,
   100% {
     opacity: 0.35;
+
     transform: scale(0.8);
   }
 
   50% {
     opacity: 1;
+
     transform: scale(1.2);
   }
 }
 
-/* =========================================================
-   BRAND CONTENT
-========================================================= */
-
 .admin-otp-brand-content {
   position: relative;
-  z-index: 2;
 
-  max-width: 100%;
+  z-index: 2;
 
   margin: auto 0;
 
@@ -338,18 +355,20 @@
 }
 
 @keyframes adminOtpBrandEnter {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(18px) scale(0.96);
+
+    transform:
+      translateY(18px)
+      scale(0.96);
   }
 
-  60% {
-    opacity: 0.8;
-  }
-
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+
+    transform:
+      translateY(0)
+      scale(1);
   }
 }
 
@@ -358,6 +377,7 @@
   height: 56px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
@@ -372,14 +392,14 @@
       rgba(255, 255, 255, 0.07)
     );
 
-  border: 1px solid rgba(255, 255, 255, 0.16);
-
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.16);
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.16);
 }
 
 .admin-otp-brand-icon i {
   font-size: 24px;
+
   color: #ffffff;
 }
 
@@ -389,11 +409,13 @@
   margin-bottom: 10px;
 
   font-size: 10px;
+
   font-weight: 700;
 
   letter-spacing: 1.8px;
 
-  color: rgba(191, 219, 254, 0.82);
+  color:
+    rgba(191, 219, 254, 0.82);
 }
 
 .admin-otp-brand h1 {
@@ -402,6 +424,7 @@
   margin: 0 0 13px;
 
   font-size: 27px;
+
   line-height: 1.2;
 
   font-weight: 700;
@@ -417,17 +440,20 @@
   margin: 0;
 
   font-size: 12.5px;
+
   line-height: 1.7;
 
-  color: rgba(226, 232, 240, 0.76);
+  color:
+    rgba(226, 232, 240, 0.76);
 }
 
 /* =========================================================
-   SECURITY ITEMS
+   SECURITY
 ========================================================= */
 
 .admin-otp-security {
   display: flex;
+
   align-items: center;
 
   gap: 11px;
@@ -438,26 +464,33 @@
 .admin-otp-security-icon {
   width: 34px;
   height: 34px;
+
   min-width: 34px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   border-radius: 10px;
 
-  background: rgba(255, 255, 255, 0.09);
+  background:
+    rgba(255, 255, 255, 0.09);
 
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.09);
 }
 
 .admin-otp-security-icon i {
   font-size: 15px;
+
   color: #bfdbfe;
 }
 
 .admin-otp-security-text {
   display: flex;
+
   flex-direction: column;
 
   gap: 2px;
@@ -465,6 +498,7 @@
 
 .admin-otp-security-text strong {
   font-size: 11.5px;
+
   font-weight: 600;
 
   color: #ffffff;
@@ -473,41 +507,44 @@
 .admin-otp-security-text span {
   font-size: 9.5px;
 
-  color: rgba(226, 232, 240, 0.62);
+  color:
+    rgba(226, 232, 240, 0.62);
 }
-
-/* =========================================================
-   BRAND FOOTER
-========================================================= */
 
 .admin-otp-brand-footer {
   position: relative;
+
   z-index: 2;
 
   display: flex;
+
   align-items: center;
 
   gap: 8px;
 
   font-size: 9px;
 
-  color: rgba(191, 219, 254, 0.62);
+  color:
+    rgba(191, 219, 254, 0.62);
 }
 
 .admin-otp-brand-footer span {
   width: 18px;
   height: 1px;
 
-  background: rgba(147, 197, 253, 0.45);
+  background:
+    rgba(147, 197, 253, 0.45);
 }
 
 /* =========================================================
-   OTP FORM PANEL
+   OTP CARD
 ========================================================= */
 
 .admin-otp-card {
   min-width: 0;
+
   position: relative;
+
   overflow: hidden;
 
   padding: 38px 58px;
@@ -515,12 +552,9 @@
   background: #ffffff;
 }
 
-/* =========================================================
-   BACK BUTTON
-========================================================= */
-
 .admin-otp-back-btn {
   display: inline-flex;
+
   align-items: center;
 
   gap: 8px;
@@ -538,6 +572,7 @@
   font-family: inherit;
 
   font-size: 10.5px;
+
   font-weight: 600;
 
   cursor: pointer;
@@ -550,16 +585,14 @@
 .admin-otp-back-btn:hover {
   color: #2563eb;
 
-  transform: translateX(-2px);
+  transform:
+    translateX(-2px);
 }
 
 .admin-otp-back-btn:disabled {
   opacity: 0.6;
-  cursor: not-allowed;
-}
 
-.admin-otp-back-btn i {
-  font-size: 12px;
+  cursor: not-allowed;
 }
 
 /* =========================================================
@@ -575,6 +608,7 @@
   height: 39px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
@@ -597,6 +631,7 @@
   margin-bottom: 5px;
 
   font-size: 10px;
+
   font-weight: 700;
 
   letter-spacing: 1.1px;
@@ -608,6 +643,7 @@
   margin: 0 0 7px;
 
   font-size: 25px;
+
   line-height: 1.2;
 
   font-weight: 700;
@@ -623,9 +659,38 @@
   margin: 0;
 
   font-size: 12px;
+
   line-height: 1.55;
 
   color: #64748b;
+}
+
+.admin-otp-email {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 10px;
+
+  padding: 7px 10px;
+
+  border-radius: 7px;
+
+  background: #f8fafc;
+
+  border:
+    1px solid
+    #e2e8f0;
+
+  color: #475569;
+
+  font-size: 10px;
+}
+
+.admin-otp-email i {
+  color: #2563eb;
 }
 
 /* =========================================================
@@ -644,6 +709,7 @@
   margin-bottom: 6px;
 
   font-size: 11px;
+
   font-weight: 600;
 
   color: #334155;
@@ -656,9 +722,12 @@
   position: relative;
 
   display: flex;
+
   align-items: center;
 
-  border: 1px solid #dbe3ee;
+  border:
+    1px solid
+    #dbe3ee;
 
   border-radius: 9px;
 
@@ -669,21 +738,19 @@
     box-shadow 0.2s ease;
 }
 
-.admin-otp-input-wrapper:hover {
-  border-color: #c7d2e0;
-}
-
 .admin-otp-input-wrapper:focus-within {
   border-color: #2563eb;
 
   box-shadow:
-    0 0 0 3px rgba(37, 99, 235, 0.08);
+    0 0 0 3px
+    rgba(37, 99, 235, 0.08);
 }
 
 .admin-otp-input-wrapper > i {
   width: 42px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
@@ -692,8 +759,6 @@
   font-size: 14px;
 
   color: #94a3b8;
-
-  transition: color 0.2s ease;
 }
 
 .admin-otp-input-wrapper:focus-within > i {
@@ -709,6 +774,7 @@
   padding: 0 15px 0 0;
 
   border: none;
+
   outline: none;
 
   background: transparent;
@@ -716,19 +782,19 @@
   font-family: inherit;
 
   font-size: 17px;
+
   font-weight: 600;
 
   letter-spacing: 6px;
 
   color: #0f172a;
-
-  text-align: left;
 }
 
 .admin-otp-input-wrapper input::placeholder {
   color: #a3afbf;
 
   font-size: 11px;
+
   font-weight: 400;
 
   letter-spacing: 0;
@@ -741,9 +807,131 @@
 
   font-size: 9.5px;
 
-  line-height: 1.4;
-
   color: #94a3b8;
+}
+
+/* =========================================================
+   CAPTCHA
+========================================================= */
+
+.admin-captcha-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.admin-captcha-header label {
+  margin-bottom: 6px;
+}
+
+.admin-captcha-refresh {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 6px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  cursor: pointer;
+}
+
+.admin-captcha-refresh:hover {
+  background: #dbeafe;
+}
+
+.admin-captcha-refresh:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+.admin-captcha-box {
+  display: grid;
+
+  grid-template-columns: 1fr 120px;
+
+  gap: 10px;
+
+  padding: 9px;
+
+  border:
+    1px solid
+    #dbe3ee;
+
+  border-radius: 9px;
+
+  background: #f8fafc;
+}
+
+.admin-captcha-question {
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 9px;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #334155;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.admin-captcha-question i {
+  color: #2563eb;
+}
+
+.admin-captcha-box input {
+  width: 100%;
+
+  height: 38px;
+
+  padding: 0 10px;
+
+  border:
+    1px solid
+    #dbe3ee;
+
+  border-radius: 7px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  color: #0f172a;
+}
+
+.admin-captcha-box input:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, 0.08);
 }
 
 /* =========================================================
@@ -752,6 +940,7 @@
 
 .admin-otp-error {
   display: flex;
+
   align-items: center;
 
   gap: 8px;
@@ -760,7 +949,9 @@
 
   padding: 10px 12px;
 
-  border: 1px solid #f2d3d3;
+  border:
+    1px solid
+    #f2d3d3;
 
   border-radius: 8px;
 
@@ -776,7 +967,35 @@
 }
 
 /* =========================================================
-   SUBMIT BUTTON
+   SUCCESS
+========================================================= */
+
+.admin-otp-success {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 15px;
+
+  padding: 10px 12px;
+
+  border:
+    1px solid
+    #bbf7d0;
+
+  border-radius: 8px;
+
+  background: #f0fdf4;
+
+  color: #15803d;
+
+  font-size: 10.5px;
+}
+
+/* =========================================================
+   SUBMIT
 ========================================================= */
 
 .admin-otp-submit {
@@ -784,6 +1003,7 @@
   height: 44px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
@@ -805,12 +1025,14 @@
   font-family: inherit;
 
   font-size: 12px;
+
   font-weight: 600;
 
   cursor: pointer;
 
   box-shadow:
-    0 8px 18px rgba(37, 99, 235, 0.18);
+    0 8px 18px
+    rgba(37, 99, 235, 0.18);
 
   transition:
     transform 0.2s ease,
@@ -822,28 +1044,18 @@
   transform: translateY(-1px);
 
   box-shadow:
-    0 11px 24px rgba(37, 99, 235, 0.24);
-}
-
-.admin-otp-submit:active:not(:disabled) {
-  transform: translateY(0);
+    0 11px 24px
+    rgba(37, 99, 235, 0.24);
 }
 
 .admin-otp-submit:disabled {
   cursor: not-allowed;
 
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
 .admin-otp-submit i {
   font-size: 14px;
-
-  transition:
-    transform 0.2s ease;
-}
-
-.admin-otp-submit:hover:not(:disabled) i {
-  transform: translateX(3px);
 }
 
 /* =========================================================
@@ -854,7 +1066,9 @@
   width: 14px;
   height: 14px;
 
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.35);
 
   border-top-color: #ffffff;
 
@@ -874,19 +1088,71 @@
 }
 
 /* =========================================================
+   RESEND
+========================================================= */
+
+.admin-otp-resend {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 5px;
+
+  margin-top: 15px;
+
+  font-size: 10px;
+
+  color: #94a3b8;
+}
+
+.admin-otp-resend button {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #2563eb;
+
+  font-family: inherit;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.admin-otp-resend button:hover {
+  text-decoration: underline;
+}
+
+.admin-otp-resend button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+/* =========================================================
    FOOTER
 ========================================================= */
 
 .admin-otp-footer {
   display: flex;
+
   align-items: flex-start;
 
   gap: 7px;
 
   margin-top: 16px;
+
   padding-top: 15px;
 
-  border-top: 1px solid #edf1f5;
+  border-top:
+    1px solid
+    #edf1f5;
 
   color: #94a3b8;
 
@@ -908,24 +1174,18 @@
 ========================================================= */
 
 @media (max-width: 900px) {
-  .admin-otp-container {
-    width: min(880px, 94vw);
-  }
-
   .admin-otp-card {
     padding-left: 42px;
+
     padding-right: 42px;
   }
 
   .admin-otp-brand {
     padding-left: 27px;
+
     padding-right: 27px;
   }
 }
-
-/* =========================================================
-   TABLET / MOBILE
-========================================================= */
 
 @media (max-width: 700px) {
   .admin-otp-page {
@@ -940,11 +1200,13 @@
 
   .admin-otp-container {
     width: 100%;
+
     max-width: 520px;
 
-    height: auto;
+    min-height: auto;
 
     display: flex;
+
     flex-direction: column;
 
     border-radius: 20px;
@@ -964,12 +1226,6 @@
     font-size: 23px;
   }
 
-  .admin-otp-brand p {
-    max-width: 100%;
-
-    font-size: 11.5px;
-  }
-
   .admin-otp-security {
     display: none;
   }
@@ -980,34 +1236,14 @@
     padding: 30px 26px;
   }
 
-  .admin-otp-header h2 {
-    font-size: 23px;
-  }
-
-  .admin-otp-header p {
-    font-size: 11px;
-  }
-
-  .admin-otp-input-wrapper {
-    height: 43px;
-  }
-
-  .admin-otp-submit {
-    height: 43px;
+  .admin-captcha-box {
+    grid-template-columns: 1fr;
   }
 }
-
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
 
 @media (max-width: 420px) {
   .admin-otp-page {
     padding: 10px;
-  }
-
-  .admin-otp-container {
-    border-radius: 17px;
   }
 
   .admin-otp-brand {
@@ -1019,20 +1255,10 @@
   .admin-otp-brand-icon {
     width: 48px;
     height: 48px;
-
-    margin-bottom: 14px;
-  }
-
-  .admin-otp-brand-icon i {
-    font-size: 21px;
   }
 
   .admin-otp-brand h1 {
     font-size: 21px;
-  }
-
-  .admin-otp-brand p {
-    font-size: 11px;
   }
 
   .admin-otp-card {
@@ -1043,27 +1269,17 @@
     font-size: 21px;
   }
 
-  .admin-otp-header p {
-    font-size: 10.5px;
-  }
-
   .admin-otp-input-wrapper input {
     font-size: 16px;
+
     letter-spacing: 5px;
   }
 }
 
-/* =========================================================
-   REDUCED MOTION
-========================================================= */
-
 @media (prefers-reduced-motion: reduce) {
   .admin-otp-orb,
   .otp-network-node,
-  .admin-otp-brand-content,
-  .admin-otp-submit,
-  .admin-otp-back-btn {
+  .admin-otp-brand-content {
     animation: none !important;
-    transition: none !important;
   }
 }

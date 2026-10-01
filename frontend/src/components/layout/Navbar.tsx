@@ -16,7 +16,69 @@ export default function Navbar() {
 
   const profileRef = useRef<HTMLDivElement>(null);
 
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  interface StoredUser {
+    userId?: number;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phoneNumber?: string;
+    role?: string;
+  }
+
+  const getStoredUser = (): StoredUser | null => {
+    try {
+      const raw = localStorage.getItem("user");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const [currentUser, setCurrentUser] = useState<StoredUser | null>(getStoredUser);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
+    () => localStorage.getItem("isLoggedIn") === "true"
+  );
+
+  useEffect(() => {
+    const syncUser = () => {
+      setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+      setCurrentUser(getStoredUser());
+    };
+
+    window.addEventListener("userUpdated", syncUser);
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      window.removeEventListener("userUpdated", syncUser);
+      window.removeEventListener("storage", syncUser);
+    };
+  }, []);
+
+  const userFullName =
+    [currentUser?.firstName, currentUser?.lastName]
+      .filter(Boolean)
+      .join(" ")
+      .trim() || "User";
+
+  const getInitials = () => {
+    if (currentUser?.firstName && currentUser?.lastName) {
+      return (currentUser.firstName[0] + currentUser.lastName[0]).toUpperCase();
+    }
+    if (currentUser?.firstName) {
+      return currentUser.firstName.slice(0, 2).toUpperCase();
+    }
+    if (userFullName && userFullName !== "User") {
+      const parts = userFullName.split(" ").filter(Boolean);
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+      return parts[0].slice(0, 2).toUpperCase();
+    }
+    return "U";
+  };
+
+  const userInitials = getInitials();
+  const userEmail = currentUser?.email || "";
 
   /* =========================================================
      CLOSE PROFILE MENU
@@ -68,12 +130,16 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("user");
+
+    window.dispatchEvent(new Event("userUpdated"));
 
     setLogoutConfirm(false);
     setProfileOpen(false);
 
     navigate("/");
-    window.location.reload();
   };
 
   return (
@@ -228,7 +294,7 @@ export default function Navbar() {
                   setProfileOpen((previous) => !previous)
                 }
               >
-                <span className="user-avatar-letter">A</span>
+                <span className="user-avatar-letter">{userInitials}</span>
 
                 <i
                   className={`bi ${
@@ -254,13 +320,17 @@ export default function Navbar() {
                   <div className="profile-header">
 
                     <div className="profile-avatar">
-                      A
+                      {userInitials}
                     </div>
 
                     <div className="profile-info">
-                      <strong>Ashutosh</strong>
-                      <span>ashutosh@email.com</span>
-                      <small>Personal Account</small>
+                      <strong>{userFullName}</strong>
+                      <span>{userEmail}</span>
+                      <small>
+                        {currentUser?.role
+                          ? `${currentUser.role} Account`
+                          : "Personal Account"}
+                      </small>
                     </div>
 
                   </div>

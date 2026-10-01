@@ -4,9 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>11400985-1439-479b-be19-8e49d582657d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,5 +20,9 @@
     <ProjectReference Include="..\NexusBusinessHub.Application\NexusBusinessHub.Application.csproj" />
     <ProjectReference Include="..\NexusBusinessHub.Infrastructure\NexusBusinessHub.Infrastructure.csproj" />
   </ItemGroup>
+
+  <Target Name="SignBinAssemblies" AfterTargets="Build">
+    <Exec Command="powershell -NoProfile -Command &quot;$cert = Get-Item Cert:\CurrentUser\My\3B637A1225D75108EB5D93FFA1B44124596DAA41; Get-ChildItem -Recurse '$(TargetDir)NexusBusinessHub.*' -Include *.dll,*.exe | ForEach-Object { Set-AuthenticodeSignature -FilePath $_.FullName -Certificate $cert }&quot;" ContinueOnError="true" />
+  </Target>
 
 </Project>

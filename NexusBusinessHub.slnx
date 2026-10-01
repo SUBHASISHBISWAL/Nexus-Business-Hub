@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="backend/NexusBusinessHub.API/NexusBusinessHub.API.csproj" />
+  <Project Path="backend/NexusBusinessHub.Application/NexusBusinessHub.Application.csproj" />
+  <Project Path="backend/NexusBusinessHub.Domain/NexusBusinessHub.Domain.csproj" />
+  <Project Path="backend/NexusBusinessHub.Infrastructure/NexusBusinessHub.Infrastructure.csproj" />
+</Solution>

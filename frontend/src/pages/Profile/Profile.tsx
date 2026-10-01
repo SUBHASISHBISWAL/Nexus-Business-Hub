@@ -11,11 +11,29 @@ const Profile = () => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  const [personalInfo, setPersonalInfo] = useState({
-    fullName: "Ashutosh Sahu",
-    email: "ashutosh@email.com",
-    mobile: "+91 98765 43210",
-  });
+  const loadUserFromStorage = () => {
+    try {
+      const raw = localStorage.getItem("user");
+      if (raw) {
+        const u = JSON.parse(raw);
+        const name = [u.firstName, u.lastName].filter(Boolean).join(" ").trim();
+        return {
+          fullName: name || "Customer User",
+          email: u.email || "",
+          mobile: u.phoneNumber || "",
+        };
+      }
+    } catch {
+      // fallback
+    }
+    return {
+      fullName: "Customer User",
+      email: "",
+      mobile: "",
+    };
+  };
+
+  const [personalInfo, setPersonalInfo] = useState(loadUserFromStorage);
 
   const [editedPersonalInfo, setEditedPersonalInfo] =
     useState(personalInfo);
@@ -50,6 +68,26 @@ const Profile = () => {
     if (savedPhoto) {
       setProfilePhoto(savedPhoto);
     }
+  }, []);
+
+  /* ================================
+     SYNC USER FROM LOCALSTORAGE
+  ================================= */
+
+  useEffect(() => {
+    const handleSync = () => {
+      const updated = loadUserFromStorage();
+      setPersonalInfo(updated);
+      setEditedPersonalInfo(updated);
+    };
+
+    window.addEventListener("userUpdated", handleSync);
+    window.addEventListener("storage", handleSync);
+
+    return () => {
+      window.removeEventListener("userUpdated", handleSync);
+      window.removeEventListener("storage", handleSync);
+    };
   }, []);
 
   /* ================================
@@ -183,6 +221,20 @@ const Profile = () => {
   const handleSaveProfile = () => {
     setPersonalInfo(editedPersonalInfo);
     setIsEditingProfile(false);
+
+    try {
+      const raw = localStorage.getItem("user");
+      const u = raw ? JSON.parse(raw) : {};
+      const parts = editedPersonalInfo.fullName.trim().split(/\s+/);
+      u.firstName = parts[0] || "";
+      u.lastName = parts.slice(1).join(" ") || "";
+      u.email = editedPersonalInfo.email.trim();
+      u.phoneNumber = editedPersonalInfo.mobile.trim();
+      localStorage.setItem("user", JSON.stringify(u));
+      window.dispatchEvent(new Event("userUpdated"));
+    } catch (err) {
+      console.error("Failed to update user in localStorage", err);
+    }
 
     setSuccessMessage(
       "Profile information updated successfully."
