@@ -4,10 +4,687 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexus-business-hub</title>
+    <title>Nexus Business Hub</title>
+    <!-- Early theme detector to prevent theme flash on first paint -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem("theme") || localStorage.getItem("nexus_theme");
+          if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+          }
+        } catch(e) {}
+      })();
+    </script>
+    <style>
+      :root {
+        --nx-skel-base: #f1f5f9;
+        --nx-skel-highlight: #ffffff;
+        --nx-skel-mid: #e2e8f0;
+        --nx-skel-border: #e2e8f0;
+        --nx-skel-card-bg: #ffffff;
+        --nx-skel-subtle: #f8fafc;
+        --nx-skel-ground: #f8faff;
+      }
+      [data-theme="dark"] {
+        --nx-skel-base: #1e293b;
+        --nx-skel-highlight: #334155;
+        --nx-skel-mid: #475569;
+        --nx-skel-border: #334155;
+        --nx-skel-card-bg: #0f172a;
+        --nx-skel-subtle: #141f32;
+        --nx-skel-ground: #0b1120;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --nx-skel-base: #1e293b;
+          --nx-skel-highlight: #334155;
+          --nx-skel-mid: #475569;
+          --nx-skel-border: #334155;
+          --nx-skel-card-bg: #0f172a;
+          --nx-skel-subtle: #141f32;
+          --nx-skel-ground: #0b1120;
+        }
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background: var(--nx-skel-ground);
+        color: #0f172a;
+        min-height: 100vh;
+      }
+      @keyframes nx-shimmer-anim {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+      .nx-shimmer {
+        background: linear-gradient(
+          90deg,
+          var(--nx-skel-base) 0%,
+          var(--nx-skel-highlight) 35%,
+          var(--nx-skel-mid) 50%,
+          var(--nx-skel-highlight) 65%,
+          var(--nx-skel-base) 100%
+        );
+        background-size: 200% 100%;
+        animation: nx-shimmer-anim 1.5s ease-in-out infinite;
+        display: block;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .nx-shimmer {
+          animation: none !important;
+          background: var(--nx-skel-base) !important;
+        }
+      }
+      /* First-Paint Full-Page Skeleton Layout */
+      .nx-init-shell {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--nx-skel-ground);
+      }
+      .nx-skel-nav {
+        height: 72px;
+        background: var(--nx-skel-card-bg);
+        border-bottom: 1px solid var(--nx-skel-border);
+        display: flex;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .nx-skel-nav-container {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 0 24px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      .nx-skel-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+      .nx-skel-brand-logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+      }
+      .nx-skel-brand-title {
+        width: 150px;
+        height: 20px;
+        border-radius: 4px;
+      }
+      .nx-skel-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      @media (max-width: 991px) {
+        .nx-skel-nav-links {
+          display: none;
+        }
+      }
+      .nx-skel-nav-link {
+        width: 68px;
+        height: 16px;
+        border-radius: 3px;
+      }
+      .nx-skel-search-box {
+        width: min(340px, 30vw);
+        height: 40px;
+        border-radius: 20px;
+      }
+      @media (max-width: 768px) {
+        .nx-skel-search-box {
+          display: none;
+        }
+      }
+      .nx-skel-nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+      .nx-skel-icon-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+      }
+      .nx-skel-btn-primary {
+        width: 100px;
+        height: 38px;
+        border-radius: 6px;
+      }
+      .nx-skel-main-container {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 40px 24px 60px;
+        width: 100%;
+      }
+      .nx-skel-hero {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 40px;
+        align-items: center;
+        margin-bottom: 48px;
+      }
+      @media (max-width: 991px) {
+        .nx-skel-hero {
+          grid-template-columns: 1fr;
+        }
+      }
+      .nx-skel-hero-left {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .nx-skel-kicker {
+        width: 170px;
+        height: 24px;
+        border-radius: 12px;
+      }
+      .nx-skel-hero-title-1 {
+        width: 85%;
+        height: 44px;
+        border-radius: 8px;
+      }
+      .nx-skel-hero-title-2 {
+        width: 60%;
+        height: 44px;
+        border-radius: 8px;
+      }
+      .nx-skel-hero-desc-1 {
+        width: 95%;
+        height: 16px;
+        border-radius: 4px;
+        margin-top: 6px;
+      }
+      .nx-skel-hero-desc-2 {
+        width: 80%;
+        height: 16px;
+        border-radius: 4px;
+      }
+      .nx-skel-hero-actions {
+        display: flex;
+        gap: 14px;
+        margin-top: 14px;
+      }
+      .nx-skel-hero-btn-1 {
+        width: 150px;
+        height: 44px;
+        border-radius: 6px;
+      }
+      .nx-skel-hero-btn-2 {
+        width: 130px;
+        height: 44px;
+        border-radius: 6px;
+      }
+      .nx-skel-hero-right {
+        height: 340px;
+        border-radius: 12px;
+        border: 1px solid var(--nx-skel-border);
+      }
+      .nx-skel-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 56px;
+      }
+      @media (max-width: 768px) {
+        .nx-skel-stats {
+          grid-template-columns: 1fr;
+        }
+      }
+      .nx-skel-stat-card {
+        background: var(--nx-skel-card-bg);
+        border: 1px solid var(--nx-skel-border);
+        border-radius: 8px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .nx-skel-stat-label {
+        width: 90px;
+        height: 12px;
+        border-radius: 3px;
+      }
+      .nx-skel-stat-val {
+        width: 130px;
+        height: 28px;
+        border-radius: 4px;
+      }
+      .nx-skel-stat-sub {
+        width: 80px;
+        height: 12px;
+        border-radius: 3px;
+      }
+      .nx-skel-section {
+        margin-bottom: 56px;
+      }
+      .nx-skel-section-head {
+        margin-bottom: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .nx-skel-section-head-split {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+      .nx-skel-sec-kicker {
+        width: 140px;
+        height: 14px;
+        border-radius: 3px;
+      }
+      .nx-skel-sec-title {
+        width: 280px;
+        height: 28px;
+        border-radius: 6px;
+      }
+      .nx-skel-view-all {
+        width: 160px;
+        height: 18px;
+        border-radius: 4px;
+      }
+      .nx-skel-cat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+      }
+      .nx-skel-cat-card {
+        background: var(--nx-skel-card-bg);
+        border: 1px solid var(--nx-skel-border);
+        border-radius: 8px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .nx-skel-cat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+      }
+      .nx-skel-cat-title {
+        width: 140px;
+        height: 20px;
+        border-radius: 4px;
+      }
+      .nx-skel-cat-desc {
+        width: 90%;
+        height: 14px;
+        border-radius: 3px;
+      }
+      .nx-skel-cat-link {
+        width: 110px;
+        height: 14px;
+        border-radius: 3px;
+        margin-top: 4px;
+      }
+      .nx-skel-product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+      }
+      .nx-skel-card {
+        background: var(--nx-skel-card-bg);
+        border: 1px solid var(--nx-skel-border);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .nx-skel-card-img {
+        height: 160px;
+        width: 100%;
+      }
+      .nx-skel-card-body {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .nx-skel-card-rating {
+        width: 75px;
+        height: 14px;
+        border-radius: 3px;
+      }
+      .nx-skel-card-title {
+        width: 90%;
+        height: 18px;
+        border-radius: 4px;
+      }
+      .nx-skel-card-title-sub {
+        width: 60%;
+        height: 18px;
+        border-radius: 4px;
+      }
+      .nx-skel-card-footer {
+        padding: 14px 16px;
+        border-top: 1px solid var(--nx-skel-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .nx-skel-card-price {
+        width: 80px;
+        height: 22px;
+        border-radius: 4px;
+      }
+      .nx-skel-card-actions {
+        display: flex;
+        gap: 6px;
+      }
+      .nx-skel-card-btn {
+        width: 68px;
+        height: 32px;
+        border-radius: 4px;
+      }
+      .nx-skel-footer {
+        background: var(--nx-skel-card-bg);
+        border-top: 1px solid var(--nx-skel-border);
+        padding: 48px 0 24px;
+        margin-top: auto;
+      }
+      .nx-skel-footer-container {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      .nx-skel-footer-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 32px;
+        margin-bottom: 40px;
+      }
+      @media (max-width: 768px) {
+        .nx-skel-footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 480px) {
+        .nx-skel-footer-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .nx-skel-footer-col {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .nx-skel-footer-brand {
+        width: 140px;
+        height: 24px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+      }
+      .nx-skel-footer-line {
+        width: 80%;
+        height: 14px;
+        border-radius: 3px;
+      }
+      .nx-skel-footer-socials {
+        display: flex;
+        gap: 10px;
+        margin-top: 6px;
+      }
+      .nx-skel-footer-head {
+        width: 100px;
+        height: 18px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+      }
+      .nx-skel-footer-bottom {
+        padding-top: 24px;
+        border-top: 1px solid var(--nx-skel-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .nx-skel-footer-copy {
+        width: 220px;
+        height: 14px;
+        border-radius: 3px;
+      }
+      .nx-skel-footer-terms {
+        width: 180px;
+        height: 14px;
+        border-radius: 3px;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Full-Page Nexus Business Hub Animated Shimmer Skeleton for First Paint -->
+      <div class="nx-init-shell" aria-hidden="true">
+        <!-- 1. Header / Navbar -->
+        <header class="nx-skel-nav">
+          <div className="nx-skel-nav-container" style="max-width:1320px;margin:0 auto;padding:0 24px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;">
+            <div class="nx-skel-brand">
+              <div class="nx-skel-brand-logo nx-shimmer"></div>
+              <div class="nx-skel-brand-title nx-shimmer"></div>
+            </div>
+            <div class="nx-skel-nav-links">
+              <div class="nx-skel-nav-link nx-shimmer"></div>
+              <div class="nx-skel-nav-link nx-shimmer"></div>
+              <div class="nx-skel-nav-link nx-shimmer"></div>
+              <div class="nx-skel-nav-link nx-shimmer"></div>
+            </div>
+            <div class="nx-skel-search-box nx-shimmer"></div>
+            <div class="nx-skel-nav-actions">
+              <div class="nx-skel-icon-circle nx-shimmer"></div>
+              <div class="nx-skel-icon-circle nx-shimmer"></div>
+              <div class="nx-skel-icon-circle nx-shimmer"></div>
+              <div class="nx-skel-btn-primary nx-shimmer"></div>
+            </div>
+          </div>
+        </header>
+
+        <!-- 2. Main Content -->
+        <main class="nx-skel-main-container">
+          <!-- 2.1 Hero Banner -->
+          <section class="nx-skel-hero">
+            <div class="nx-skel-hero-left">
+              <div class="nx-skel-kicker nx-shimmer"></div>
+              <div class="nx-skel-hero-title-1 nx-shimmer"></div>
+              <div class="nx-skel-hero-title-2 nx-shimmer"></div>
+              <div class="nx-skel-hero-desc-1 nx-shimmer"></div>
+              <div class="nx-skel-hero-desc-2 nx-shimmer"></div>
+              <div class="nx-skel-hero-actions">
+                <div class="nx-skel-hero-btn-1 nx-shimmer"></div>
+                <div class="nx-skel-hero-btn-2 nx-shimmer"></div>
+              </div>
+            </div>
+            <div class="nx-skel-hero-right nx-shimmer"></div>
+          </section>
+
+          <!-- 2.2 Stats -->
+          <section class="nx-skel-stats">
+            <div class="nx-skel-stat-card">
+              <div class="nx-skel-stat-label nx-shimmer"></div>
+              <div class="nx-skel-stat-val nx-shimmer"></div>
+              <div class="nx-skel-stat-sub nx-shimmer"></div>
+            </div>
+            <div class="nx-skel-stat-card">
+              <div class="nx-skel-stat-label nx-shimmer"></div>
+              <div class="nx-skel-stat-val nx-shimmer"></div>
+              <div class="nx-skel-stat-sub nx-shimmer"></div>
+            </div>
+            <div class="nx-skel-stat-card">
+              <div class="nx-skel-stat-label nx-shimmer"></div>
+              <div class="nx-skel-stat-val nx-shimmer"></div>
+              <div class="nx-skel-stat-sub nx-shimmer"></div>
+            </div>
+          </section>
+
+          <!-- 2.3 Product Categories -->
+          <section class="nx-skel-section">
+            <div class="nx-skel-section-head">
+              <div class="nx-skel-sec-kicker nx-shimmer"></div>
+              <div class="nx-skel-sec-title nx-shimmer"></div>
+            </div>
+            <div class="nx-skel-cat-grid">
+              <div class="nx-skel-cat-card">
+                <div class="nx-skel-cat-icon nx-shimmer"></div>
+                <div class="nx-skel-cat-title nx-shimmer"></div>
+                <div class="nx-skel-cat-desc nx-shimmer"></div>
+                <div class="nx-skel-cat-link nx-shimmer"></div>
+              </div>
+              <div class="nx-skel-cat-card">
+                <div class="nx-skel-cat-icon nx-shimmer"></div>
+                <div class="nx-skel-cat-title nx-shimmer"></div>
+                <div class="nx-skel-cat-desc nx-shimmer"></div>
+                <div class="nx-skel-cat-link nx-shimmer"></div>
+              </div>
+              <div class="nx-skel-cat-card">
+                <div class="nx-skel-cat-icon nx-shimmer"></div>
+                <div class="nx-skel-cat-title nx-shimmer"></div>
+                <div class="nx-skel-cat-desc nx-shimmer"></div>
+                <div class="nx-skel-cat-link nx-shimmer"></div>
+              </div>
+              <div class="nx-skel-cat-card">
+                <div class="nx-skel-cat-icon nx-shimmer"></div>
+                <div class="nx-skel-cat-title nx-shimmer"></div>
+                <div class="nx-skel-cat-desc nx-shimmer"></div>
+                <div class="nx-skel-cat-link nx-shimmer"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2.4 Featured Enterprise Nodes -->
+          <section class="nx-skel-section">
+            <div class="nx-skel-section-head-split">
+              <div>
+                <div class="nx-skel-sec-kicker nx-shimmer"></div>
+                <div class="nx-skel-sec-title nx-shimmer"></div>
+              </div>
+              <div class="nx-skel-view-all nx-shimmer"></div>
+            </div>
+            <div class="nx-skel-product-grid">
+              <div class="nx-skel-card">
+                <div class="nx-skel-card-img nx-shimmer"></div>
+                <div class="nx-skel-card-body">
+                  <div class="nx-skel-card-rating nx-shimmer"></div>
+                  <div class="nx-skel-card-title nx-shimmer"></div>
+                  <div class="nx-skel-card-title-sub nx-shimmer"></div>
+                </div>
+                <div class="nx-skel-card-footer">
+                  <div class="nx-skel-card-price nx-shimmer"></div>
+                  <div class="nx-skel-card-actions">
+                    <div class="nx-skel-card-btn nx-shimmer"></div>
+                    <div class="nx-skel-card-btn nx-shimmer"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="nx-skel-card">
+                <div class="nx-skel-card-img nx-shimmer"></div>
+                <div class="nx-skel-card-body">
+                  <div class="nx-skel-card-rating nx-shimmer"></div>
+                  <div class="nx-skel-card-title nx-shimmer"></div>
+                  <div class="nx-skel-card-title-sub nx-shimmer"></div>
+                </div>
+                <div class="nx-skel-card-footer">
+                  <div class="nx-skel-card-price nx-shimmer"></div>
+                  <div class="nx-skel-card-actions">
+                    <div class="nx-skel-card-btn nx-shimmer"></div>
+                    <div class="nx-skel-card-btn nx-shimmer"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="nx-skel-card">
+                <div class="nx-skel-card-img nx-shimmer"></div>
+                <div class="nx-skel-card-body">
+                  <div class="nx-skel-card-rating nx-shimmer"></div>
+                  <div class="nx-skel-card-title nx-shimmer"></div>
+                  <div class="nx-skel-card-title-sub nx-shimmer"></div>
+                </div>
+                <div class="nx-skel-card-footer">
+                  <div class="nx-skel-card-price nx-shimmer"></div>
+                  <div class="nx-skel-card-actions">
+                    <div class="nx-skel-card-btn nx-shimmer"></div>
+                    <div class="nx-skel-card-btn nx-shimmer"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="nx-skel-card">
+                <div class="nx-skel-card-img nx-shimmer"></div>
+                <div class="nx-skel-card-body">
+                  <div class="nx-skel-card-rating nx-shimmer"></div>
+                  <div class="nx-skel-card-title nx-shimmer"></div>
+                  <div class="nx-skel-card-title-sub nx-shimmer"></div>
+                </div>
+                <div class="nx-skel-card-footer">
+                  <div class="nx-skel-card-price nx-shimmer"></div>
+                  <div class="nx-skel-card-actions">
+                    <div class="nx-skel-card-btn nx-shimmer"></div>
+                    <div class="nx-skel-card-btn nx-shimmer"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- 3. Footer -->
+        <footer class="nx-skel-footer">
+          <div class="nx-skel-footer-container">
+            <div class="nx-skel-footer-grid">
+              <div class="nx-skel-footer-col">
+                <div class="nx-skel-footer-brand nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer" style="width:85%"></div>
+                <div class="nx-skel-footer-line nx-shimmer" style="width:65%"></div>
+                <div class="nx-skel-footer-socials">
+                  <div class="nx-skel-icon-circle nx-shimmer"></div>
+                  <div class="nx-skel-icon-circle nx-shimmer"></div>
+                  <div class="nx-skel-icon-circle nx-shimmer"></div>
+                </div>
+              </div>
+              <div class="nx-skel-footer-col">
+                <div class="nx-skel-footer-head nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+              </div>
+              <div class="nx-skel-footer-col">
+                <div class="nx-skel-footer-head nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+              </div>
+              <div class="nx-skel-footer-col">
+                <div class="nx-skel-footer-head nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+                <div class="nx-skel-footer-line nx-shimmer"></div>
+              </div>
+            </div>
+            <div class="nx-skel-footer-bottom">
+              <div class="nx-skel-footer-copy nx-shimmer"></div>
+              <div class="nx-skel-footer-terms nx-shimmer"></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

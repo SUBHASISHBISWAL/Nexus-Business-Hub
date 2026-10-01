@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getOrders } from "../../services/orderService";
+import { OrdersSkeleton } from "../../components/skeleton";
+import { ErrorState } from "../../components/common/ErrorState";
+import { useInitialLoading } from "../../context/InitialLoadingContext";
 import "./Orders.css";
 
 type Order = {
@@ -23,28 +26,30 @@ type Order = {
 
 function Orders() {
   const navigate = useNavigate();
+  const { markAppReady } = useInitialLoading();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const loadOrders = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await getOrders();
+
+      setOrders(data);
+    } catch (err) {
+      console.error("Failed to load orders:", err);
+      setError("Unable to load your orders. Please try again.");
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
+
   useEffect(() => {
-    const loadOrders = async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const data = await getOrders();
-
-        setOrders(data);
-      } catch (err) {
-        console.error("Failed to load orders:", err);
-        setError("Unable to load your orders. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadOrders();
   }, []);
 
@@ -83,36 +88,16 @@ function Orders() {
           </button>
         </div>
 
-        {/* LOADING */}
-        {loading && (
-          <div className="nx-orders-list">
-            <article className="nx-order-card">
-              <div className="nx-order-body">
-                <div className="nx-order-info">
-                  <div className="nx-order-info-item">
-                    <span>ORDERS</span>
-                    <strong>Loading orders...</strong>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
-        )}
+        {/* SKELETON LOADING */}
+        {loading && <OrdersSkeleton count={3} />}
 
         {/* ERROR */}
         {!loading && error && (
-          <div className="nx-orders-list">
-            <article className="nx-order-card">
-              <div className="nx-order-body">
-                <div className="nx-order-info">
-                  <div className="nx-order-info-item">
-                    <span>ERROR</span>
-                    <strong>{error}</strong>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
+          <ErrorState
+            title="Unable to load content"
+            message={error}
+            onRetry={loadOrders}
+          />
         )}
 
         {/* EMPTY */}

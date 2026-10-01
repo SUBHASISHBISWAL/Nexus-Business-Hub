@@ -13,6 +13,8 @@ import {
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { getProductById } from "../../services/productService";
+import { ProductDetailsSkeleton } from "../../components/skeleton";
+import { useInitialLoading } from "../../context/InitialLoadingContext";
 import type { Product } from "../../types/product";
 
 import "./ProductDetails.css";
@@ -23,6 +25,7 @@ function ProductDetails() {
 
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
+  const { markAppReady } = useInitialLoading();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -32,41 +35,43 @@ function ProductDetails() {
   const [isImageViewerOpen, setIsImageViewerOpen] =
     useState<boolean>(false);
 
-  useEffect(() => {
-    const loadProduct = async () => {
-      const numericId = Number(id);
+  const loadProduct = async () => {
+    const numericId = Number(id);
 
-      if (!id || isNaN(numericId)) {
-        setError("Invalid product ID.");
-        setLoading(false);
-        return;
-      }
+    if (!id || isNaN(numericId)) {
+      setError("Invalid product ID.");
+      setLoading(false);
+      markAppReady();
+      return;
+    }
 
-      try {
-        setLoading(true);
-        setError("");
+    try {
+      setLoading(true);
+      setError("");
 
-        const data = await getProductById(numericId);
+      const data = await getProductById(numericId);
 
-        if (!data) {
-          setError("Product not found.");
-          setProduct(null);
-        } else {
-          setProduct(data);
-          setCurrentImage(0);
-          setQuantity(1);
-        }
-      } catch (err) {
-        console.error("Failed to load product details:", err);
+      if (!data) {
+        setError("Product not found.");
         setProduct(null);
-        setError(
-          "Unable to load product details. Please try again."
-        );
-      } finally {
-        setLoading(false);
+      } else {
+        setProduct(data);
+        setCurrentImage(0);
+        setQuantity(1);
       }
-    };
+    } catch (err) {
+      console.error("Failed to load product details:", err);
+      setProduct(null);
+      setError(
+        "Unable to load product details. Please try again."
+      );
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
 
+  useEffect(() => {
     loadProduct();
   }, [id]);
 
@@ -161,39 +166,40 @@ function ProductDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="nx-product-not-found">
-        <span className="material-symbols-outlined">
-          progress_activity
-        </span>
-        <h2>Loading Product</h2>
-        <p>
-          Please wait while we load the product details.
-        </p>
-      </div>
-    );
+    return <ProductDetailsSkeleton />;
   }
 
   if (error || !product) {
     return (
-      <div className="nx-product-not-found">
+      <div className="nx-product-not-found" role="alert">
         <span className="material-symbols-outlined">
           search_off
         </span>
 
-        <h2>{error || "Product Not Found"}</h2>
+        <h2>Unable to load content</h2>
 
         <p>
-          The product you are looking for could not be
-          found or does not exist.
+          {error || "The product you are looking for could not be found or does not exist."}
         </p>
 
-        <Link
-          to="/products"
-          className="nx-back-products"
-        >
-          Back to Products
-        </Link>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", alignItems: "center", marginTop: "16px" }}>
+          <button
+            type="button"
+            className="nx-error-retry-btn"
+            onClick={loadProduct}
+            aria-label="Retry loading product"
+          >
+            <i className="bi bi-arrow-clockwise"></i>
+            <span>Retry</span>
+          </button>
+
+          <Link
+            to="/products"
+            className="nx-back-products"
+          >
+            Back to Products
+          </Link>
+        </div>
       </div>
     );
   }

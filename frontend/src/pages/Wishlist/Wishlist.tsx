@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
 import { CartContext } from "../../context/CartContext";
 import { getProductById } from "../../services/productService";
+import { ProductCardSkeletonGrid } from "../../components/skeleton";
+import { useInitialLoading } from "../../context/InitialLoadingContext";
 import type { Product } from "../../types/product";
 
 import "./Wishlist.css";
@@ -16,6 +18,7 @@ export default function Wishlist() {
     clearWishlist,
   } = useWishlist();
   const { addToCart } = useContext(CartContext);
+  const { markAppReady } = useInitialLoading();
   const navigate = useNavigate();
 
   const [notification, setNotification] = useState<string>("");
@@ -26,6 +29,7 @@ export default function Wishlist() {
   useEffect(() => {
     if (wishlist.length === 0) {
       setSavedProducts([]);
+      markAppReady();
       return;
     }
 
@@ -46,6 +50,7 @@ export default function Wishlist() {
         .map((id) => currentMap.get(id))
         .filter((item): item is Product => item !== undefined);
       setSavedProducts(items);
+      markAppReady();
       return;
     }
 
@@ -76,6 +81,7 @@ export default function Wishlist() {
 
       setSavedProducts(finalItems);
       setLoading(false);
+      markAppReady();
     });
 
     return () => {
@@ -148,7 +154,13 @@ export default function Wishlist() {
           {/* =====================================
               EMPTY WISHLIST
           ===================================== */}
-          {!loading && savedProducts.length === 0 ? (
+          {loading ? (
+            <div className="wishlist-wrapper" aria-busy="true">
+              <div className="wishlist-grid">
+                <ProductCardSkeletonGrid count={4} />
+              </div>
+            </div>
+          ) : savedProducts.length === 0 ? (
             <div className="empty-wishlist">
               <div className="empty-wishlist-icon">
                 <i className="bi bi-heart"></i>

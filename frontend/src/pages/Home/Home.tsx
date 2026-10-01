@@ -1,19 +1,49 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import ProductCard from "../../components/ProductCard";
-import { products, productCategories } from "../../data/products";
+import { ProductCardSkeleton } from "../../components/skeleton";
+import { ErrorState } from "../../components/common/ErrorState";
+import { productCategories, products as fallbackProducts } from "../../data/products";
 import type { Product } from "../../types/product";
+import { getProducts } from "../../services/productService";
+import { useInitialLoading } from "../../context/InitialLoadingContext";
 import heroImg from "../../assets/hero.png";
 import "./Home.css";
 
 function Home() {
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
+  const { markAppReady } = useInitialLoading();
 
-  // Top 4 curated enterprise nodes for featured section
-  const featuredProducts = products.slice(0, 4);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+
+  const loadFeatured = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await getProducts();
+      if (Array.isArray(data) && data.length > 0) {
+        setFeaturedProducts(data.slice(0, 4));
+      } else {
+        setFeaturedProducts(fallbackProducts.slice(0, 4));
+      }
+    } catch (err) {
+      console.error("Failed to load featured products:", err);
+      // If backend fails, show error state with retry
+      setError("Unable to load featured enterprise products.");
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
+
+  useEffect(() => {
+    loadFeatured();
+  }, []);
 
   const handleAddToCart = (product: Product) => {
     addToCart(product);
@@ -318,17 +348,35 @@ function Home() {
           </div>
 
           {/* Reusing ProductCard in grid */}
-          <div className="featured-grid">
-            {featuredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-                isLiked={wishlist.includes(product.id)}
-                onToggleWishlist={() => toggleWishlist(product)}
-              />
-            ))}
-          </div>
+          {loading && (
+            <div className="featured-grid" aria-busy="true">
+              {[1, 2, 3, 4].map((i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </div>
+          )}
+
+          {!loading && error && (
+            <ErrorState
+              title="Unable to load content"
+              message={error}
+              onRetry={loadFeatured}
+            />
+          )}
+
+          {!loading && !error && (
+            <div className="featured-grid nx-content-loaded">
+              {featuredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                  isLiked={wishlist.includes(product.id)}
+                  onToggleWishlist={() => toggleWishlist(product)}
+                />
+              ))}
+            </div>
+          )}
 
         </div>
       </section>

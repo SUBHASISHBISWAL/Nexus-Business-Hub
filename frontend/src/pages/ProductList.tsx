@@ -4,13 +4,17 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import ProductCard from "../components/ProductCard";
+import { ProductCardSkeletonGrid } from "../components/skeleton";
+import { ErrorState } from "../components/common/ErrorState";
 import { categoryLabels } from "../data/products";
 import type { Product } from "../types/product";
 import { getProducts } from "../services/productService";
+import { useInitialLoading } from "../context/InitialLoadingContext";
 
 function ProductList() {
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
+  const { markAppReady } = useInitialLoading();
 
   // =========================
   // API PRODUCTS
@@ -56,26 +60,27 @@ function ProductList() {
   // LOAD PRODUCTS FROM API
   // =========================
 
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await getProducts();
+
+      setProducts(data);
+    } catch (err) {
+      console.error("Failed to load products:", err);
+
+      setError(
+        "Unable to load products. Please make sure the backend API is running.",
+      );
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
+
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const data = await getProducts();
-
-        setProducts(data);
-      } catch (err) {
-        console.error("Failed to load products:", err);
-
-        setError(
-          "Unable to load products. Please make sure the backend API is running.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadProducts();
   }, []);
 
@@ -491,34 +496,20 @@ function ProductList() {
               </div>
             )}
 
-            {/* LOADING */}
-
+            {/* SKELETON LOADING GRID */}
             {loading && (
-              <div className="nx-empty-catalog">
-                <span className="material-symbols-outlined">
-                  progress_activity
-                </span>
-
-                <h2>Loading products...</h2>
-
-                <p>Please wait while we load the catalog.</p>
+              <div className="nx-product-grid" aria-busy="true">
+                <ProductCardSkeletonGrid count={productsPerPage} />
               </div>
             )}
 
             {/* API ERROR */}
-
             {!loading && error && (
-              <div className="nx-empty-catalog">
-                <span className="material-symbols-outlined">error_outline</span>
-
-                <h2>Unable to load products</h2>
-
-                <p>{error}</p>
-
-                <button type="button" onClick={() => window.location.reload()}>
-                  Retry
-                </button>
-              </div>
+              <ErrorState
+                title="Unable to load content"
+                message={error}
+                onRetry={loadProducts}
+              />
             )}
 
             {/* PRODUCT GRID */}

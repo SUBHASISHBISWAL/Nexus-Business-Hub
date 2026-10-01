@@ -1,5 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AdminTableSkeleton } from "../../../components/skeleton";
+import { ErrorState } from "../../../components/common/ErrorState";
+import { getProducts } from "../../../services/productService";
+import { useInitialLoading } from "../../../context/InitialLoadingContext";
 import "./AdminProducts.css";
 
 type ProductStatus = "Active" | "Draft" | "Out of Stock";
@@ -157,16 +161,54 @@ const ITEMS_PER_PAGE = 8;
 
 function AdminProducts() {
   const navigate = useNavigate();
+  const { markAppReady } = useInitialLoading();
+
+  const [productsList, setProductsList] = useState<Product[]>(products);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [status, setStatus] = useState("All Status");
   const [currentPage, setCurrentPage] = useState(1);
 
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const apiData = await getProducts();
+      if (Array.isArray(apiData) && apiData.length > 0) {
+        const mapped: Product[] = apiData.map((p) => ({
+          id: p.id,
+          name: p.name,
+          sku: `NEX-${p.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(p.id).padStart(3, "0")}`,
+          category: p.category || "Electronics",
+          price: p.price,
+          stock: p.stockQuantity ?? 25,
+          status: p.isActive === false ? "Out of Stock" : "Active",
+          updated: "22 Sep 2026",
+        }));
+        setProductsList(mapped);
+      } else {
+        setProductsList(products);
+      }
+    } catch (err) {
+      console.error("Failed to load admin products:", err);
+      setProductsList(products);
+    } finally {
+      setLoading(false);
+      markAppReady();
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
   const filteredProducts = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return products.filter((product) => {
+    return productsList.filter((product) => {
       const matchesSearch =
         !query ||
         product.name.toLowerCase().includes(query) ||
@@ -187,7 +229,7 @@ function AdminProducts() {
         matchesStatus
       );
     });
-  }, [search, category, status]);
+  }, [search, category, status, productsList]);
 
   const totalPages = Math.max(
     1,
@@ -405,6 +447,15 @@ function AdminProducts() {
           )}
         </div>
 
+        {/* ERROR */}
+        {!loading && error && (
+          <ErrorState
+            title="Unable to load content"
+            message={error}
+            onRetry={loadProducts}
+          />
+        )}
+
         {/* TABLE */}
         <div className="nx-admin-products-table-wrapper">
           <table className="nx-admin-products-table">
@@ -423,7 +474,10 @@ function AdminProducts() {
             </thead>
 
             <tbody>
-              {visibleProducts.map((product) => (
+              {loading ? (
+                <AdminTableSkeleton columns={8} rows={ITEMS_PER_PAGE} />
+              ) : (
+                visibleProducts.map((product) => (
                 <tr key={product.id}>
 
                   {/* PRODUCT */}
@@ -537,13 +591,13 @@ function AdminProducts() {
                   </td>
 
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>
 
         {/* EMPTY STATE */}
-        {visibleProducts.length === 0 && (
+        {!loading && visibleProducts.length === 0 && (
           <div className="nx-admin-products-empty">
             <div>
               <i className="bi bi-search" />
