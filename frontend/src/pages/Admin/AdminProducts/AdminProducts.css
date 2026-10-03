@@ -658,6 +658,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   padding: 0 7px;
   border: 1px solid #dfe4ea;
   border-radius: 6px;
@@ -689,6 +690,18 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.nx-admin-pagination-ellipsis {
+  min-width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #657082;
+  font-size: 13px;
+  font-weight: 600;
+  user-select: none;
 }
 
 /* =========================================================

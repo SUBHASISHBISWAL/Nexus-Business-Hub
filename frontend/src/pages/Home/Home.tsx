@@ -5,7 +5,7 @@ import { useWishlist } from "../../context/WishlistContext";
 import ProductCard from "../../components/ProductCard";
 import { ProductCardSkeleton } from "../../components/skeleton";
 import { ErrorState } from "../../components/common/ErrorState";
-import { productCategories, products as fallbackProducts } from "../../data/products";
+import { productCategories } from "../../data/products";
 import type { Product } from "../../types/product";
 import { getProducts } from "../../services/productService";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
@@ -18,6 +18,7 @@ function Home() {
   const { markAppReady } = useInitialLoading();
 
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState(productCategories);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -25,12 +26,18 @@ function Home() {
     try {
       setLoading(true);
       setError("");
-      const data = await getProducts({ page: 1, pageSize: 4 });
+      const data = await getProducts({ page: 1, pageSize: 4, sortBy: "newest" });
       const items = Array.isArray(data) ? data : data?.items ?? [];
-      if (items.length > 0) {
-        setFeaturedProducts(items.slice(0, 4));
-      } else {
-        setFeaturedProducts(fallbackProducts.slice(0, 4));
+      setFeaturedProducts(items.slice(0, 4));
+
+      if (data && "categoryCounts" in data && data.categoryCounts) {
+        const counts = data.categoryCounts;
+        setCategories((prev) =>
+          prev.map((cat) => ({
+            ...cat,
+            count: counts[cat.name] ?? cat.count,
+          }))
+        );
       }
     } catch (err) {
       console.error("Failed to load featured products:", err);
@@ -291,7 +298,7 @@ function Home() {
           </div>
 
           <div className="row g-4">
-            {productCategories.map((category) => (
+            {categories.map((category) => (
               <div key={category.id} className="col-lg-3 col-sm-6">
                 <Link to={category.path} className="category-card">
 

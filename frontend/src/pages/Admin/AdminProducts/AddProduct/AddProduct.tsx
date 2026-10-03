@@ -1,30 +1,13 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { createProduct } from "../../../../services/productService";
 import "./AddProduct.css";
 
 export type ProductImage = {
   src: string;
   type: "upload" | "url";
 };
-
-export type StoredProduct = {
-  id: string;
-  name: string;
-  sku: string;
-  category: string;
-  price: string;
-  stock: string;
-  status: string;
-  shortDescription: string;
-  description: string;
-  specifications: string;
-  images: ProductImage[];
-  updated: string;
-};
-
-export const PRODUCTS_STORAGE_KEY =
-  "nexus_business_products";
 
 function AddProduct() {
   const navigate = useNavigate();
@@ -52,6 +35,7 @@ function AddProduct() {
     useState<boolean[]>([false, false, false, false]);
 
   const [saved, setSaved] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageError, setImageError] = useState("");
 
   const handleChange = (
@@ -161,41 +145,29 @@ function AddProduct() {
     uploadImages.filter(Boolean).length +
     imageUrls.filter(Boolean).length;
 
-  const handleSubmit = (
+  const handleSubmit = async (
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
 
-    if (totalImages !== 4) {
-      setImageError(
-        `Please add exactly 4 product images. Currently ${totalImages} image${
-          totalImages === 1 ? "" : "s"
-        } added.`
-      );
+    if (!formData.name.trim()) {
+      setImageError("Product Name is required.");
       return;
     }
 
-    setImageError("");
+    if (!formData.category) {
+      setImageError("Please select a Category.");
+      return;
+    }
 
-    let storedProducts: StoredProduct[] = [];
+    if (!formData.price || Number(formData.price) < 0) {
+      setImageError("Please enter a valid price.");
+      return;
+    }
 
-    try {
-      const storedData = localStorage.getItem(
-        PRODUCTS_STORAGE_KEY
-      );
-
-      if (storedData) {
-        const parsed = JSON.parse(storedData);
-
-        if (Array.isArray(parsed)) {
-          storedProducts = parsed;
-        }
-      }
-    } catch (error) {
-      console.error(
-        "Unable to read stored products:",
-        error
-      );
+    if (!formData.stock || Number(formData.stock) < 0) {
+      setImageError("Please enter a valid stock quantity.");
+      return;
     }
 
     const uploadedProductImages: ProductImage[] =
@@ -214,46 +186,53 @@ function AddProduct() {
           type: "url",
         }));
 
-    const newProduct: StoredProduct = {
-      id: `local-${Date.now()}`,
-      name: formData.name,
-      sku: formData.sku,
-      category: formData.category,
-      price: formData.price,
-      stock: formData.stock,
-      status: formData.status,
-      shortDescription: formData.shortDescription,
-      description: formData.description,
-      specifications: formData.specifications,
-      images: [
-        ...uploadedProductImages,
-        ...urlProductImages,
-      ],
-      updated: new Date().toLocaleDateString(
-        "en-GB",
-        {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }
-      ),
-    };
+    const allImages = [...urlProductImages, ...uploadedProductImages];
+    const primaryImageUrl =
+      urlProductImages[0]?.src ||
+      uploadedProductImages[0]?.src ||
+      formData.image.trim() ||
+      "";
 
-    const updatedProducts = [
-      ...storedProducts,
-      newProduct,
-    ];
+    if (!primaryImageUrl && allImages.length === 0) {
+      setImageError("Please provide at least 1 image URL or photo.");
+      return;
+    }
 
-    localStorage.setItem(
-      PRODUCTS_STORAGE_KEY,
-      JSON.stringify(updatedProducts)
-    );
+    setImageError("");
 
-    setSaved(true);
+    try {
+      setIsSubmitting(true);
+      const allImageUrls = allImages.map((img) => img.src).filter(Boolean);
 
-    setTimeout(() => {
-      navigate("/admin/products");
-    }, 1000);
+      await createProduct({
+        name: formData.name.trim(),
+        description:
+          formData.description.trim() ||
+          formData.shortDescription.trim() ||
+          `${formData.name.trim()} from ${formData.category} category.`,
+        price: Number(formData.price),
+        category: formData.category,
+        stockQuantity: Number(formData.stock),
+        rating: 5.0,
+        imageUrl: primaryImageUrl || allImageUrls[0] || "",
+        isActive: formData.status === "Active",
+        images: allImageUrls.length > 0 ? allImageUrls : undefined,
+      });
+
+      setSaved(true);
+
+      setTimeout(() => {
+        navigate("/admin/products");
+      }, 800);
+    } catch (err: any) {
+      console.error("Unable to create product:", err);
+      setImageError(
+        err.response?.data?.message ||
+          "Failed to create product in database. Please check your inputs and try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -721,22 +700,22 @@ function AddProduct() {
 
                 <div
                   className={`nx-image-status ${
-                    totalImages === 4
+                    totalImages >= 1
                       ? "complete"
                       : ""
                   }`}
                 >
                   <i
                     className={`bi ${
-                      totalImages === 4
+                      totalImages >= 1
                         ? "bi-check-circle-fill"
                         : "bi-info-circle"
                     }`}
                   />
 
-                  {totalImages === 4
-                    ? "All 4 product images are ready."
-                    : "Add exactly 4 images using upload or URL."}
+                  {totalImages >= 1
+                    ? `${totalImages} product image${totalImages > 1 ? "s" : ""} added.`
+                    : "Add 1 to 4 images using URL or upload."}
                 </div>
               </div>
 
@@ -850,8 +829,9 @@ function AddProduct() {
           <button
             type="submit"
             className="nx-save-button"
+            disabled={isSubmitting}
           >
-            Save Product
+            {isSubmitting ? "Saving Product..." : "Save Product"}
           </button>
         </div>
       </form>

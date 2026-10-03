@@ -11,7 +11,7 @@ public static class CatalogSeeder
         string jsonFilePath)
     {
         // Do not seed again if products already exist.
-        if (await context.Products.AnyAsync())
+        if (await context.Products.AsNoTracking().AnyAsync())
         {
             return;
         }

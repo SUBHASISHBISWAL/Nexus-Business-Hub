@@ -1,4 +1,4 @@
-﻿namespace NexusBusinessHub.Application.DTOs;
+namespace NexusBusinessHub.Application.DTOs;
 
 public class ProductDto
 {
@@ -13,14 +13,24 @@ public class ProductDto
     // Main/listing image
     public string Image { get; set; } = string.Empty;
 
+    public string ImageUrl { get; set; } = string.Empty;
+
     // Four product-detail images
     public List<string> Images { get; set; } = new();
 
     public string Category { get; set; } = string.Empty;
+
+    public string CategoryName => Category;
+
+    public int? CategoryId { get; set; }
 
     public decimal Rating { get; set; }
 
     public int StockQuantity { get; set; }
 
     public bool IsActive { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
 }

@@ -3,6 +3,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
+import { getProductById } from "../../../../services/productService";
 import "./ProductDetails.css";
 
 type ProductImage = {
@@ -25,27 +26,6 @@ type StoredProduct = {
   updated: string;
 };
 
-const PRODUCTS_STORAGE_KEY =
-  "nexus_business_products";
-
-const fallbackProduct: StoredProduct = {
-  id: "1",
-  name: "Business Laptop Pro",
-  sku: "NX-LAP-001",
-  category: "Electronics",
-  price: 55000,
-  stock: 24,
-  status: "Active",
-  shortDescription:
-    "Professional business laptop for enterprise productivity.",
-  description:
-    "Business Laptop Pro is designed for professional users with reliable performance, security and productivity features.",
-  specifications:
-    "Intel Core i7\n16GB RAM\n512GB SSD\nWi-Fi 6\nWindows 11 Pro",
-  images: [],
-  updated: "10 Sep 2026",
-};
-
 function ProductDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -60,7 +40,7 @@ function ProductDetails() {
     useState(false);
 
   /* =========================
-     LOAD PRODUCT
+     LOAD PRODUCT FROM API
   ========================= */
 
   useEffect(() => {
@@ -69,66 +49,68 @@ function ProductDetails() {
       return;
     }
 
-    const storedData =
-      localStorage.getItem(
-        PRODUCTS_STORAGE_KEY
-      );
-
-    if (!storedData) {
-      /*
-       * Keep fallback product for the
-       * original demo product.
-       */
-      if (String(id) === "1") {
-        setProduct(fallbackProduct);
+    const loadData = async () => {
+      try {
         setNotFound(false);
-      } else {
-        setNotFound(true);
-      }
+        const apiProduct = await getProductById(Number(id), true);
 
-      return;
-    }
-
-    try {
-      const storedProducts: StoredProduct[] =
-        JSON.parse(storedData);
-
-      if (!Array.isArray(storedProducts)) {
-        setNotFound(true);
-        return;
-      }
-
-      const foundProduct =
-        storedProducts.find(
-          (item) =>
-            String(item.id) === String(id)
-        );
-
-      if (!foundProduct) {
-        /*
-         * Fallback for old demo route.
-         */
-        if (String(id) === "1") {
-          setProduct(fallbackProduct);
-          setNotFound(false);
-        } else {
+        if (!apiProduct) {
           setNotFound(true);
+          return;
         }
 
-        return;
+        const prodImg = apiProduct.imageUrl || apiProduct.image;
+        const imageList: ProductImage[] = [];
+
+        if (apiProduct.images && apiProduct.images.length > 0) {
+          apiProduct.images.forEach((url: string) => {
+            if (url) imageList.push({ src: url, type: "url" });
+          });
+        } else if (prodImg) {
+          imageList.push({ src: prodImg, type: "url" });
+        }
+
+        const dateStr = apiProduct.updatedAt || apiProduct.createdAt;
+        const formattedDate = dateStr
+          ? new Date(dateStr).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })
+          : "—";
+
+        setProduct({
+          id: apiProduct.id,
+          name: apiProduct.name,
+          sku: `NEX-${apiProduct.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(apiProduct.id).padStart(3, "0")}`,
+          category: apiProduct.category || "Electronics",
+          price: apiProduct.price,
+          stock: apiProduct.stockQuantity ?? 0,
+          status:
+            apiProduct.isActive === false
+              ? "Inactive"
+              : apiProduct.stockQuantity === 0
+              ? "Out of Stock"
+              : "Active",
+          shortDescription: apiProduct.description
+            ? apiProduct.description.length > 80
+              ? apiProduct.description.substring(0, 80) + "..."
+              : apiProduct.description
+            : "",
+          description: apiProduct.description || "",
+          specifications: "",
+          images: imageList,
+          updated: formattedDate,
+        });
+
+        setSelectedImage(0);
+      } catch (err) {
+        console.error("Unable to load product:", err);
+        setNotFound(true);
       }
+    };
 
-      setProduct(foundProduct);
-      setNotFound(false);
-      setSelectedImage(0);
-    } catch (error) {
-      console.error(
-        "Unable to load product:",
-        error
-      );
-
-      setNotFound(true);
-    }
+    loadData();
   }, [id]);
 
   /* =========================

@@ -7,26 +7,12 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
+import { getProductById, updateProduct } from "../../../../services/productService";
 import "./EditProduct.css";
 
 type ProductImage = {
   src: string;
   type: "upload" | "url";
-};
-
-type StoredProduct = {
-  id: string | number;
-  name: string;
-  sku: string;
-  category: string;
-  price: string | number;
-  stock: string | number;
-  status: string;
-  shortDescription?: string;
-  description?: string;
-  specifications?: string;
-  images?: ProductImage[];
-  updated: string;
 };
 
 type ProductForm = {
@@ -40,9 +26,6 @@ type ProductForm = {
   description: string;
   specifications: string;
 };
-
-const PRODUCTS_STORAGE_KEY =
-  "nexus_business_products";
 
 const TOTAL_IMAGES = 4;
 
@@ -80,12 +63,16 @@ function EditProduct() {
 
   const [saved, setSaved] =
     useState(false);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+  const [errorMessage, setErrorMessage] =
+    useState("");
 
   const [notFound, setNotFound] =
     useState(false);
 
   /* =========================
-     LOAD PRODUCT
+     LOAD PRODUCT FROM API
   ========================= */
 
   useEffect(() => {
@@ -94,73 +81,42 @@ function EditProduct() {
       return;
     }
 
-    const storedData =
-      localStorage.getItem(
-        PRODUCTS_STORAGE_KEY
-      );
+    const loadData = async () => {
+      try {
+        setNotFound(false);
+        setErrorMessage("");
 
-    if (!storedData) {
-      setNotFound(true);
-      return;
-    }
+        const product = await getProductById(Number(id), true);
 
-    try {
-      const storedProducts: StoredProduct[] =
-        JSON.parse(storedData);
+        if (!product) {
+          setNotFound(true);
+          return;
+        }
 
-      if (!Array.isArray(storedProducts)) {
-        setNotFound(true);
-        return;
-      }
+        setFormData({
+          name: product.name || "",
+          sku: `NEX-${product.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(product.id).padStart(3, "0")}`,
+          category: product.category || "Electronics",
+          price: product.price !== undefined ? String(product.price) : "",
+          stock: product.stockQuantity !== undefined ? String(product.stockQuantity) : "",
+          status: product.isActive === false ? "Inactive" : "Active",
+          shortDescription: "",
+          description: product.description || "",
+          specifications: "",
+        });
 
-      const product =
-        storedProducts.find(
-          (item) =>
-            String(item.id) === String(id)
-        );
+        const prodImg = product.imageUrl || product.image;
+        const existingImages: ProductImage[] = [];
 
-      if (!product) {
-        setNotFound(true);
-        return;
-      }
+        if (product.images && product.images.length > 0) {
+          product.images.forEach((url: string) => {
+            if (url) existingImages.push({ src: url, type: "url" });
+          });
+        } else if (prodImg) {
+          existingImages.push({ src: prodImg, type: "url" });
+        }
 
-      setNotFound(false);
-
-      setFormData({
-        name: product.name || "",
-        sku: product.sku || "",
-        category:
-          product.category || "",
-        price:
-          product.price !== undefined
-            ? String(product.price)
-            : "",
-        stock:
-          product.stock !== undefined
-            ? String(product.stock)
-            : "",
-        status:
-          product.status || "Active",
-        shortDescription:
-          product.shortDescription || "",
-        description:
-          product.description || "",
-        specifications:
-          product.specifications || "",
-      });
-
-      /*
-       * Always create exactly 4 image slots.
-       * Existing images are loaded into their
-       * respective slots.
-       */
-      const existingImages =
-        Array.isArray(product.images)
-          ? product.images
-          : [];
-
-      const fourImages =
-        Array.from(
+        const fourImages = Array.from(
           { length: TOTAL_IMAGES },
           (_, index) =>
             existingImages[index] || {
@@ -169,15 +125,14 @@ function EditProduct() {
             }
         );
 
-      setImages(fourImages);
-    } catch (error) {
-      console.error(
-        "Unable to load product:",
-        error
-      );
+        setImages(fourImages);
+      } catch (error) {
+        console.error("Unable to load product:", error);
+        setNotFound(true);
+      }
+    };
 
-      setNotFound(true);
-    }
+    loadData();
   }, [id]);
 
   /* =========================
@@ -298,123 +253,73 @@ function EditProduct() {
      SUBMIT
   ========================= */
 
-  const handleSubmit = (
+  const handleSubmit = async (
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
 
     if (!id) {
-      alert(
-        "Product ID is missing."
-      );
+      alert("Product ID is missing.");
       return;
     }
 
-    if (images.length !== TOTAL_IMAGES) {
-      alert(
-        "Please keep exactly 4 product image slots."
-      );
+    if (!formData.name.trim()) {
+      alert("Product Name is required.");
       return;
     }
 
-    const missingImages =
-      images.some(
-        (image) =>
-          !image.src.trim()
-      );
-
-    if (missingImages) {
-      alert(
-        "Please add an image to all 4 image slots."
-      );
+    if (!formData.category) {
+      alert("Please select a Category.");
       return;
     }
 
-    const storedData =
-      localStorage.getItem(
-        PRODUCTS_STORAGE_KEY
-      );
-
-    if (!storedData) {
-      alert(
-        "Product data could not be found."
-      );
+    if (!formData.price || Number(formData.price) < 0) {
+      alert("Please enter a valid price.");
       return;
     }
+
+    if (!formData.stock || Number(formData.stock) < 0) {
+      alert("Please enter a valid stock quantity.");
+      return;
+    }
+
+    const validImages = images
+      .map((image) => image.src.trim())
+      .filter(Boolean);
+
+    const primaryImageUrl = validImages[0] || "";
 
     try {
-      const storedProducts: StoredProduct[] =
-        JSON.parse(storedData);
+      setIsSubmitting(true);
+      setErrorMessage("");
 
-      const productExists =
-        storedProducts.some(
-          (product) =>
-            String(product.id) ===
-            String(id)
-        );
-
-      if (!productExists) {
-        alert(
-          "Product could not be found."
-        );
-        return;
-      }
-
-      const updatedProducts =
-        storedProducts.map(
-          (product) => {
-            if (
-              String(product.id) !==
-              String(id)
-            ) {
-              return product;
-            }
-
-            return {
-              ...product,
-              ...formData,
-              price: formData.price,
-              stock: formData.stock,
-              images: images.map(
-                (image) => ({
-                  src: image.src.trim(),
-                  type: image.type,
-                })
-              ),
-              updated:
-                new Date().toLocaleDateString(
-                  "en-GB",
-                  {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  }
-                ),
-            };
-          }
-        );
-
-      localStorage.setItem(
-        PRODUCTS_STORAGE_KEY,
-        JSON.stringify(
-          updatedProducts
-        )
-      );
+      await updateProduct(Number(id), {
+        name: formData.name.trim(),
+        description:
+          formData.description.trim() ||
+          formData.shortDescription.trim() ||
+          `${formData.name.trim()} from ${formData.category} category.`,
+        price: Number(formData.price),
+        category: formData.category,
+        stockQuantity: Number(formData.stock),
+        imageUrl: primaryImageUrl,
+        isActive: formData.status === "Active",
+        images: validImages.length > 0 ? validImages : undefined,
+      });
 
       setSaved(true);
 
       window.setTimeout(() => {
         navigate("/admin/products");
-      }, 1000);
-    } catch (error) {
-      console.error(
-        "Unable to update product:",
-        error
+      }, 800);
+    } catch (error: any) {
+      console.error("Unable to update product:", error);
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Something went wrong while updating the product. Please try again."
       );
-
-      alert(
-        "Something went wrong while updating the product."
-      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -515,6 +420,12 @@ function EditProduct() {
         className="nx-edit-form"
         onSubmit={handleSubmit}
       >
+        {errorMessage && (
+          <div className="alert alert-danger" role="alert" style={{ marginBottom: "1.5rem" }}>
+            <i className="bi bi-exclamation-triangle me-2"></i>
+            {errorMessage}
+          </div>
+        )}
 
         <div className="nx-edit-grid">
 
@@ -1029,11 +940,12 @@ function EditProduct() {
           <button
             type="submit"
             className="nx-edit-save"
+            disabled={isSubmitting}
           >
 
             <i className="bi bi-check-lg" />
 
-            Save Changes
+            {isSubmitting ? "Saving Changes..." : "Save Changes"}
 
           </button>
 

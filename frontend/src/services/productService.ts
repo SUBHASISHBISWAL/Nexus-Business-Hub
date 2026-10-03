@@ -13,6 +13,9 @@ export interface ProductQueryParams {
   minRating?: number;
   sortBy?: string;
   all?: boolean;
+  includeInactive?: boolean;
+  isActive?: boolean;
+  status?: string;
 }
 
 export interface PagedProductResult {
@@ -22,6 +25,42 @@ export interface PagedProductResult {
   totalItems: number;
   totalPages: number;
   categoryCounts?: Record<string, number>;
+  activeCount?: number;
+  outOfStockCount?: number;
+  draftCount?: number;
+}
+
+export interface CreateProductInput {
+  name: string;
+  description?: string;
+  price: number;
+  category: string;
+  categoryId?: number;
+  stockQuantity: number;
+  rating?: number;
+  imageUrl?: string;
+  isActive?: boolean;
+  images?: string[];
+}
+
+export interface UpdateProductInput {
+  name: string;
+  description?: string;
+  price: number;
+  category: string;
+  categoryId?: number;
+  stockQuantity: number;
+  rating?: number;
+  imageUrl?: string;
+  isActive?: boolean;
+  images?: string[];
+}
+
+export interface CategoryDto {
+  id: number;
+  name: string;
+  description?: string;
+  productCount?: number;
 }
 
 export const getProducts = async (
@@ -31,7 +70,36 @@ export const getProducts = async (
   return response.data;
 };
 
-export const getProductById = async (id: number): Promise<Product> => {
-  const response = await axios.get<Product>(`${API_URL}/${id}`);
+export const getProductById = async (
+  id: number,
+  includeInactive: boolean = false
+): Promise<Product> => {
+  const response = await axios.get<Product>(`${API_URL}/${id}`, {
+    params: includeInactive ? { includeInactive: true } : undefined,
+  });
+  return response.data;
+};
+
+export const createProduct = async (
+  data: CreateProductInput
+): Promise<Product> => {
+  const response = await axios.post<Product>(API_URL, data);
+  return response.data;
+};
+
+export const updateProduct = async (
+  id: number,
+  data: UpdateProductInput
+): Promise<Product> => {
+  const response = await axios.put<Product>(`${API_URL}/${id}`, data);
+  return response.data;
+};
+
+export const deleteProduct = async (id: number): Promise<void> => {
+  await axios.delete(`${API_URL}/${id}`);
+};
+
+export const getCategories = async (): Promise<CategoryDto[]> => {
+  const response = await axios.get<CategoryDto[]>(`${API_URL}/categories`);
   return response.data;
 };

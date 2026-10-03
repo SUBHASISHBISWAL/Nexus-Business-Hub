@@ -272,6 +272,10 @@ function ProductDetails() {
                     src={activeImage}
                     alt={`${product.name} ${currentImage + 1}`}
                     className="nx-details-image"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src =
+                        "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
+                    }}
                   />
                 ) : (
                   <div className="nx-image-placeholder">
@@ -350,6 +354,10 @@ function ProductDetails() {
                           index + 1
                         }`}
                         className="nx-thumbnail-image"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
+                        }}
                       />
                     </button>
                   ))}
@@ -854,6 +862,10 @@ function ProductDetails() {
               src={activeImage}
               alt={`${product.name} ${currentImage + 1}`}
               className="nx-viewer-image"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src =
+                  "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
+              }}
             />
 
             {productImages.length > 1 && (

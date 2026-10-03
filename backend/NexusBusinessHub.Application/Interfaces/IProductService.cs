@@ -1,10 +1,20 @@
-﻿using NexusBusinessHub.Application.DTOs;
+using NexusBusinessHub.Application.DTOs;
 
 namespace NexusBusinessHub.Application.Interfaces;
 
 public interface IProductService
 {
-    Task<IEnumerable<ProductDto>> GetAllAsync();
+    Task<PagedResult<ProductDto>> GetPagedAsync(ProductQueryParameters parameters);
 
-    Task<ProductDto?> GetByIdAsync(int id);
+    Task<IEnumerable<ProductDto>> GetAllAsync(bool includeInactive = false);
+
+    Task<ProductDto?> GetByIdAsync(int id, bool includeInactive = false);
+
+    Task<ProductDto> CreateAsync(CreateProductDto dto);
+
+    Task<ProductDto?> UpdateAsync(int id, UpdateProductDto dto);
+
+    Task<bool> DeleteAsync(int id);
+
+    Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
 }

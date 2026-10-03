@@ -33,11 +33,15 @@ public static class ProductMapping
             Description = product.Description,
             Price = product.Price,
             Image = primaryImage,
+            ImageUrl = primaryImage,
             Images = imageList,
             Category = product.Category?.Name ?? string.Empty,
+            CategoryId = product.CategoryId,
             Rating = product.Rating,
             StockQuantity = product.StockQuantity,
-            IsActive = product.IsActive
+            IsActive = product.IsActive,
+            CreatedAt = product.CreatedAt,
+            UpdatedAt = product.UpdatedAt
         };
     }
 }

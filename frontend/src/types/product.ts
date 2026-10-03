@@ -22,14 +22,22 @@ export interface Product {
 
   image: string;
 
+  imageUrl?: string;
+
   // Multiple product view images from backend API
   images?: string[];
 
   description?: string;
 
+  categoryId?: number;
+
   stockQuantity?: number;
 
   isActive?: boolean;
+
+  createdAt?: string;
+
+  updatedAt?: string;
 
   group?: string;
 

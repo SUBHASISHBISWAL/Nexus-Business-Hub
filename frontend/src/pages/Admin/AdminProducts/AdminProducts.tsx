@@ -1,14 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AdminTableSkeleton } from "../../../components/skeleton";
 import { ErrorState } from "../../../components/common/ErrorState";
-import { getProducts } from "../../../services/productService";
+import {
+  deleteProduct as apiDeleteProduct,
+  getCategories,
+  getProducts,
+} from "../../../services/productService";
 import { useInitialLoading } from "../../../context/InitialLoadingContext";
 
 import "./AdminProducts.css";
 
-const PRODUCTS_STORAGE_KEY = "nexus_business_products";
 const ITEMS_PER_PAGE = 8;
 
 type ProductStatus =
@@ -37,446 +40,267 @@ type Product = {
   images?: ProductImage[];
 };
 
-const initialProducts: Product[] = [
-  {
-    id: 1,
-    name: "Business Laptop Pro",
-    sku: "NX-LAP-001",
-    category: "Electronics",
-    price: 55000,
-    stock: 24,
-    status: "Active",
-    updated: "10 Sep 2026",
-    images: [],
-  },
-  {
-    id: 2,
-    name: "Enterprise Smartphone",
-    sku: "NX-PHN-002",
-    category: "Electronics",
-    price: 25000,
-    stock: 36,
-    status: "Active",
-    updated: "10 Sep 2026",
-    images: [],
-  },
-  {
-    id: 3,
-    name: "Ergonomic Office Chair",
-    sku: "NX-CHR-003",
-    category: "Hardware",
-    price: 8000,
-    stock: 18,
-    status: "Active",
-    updated: "09 Sep 2026",
-    images: [],
-  },
-  {
-    id: 4,
-    name: "Mechanical Keyboard",
-    sku: "NX-KBD-004",
-    category: "Accessories",
-    price: 1500,
-    stock: 42,
-    status: "Active",
-    updated: "08 Sep 2026",
-    images: [],
-  },
-  {
-    id: 5,
-    name: "Wireless Mouse Pro",
-    sku: "NX-MOU-005",
-    category: "Accessories",
-    price: 1200,
-    stock: 55,
-    status: "Active",
-    updated: "08 Sep 2026",
-    images: [],
-  },
-  {
-    id: 6,
-    name: "24 Inch Business Monitor",
-    sku: "NX-MON-006",
-    category: "Electronics",
-    price: 14500,
-    stock: 20,
-    status: "Active",
-    updated: "07 Sep 2026",
-    images: [],
-  },
-  {
-    id: 7,
-    name: "USB-C Docking Station",
-    sku: "NX-DCK-007",
-    category: "Accessories",
-    price: 6500,
-    stock: 15,
-    status: "Active",
-    updated: "07 Sep 2026",
-    images: [],
-  },
-  {
-    id: 8,
-    name: "Enterprise Wi-Fi Router",
-    sku: "NX-RTR-008",
-    category: "Hardware",
-    price: 7200,
-    stock: 12,
-    status: "Active",
-    updated: "06 Sep 2026",
-    images: [],
-  },
-  {
-    id: 9,
-    name: "Business Antivirus License",
-    sku: "NX-AV-009",
-    category: "Software",
-    price: 3200,
-    stock: 100,
-    status: "Active",
-    updated: "06 Sep 2026",
-    images: [],
-  },
-  {
-    id: 10,
-    name: "Cloud Backup License",
-    sku: "NX-CLD-010",
-    category: "Software",
-    price: 4500,
-    stock: 75,
-    status: "Active",
-    updated: "05 Sep 2026",
-    images: [],
-  },
-  {
-    id: 11,
-    name: "Office Productivity Suite",
-    sku: "NX-OFF-011",
-    category: "Software",
-    price: 6800,
-    stock: 48,
-    status: "Active",
-    updated: "05 Sep 2026",
-    images: [],
-  },
-  {
-    id: 12,
-    name: "Enterprise SSD 1TB",
-    sku: "NX-SSD-012",
-    category: "Hardware",
-    price: 8900,
-    stock: 10,
-    status: "Active",
-    updated: "04 Sep 2026",
-    images: [],
-  },
-  {
-    id: 13,
-    name: "Network Security Firewall",
-    sku: "NX-FWL-013",
-    category: "Hardware",
-    price: 18500,
-    stock: 6,
-    status: "Draft",
-    updated: "03 Sep 2026",
-    images: [],
-  },
-  {
-    id: 14,
-    name: "Project Management Software",
-    sku: "NX-PMS-014",
-    category: "Software",
-    price: 5600,
-    stock: 0,
-    status: "Out of Stock",
-    updated: "02 Sep 2026",
-    images: [],
-  },
-];
-
 function AdminProducts() {
   const navigate = useNavigate();
   const { markAppReady } = useInitialLoading();
 
-  const [products, setProducts] =
-    useState<Product[]>(initialProducts);
-
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] =
-    useState("All Categories");
-  const [statusFilter, setStatusFilter] =
-    useState("All Status");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All Categories");
+  const [statusFilter, setStatusFilter] = useState("All Status");
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
-  const [deleteProduct, setDeleteProduct] =
-    useState<Product | null>(null);
+  const [summary, setSummary] = useState({
+    total: 0,
+    active: 0,
+    draft: 0,
+    outOfStock: 0,
+  });
 
-  const [deleteSuccess, setDeleteSuccess] =
-    useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
 
-  /*
-   * LOAD PRODUCTS
-   *
-   * Priority:
-   * 1. LocalStorage products
-   * 2. Backend API products
-   * 3. Initial demo products
-   */
-  const loadProducts = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
-      const storedProducts =
-        localStorage.getItem(PRODUCTS_STORAGE_KEY);
-
-      if (storedProducts) {
-        try {
-          const parsedProducts: Product[] =
-            JSON.parse(storedProducts);
-
-          if (
-            Array.isArray(parsedProducts) &&
-            parsedProducts.length > 0
-          ) {
-            setProducts(parsedProducts);
-            setLoading(false);
-            markAppReady();
-            return;
-          }
-        } catch (storageError) {
-          console.error(
-            "Unable to parse local products:",
-            storageError
-          );
-        }
-      }
-
-      const apiData = await getProducts({ all: true, pageSize: 1000 });
-      const productList = Array.isArray(apiData) ? apiData : apiData?.items ?? [];
-
-      if (productList.length > 0) {
-        const mappedProducts: Product[] =
-          productList.map((product) => ({
-            id: product.id,
-            name: product.name,
-            sku: `NEX-${
-              product.category?.substring(0, 3).toUpperCase() ||
-              "GEN"
-            }-${String(product.id).padStart(3, "0")}`,
-            category: product.category || "Electronics",
-            price: Number(product.price) || 0,
-            stock: product.stockQuantity ?? 25,
-            status:
-              product.isActive === false
-                ? "Inactive"
-                : "Active",
-            updated: "22 Sep 2026",
-            images: [],
-          }));
-
-        setProducts(mappedProducts);
-
-        localStorage.setItem(
-          PRODUCTS_STORAGE_KEY,
-          JSON.stringify(mappedProducts)
-        );
-      } else {
-        setProducts(initialProducts);
-      }
-    } catch (err) {
-      console.error(
-        "Failed to load admin products:",
-        err
-      );
-
-      setError(
-        "Unable to load products right now. Please try again."
-      );
-
-      setProducts(initialProducts);
-    } finally {
-      setLoading(false);
-      markAppReady();
-    }
-  };
-
+  // Debounce search input
   useEffect(() => {
-    loadProducts();
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  // Load all categories on mount for the category dropdown
+  useEffect(() => {
+    let isMounted = true;
+    getCategories()
+      .then((cats) => {
+        if (isMounted && Array.isArray(cats)) {
+          setCategories(cats.map((c) => c.name));
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load categories:", err);
+      });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   /*
-   * SAVE PRODUCTS
+   * LOAD PRODUCTS FROM SQL SERVER API WITH SERVER-SIDE PAGINATION
    */
+  const loadProducts = useCallback(
+    async (
+      pageToLoad: number,
+      searchVal = debouncedSearch,
+      categoryVal = categoryFilter,
+      statusVal = statusFilter
+    ) => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const apiData = await getProducts({
+          page: pageToLoad,
+          pageSize: ITEMS_PER_PAGE,
+          includeInactive: true,
+          sortBy: "newest",
+          search: searchVal.trim() || undefined,
+          category: categoryVal !== "All Categories" ? categoryVal : undefined,
+          status: statusVal !== "All Status" ? statusVal : undefined,
+        });
+
+        const productList = Array.isArray(apiData)
+          ? apiData
+          : apiData?.items ?? [];
+
+        const mappedProducts: Product[] = productList.map((product) => {
+          const prodImg = product.imageUrl || product.image;
+          const imagesList: ProductImage[] = [];
+          if (product.images && product.images.length > 0) {
+            product.images.forEach((img: string) =>
+              imagesList.push({ src: img, type: "url" })
+            );
+          } else if (prodImg) {
+            imagesList.push({ src: prodImg, type: "url" });
+          }
+
+          let status: ProductStatus = "Active";
+          if (product.isActive === false) {
+            status = "Inactive";
+          } else if (product.stockQuantity === 0) {
+            status = "Out of Stock";
+          }
+
+          const dateStr = product.updatedAt || product.createdAt;
+          const formattedDate = dateStr
+            ? new Date(dateStr).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })
+            : "—";
+
+          return {
+            id: product.id,
+            name: product.name,
+            sku: `NEX-${product.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(product.id).padStart(3, "0")}`,
+            category: product.category || "Electronics",
+            price: Number(product.price) || 0,
+            stock: product.stockQuantity ?? 0,
+            status,
+            updated: formattedDate,
+            shortDescription: product.description
+              ? product.description.length > 50
+                ? product.description.substring(0, 50) + "..."
+                : product.description
+              : "",
+            description: product.description || "",
+            images: imagesList,
+          };
+        });
+
+        setProducts(mappedProducts);
+
+        const total = apiData?.totalItems ?? mappedProducts.length;
+        const totalP =
+          apiData?.totalPages ??
+          Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+
+        setTotalItems(total);
+        setTotalPages(Math.max(1, totalP));
+
+        if (apiData?.categoryCounts) {
+          const keys = Object.keys(apiData.categoryCounts);
+          if (keys.length > 0) {
+            setCategories((prev) => (prev.length > 0 ? prev : keys));
+          }
+        }
+
+        setSummary({
+          total: total,
+          active:
+            apiData?.activeCount ??
+            (statusVal === "Active" ? total : 0),
+          draft: apiData?.draftCount ?? 0,
+          outOfStock:
+            apiData?.outOfStockCount ??
+            (statusVal === "Out of Stock" ? total : 0),
+        });
+
+        return {
+          items: mappedProducts,
+          totalItems: total,
+          totalPages: totalP,
+        };
+      } catch (err) {
+        console.error("Failed to load admin products:", err);
+        setError("Unable to load products right now. Please try again.");
+        setProducts([]);
+        return null;
+      } finally {
+        setLoading(false);
+        markAppReady();
+      }
+    },
+    [debouncedSearch, categoryFilter, statusFilter, markAppReady]
+  );
+
   useEffect(() => {
-    if (!loading) {
-      localStorage.setItem(
-        PRODUCTS_STORAGE_KEY,
-        JSON.stringify(products)
-      );
+    loadProducts(currentPage);
+  }, [currentPage, debouncedSearch, categoryFilter, statusFilter, loadProducts]);
+
+  /*
+   * COMPACT PAGINATION PAGES
+   */
+  const paginationPages = useMemo(() => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, index) => index + 1);
     }
-  }, [products, loading]);
+
+    const pages: (number | "ellipsis")[] = [];
+
+    if (currentPage <= 4) {
+      const startEnd = Math.max(currentPage + 1, 3);
+      for (let i = 1; i <= startEnd; i++) {
+        pages.push(i);
+      }
+      pages.push("ellipsis");
+      pages.push(totalPages - 1);
+      pages.push(totalPages);
+    } else if (currentPage >= totalPages - 3) {
+      pages.push(1);
+      pages.push(2);
+      pages.push("ellipsis");
+      const endStart = Math.min(currentPage - 1, totalPages - 2);
+      for (let i = endStart; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+      pages.push("ellipsis");
+      pages.push(currentPage - 1);
+      pages.push(currentPage);
+      pages.push(currentPage + 1);
+      pages.push("ellipsis");
+      pages.push(totalPages);
+    }
+
+    return pages;
+  }, [currentPage, totalPages]);
 
   /*
-   * CATEGORIES
+   * SUMMARY ALIASES FOR UI CARDS
    */
-  const categories = useMemo(() => {
-    const categorySet = new Set(
-      products
-        .map((product) => product.category)
-        .filter(Boolean)
-    );
-
-    return Array.from(categorySet);
-  }, [products]);
-
-  /*
-   * FILTER PRODUCTS
-   */
-  const filteredProducts = useMemo(() => {
-    const searchValue =
-      search.trim().toLowerCase();
-
-    return products.filter((product) => {
-      const matchesSearch =
-        !searchValue ||
-        product.name
-          .toLowerCase()
-          .includes(searchValue) ||
-        product.sku
-          .toLowerCase()
-          .includes(searchValue) ||
-        product.category
-          .toLowerCase()
-          .includes(searchValue);
-
-      const matchesCategory =
-        categoryFilter === "All Categories" ||
-        product.category === categoryFilter;
-
-      const matchesStatus =
-        statusFilter === "All Status" ||
-        product.status === statusFilter;
-
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesStatus
-      );
-    });
-  }, [
-    products,
-    search,
-    categoryFilter,
-    statusFilter,
-  ]);
-
-  /*
-   * PAGINATION
-   */
-  const totalPages = Math.max(
-    1,
-    Math.ceil(
-      filteredProducts.length / ITEMS_PER_PAGE
-    )
-  );
-
-  const safeCurrentPage = Math.min(
-    currentPage,
-    totalPages
-  );
-
-  const startIndex =
-    (safeCurrentPage - 1) *
-    ITEMS_PER_PAGE;
-
-  const endIndex =
-    startIndex + ITEMS_PER_PAGE;
-
-  const paginatedProducts =
-    filteredProducts.slice(
-      startIndex,
-      endIndex
-    );
-
-  /*
-   * SUMMARY
-   */
-  const totalProducts = products.length;
-
-  const activeProducts =
-    products.filter(
-      (product) =>
-        product.status === "Active"
-    ).length;
-
-  const outOfStockProducts =
-    products.filter(
-      (product) =>
-        product.status === "Out of Stock" ||
-        product.stock === 0
-    ).length;
-
-  const draftProducts =
-    products.filter(
-      (product) =>
-        product.status === "Draft"
-    ).length;
+  const totalProducts = summary.total;
+  const activeProducts = summary.active;
+  const outOfStockProducts = summary.outOfStock;
+  const draftProducts = summary.draft;
 
   /*
    * HANDLERS
    */
-  const handleSearchChange = (
-    value: string
-  ) => {
+  const handleSearchChange = (value: string) => {
     setSearch(value);
     setCurrentPage(1);
   };
 
-  const handleCategoryChange = (
-    value: string
-  ) => {
+  const handleCategoryChange = (value: string) => {
     setCategoryFilter(value);
     setCurrentPage(1);
   };
 
-  const handleStatusChange = (
-    value: string
-  ) => {
+  const handleStatusChange = (value: string) => {
     setStatusFilter(value);
     setCurrentPage(1);
   };
 
   const handleClearFilters = () => {
     setSearch("");
+    setDebouncedSearch("");
     setCategoryFilter("All Categories");
     setStatusFilter("All Status");
     setCurrentPage(1);
   };
 
-  const handleViewProduct = (
-    productId: string | number
-  ) => {
-    navigate(
-      `/admin/products/${productId}`
-    );
+  const handleViewProduct = (productId: string | number) => {
+    navigate(`/admin/products/${productId}`);
   };
 
-  const handleEditProduct = (
-    productId: string | number
-  ) => {
-    navigate(
-      `/admin/products/${productId}/edit`
-    );
+  const handleEditProduct = (productId: string | number) => {
+    navigate(`/admin/products/${productId}/edit`);
   };
 
-  const handleDeleteClick = (
-    product: Product
-  ) => {
+  const handleDeleteClick = (product: Product) => {
     setDeleteProduct(product);
   };
 
@@ -484,51 +308,36 @@ function AdminProducts() {
     setDeleteProduct(null);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!deleteProduct) {
       return;
     }
 
-    const updatedProducts =
-      products.filter(
-        (product) =>
-          String(product.id) !==
-          String(deleteProduct.id)
-      );
+    try {
+      setDeleteLoading(true);
+      await apiDeleteProduct(Number(deleteProduct.id));
+      setDeleteProduct(null);
+      setDeleteSuccess(true);
 
-    setProducts(updatedProducts);
+      // Re-fetch current page
+      const result = await loadProducts(currentPage);
+      // If current page becomes empty and currentPage > 1, move to previous page
+      if (result && result.items.length === 0 && currentPage > 1) {
+        setCurrentPage((previous) => previous - 1);
+      }
 
-    localStorage.setItem(
-      PRODUCTS_STORAGE_KEY,
-      JSON.stringify(updatedProducts)
-    );
-
-    setDeleteProduct(null);
-    setDeleteSuccess(true);
-
-    const newTotalPages = Math.max(
-      1,
-      Math.ceil(
-        updatedProducts.length /
-          ITEMS_PER_PAGE
-      )
-    );
-
-    setCurrentPage((previousPage) =>
-      Math.min(
-        previousPage,
-        newTotalPages
-      )
-    );
-
-    window.setTimeout(() => {
-      setDeleteSuccess(false);
-    }, 2500);
+      window.setTimeout(() => {
+        setDeleteSuccess(false);
+      }, 2500);
+    } catch (err) {
+      console.error("Failed to delete product:", err);
+      alert("Failed to delete product. Please try again.");
+    } finally {
+      setDeleteLoading(false);
+    }
   };
 
-  const getStatusClass = (
-    status: ProductStatus
-  ) => {
+  const getStatusClass = (status: ProductStatus) => {
     switch (status) {
       case "Active":
         return "active";
@@ -547,22 +356,12 @@ function AdminProducts() {
     }
   };
 
-  const pageNumbers = Array.from(
-    { length: totalPages },
-    (_, index) => index + 1
-  );
-
-  const formatPrice = (
-    price: number
-  ) => {
-    return new Intl.NumberFormat(
-      "en-IN",
-      {
-        style: "currency",
-        currency: "INR",
-        maximumFractionDigits: 0,
-      }
-    ).format(price);
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(price);
   };
 
   return (
@@ -764,16 +563,16 @@ function AdminProducts() {
         <div className="nx-admin-result-info">
           <span>
             Showing{" "}
-            {filteredProducts.length === 0
+            {totalItems === 0
               ? 0
-              : startIndex + 1}
+              : (currentPage - 1) * ITEMS_PER_PAGE + 1}
             -
             {Math.min(
-              endIndex,
-              filteredProducts.length
+              currentPage * ITEMS_PER_PAGE,
+              totalItems
             )}{" "}
             of{" "}
-            {filteredProducts.length}{" "}
+            {totalItems}{" "}
             products
           </span>
         </div>
@@ -783,7 +582,7 @@ function AdminProducts() {
           <ErrorState
             title="Unable to load content"
             message={error}
-            onRetry={loadProducts}
+            onRetry={() => loadProducts(currentPage)}
           />
         )}
 
@@ -811,9 +610,9 @@ function AdminProducts() {
                   columns={8}
                   rows={ITEMS_PER_PAGE}
                 />
-              ) : paginatedProducts.length >
+              ) : products.length >
                 0 ? (
-                paginatedProducts.map(
+                products.map(
                   (product) => (
                     <tr
                       key={product.id}
@@ -832,6 +631,10 @@ function AdminProducts() {
                                 alt={
                                   product.name
                                 }
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=200&auto=format&fit=crop&q=60";
+                                }}
                               />
                             ) : (
                               <i className="bi bi-box-seam" />
@@ -1000,71 +803,65 @@ function AdminProducts() {
 
         {/* PAGINATION */}
         {!loading &&
-          filteredProducts.length > 0 &&
+          products.length > 0 &&
           totalPages > 1 && (
             <div className="nx-admin-pagination">
               <button
                 type="button"
                 className="nx-admin-pagination-button"
-                disabled={
-                  safeCurrentPage === 1
-                }
+                disabled={currentPage <= 1}
                 onClick={() =>
-                  setCurrentPage(
-                    (previous) =>
-                      Math.max(
-                        1,
-                        previous - 1
-                      )
+                  setCurrentPage((previous) =>
+                    Math.max(1, previous - 1)
                   )
                 }
                 aria-label="Previous page"
               >
                 <i className="bi bi-chevron-left" />
+                <span>Previous</span>
               </button>
 
               <div className="nx-admin-page-numbers">
-                {pageNumbers.map(
-                  (page) => (
+                {paginationPages.map((page, index) => {
+                  if (page === "ellipsis") {
+                    return (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="nx-admin-pagination-ellipsis"
+                        aria-hidden="true"
+                      >
+                        …
+                      </span>
+                    );
+                  }
+
+                  return (
                     <button
                       key={page}
                       type="button"
                       className={`nx-admin-page-number ${
-                        safeCurrentPage ===
-                        page
-                          ? "active"
-                          : ""
+                        currentPage === page ? "active" : ""
                       }`}
-                      onClick={() =>
-                        setCurrentPage(
-                          page
-                        )
-                      }
+                      onClick={() => setCurrentPage(page)}
                     >
                       {page}
                     </button>
-                  )
-                )}
+                  );
+                })}
               </div>
 
               <button
                 type="button"
                 className="nx-admin-pagination-button"
-                disabled={
-                  safeCurrentPage ===
-                  totalPages
-                }
+                disabled={currentPage >= totalPages}
                 onClick={() =>
-                  setCurrentPage(
-                    (previous) =>
-                      Math.min(
-                        totalPages,
-                        previous + 1
-                      )
+                  setCurrentPage((previous) =>
+                    Math.min(totalPages, previous + 1)
                   )
                 }
                 aria-label="Next page"
               >
+                <span>Next</span>
                 <i className="bi bi-chevron-right" />
               </button>
             </div>
@@ -1117,8 +914,11 @@ function AdminProducts() {
                 onClick={
                   handleDeleteConfirm
                 }
+                disabled={deleteLoading}
               >
-                Delete Product
+                {deleteLoading
+                  ? "Deleting..."
+                  : "Delete Product"}
               </button>
             </div>
           </div>

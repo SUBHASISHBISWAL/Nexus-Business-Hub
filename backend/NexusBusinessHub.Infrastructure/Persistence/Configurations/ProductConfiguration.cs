@@ -34,5 +34,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .WithOne(i => i.Product)
             .HasForeignKey(i => i.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(p => new { p.IsActive, p.CategoryId })
+            .IncludeProperties(p => new { p.Name, p.Price, p.ImageUrl, p.Rating, p.StockQuantity });
     }
 }

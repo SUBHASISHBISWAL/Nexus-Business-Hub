@@ -8,6 +8,9 @@ type ProductCardProps = {
   onToggleWishlist: () => void;
 };
 
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
+
 function ProductCard({
   product,
   onAddToCart,
@@ -46,8 +49,11 @@ function ProductCard({
         {/* Product Image */}
         <div className="nx-device-glyph">
           <img
-            src={product.image}
+            src={product.image || product.imageUrl || FALLBACK_IMAGE}
             alt={product.name}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
+            }}
           />
         </div>
 
