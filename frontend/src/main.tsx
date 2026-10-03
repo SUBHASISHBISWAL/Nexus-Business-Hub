@@ -7,6 +7,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.css";
 import "./styles/skeleton.css";
+import "./styles/theme.css";
 import "@fontsource/material-symbols-outlined";
 import App from "./App";
 

@@ -33,6 +33,8 @@ export interface Product {
 
   stockQuantity?: number;
 
+  quantity?: number;
+
   isActive?: boolean;
 
   createdAt?: string;

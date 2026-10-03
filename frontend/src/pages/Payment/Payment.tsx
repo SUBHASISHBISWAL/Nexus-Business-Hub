@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { createOrder } from "../../services/orderService";
 import { processPayment } from "../../services/paymentService";
+import { resolveProductImage, handleImageError } from "../../utils/productImage";
 import "./Payment.css";
 
 type PaymentMethod =
@@ -144,7 +145,7 @@ function Payment() {
 
     return cart.reduce(
       (total, product) =>
-        total + product.price,
+        total + product.price * (product.quantity ?? 1),
       0
     );
   }, [checkoutData, cart]);
@@ -282,31 +283,7 @@ function Payment() {
     return "Other";
   };
 
-  // =========================================================
-  // IMAGE
-  // =========================================================
 
-  const getProductImage = (
-    product: typeof cart[number]
-  ) => {
-    const image =
-      (product as typeof product & {
-        image?: string;
-      }).image;
-
-    if (image) {
-      if (image.startsWith("/src/")) {
-        return image;
-      }
-
-      return `/src/assets/product-images/${image}`;
-    }
-
-    const imageNumber =
-      ((product.id - 1) % 16) + 1;
-
-    return `/src/assets/product-images/product${imageNumber}.jpg`;
-  };
 
   // =========================================================
   // CREATE ORDER + PROCESS PAYMENT
@@ -387,16 +364,12 @@ function Payment() {
             product.name,
 
           productImage:
-            getProductImage(product)
-              .replace(
-                "/src/assets/product-images/",
-                ""
-              ),
+            resolveProductImage(product),
 
           unitPrice:
             product.price,
 
-          quantity: 1,
+          quantity: product.quantity ?? 1,
         })),
       };
 
@@ -1113,10 +1086,10 @@ function Payment() {
                     <div className="nx-payment-item-image">
 
                       <img
-                        src={getProductImage(
-                          product
-                        )}
+                        src={resolveProductImage(product)}
                         alt={product.name}
+                        onError={handleImageError}
+                        loading="lazy"
                       />
 
                     </div>
@@ -1128,14 +1101,14 @@ function Payment() {
                       </strong>
 
                       <span>
-                        Qty: 1
+                        Qty: {product.quantity ?? 1}
                       </span>
 
                     </div>
 
                     <strong>
                       {formatPrice(
-                        product.price
+                        product.price * (product.quantity ?? 1)
                       )}
                     </strong>
 

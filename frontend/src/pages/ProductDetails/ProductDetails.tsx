@@ -1,6 +1,7 @@
 import {
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -16,6 +17,10 @@ import { getProductById } from "../../services/productService";
 import { ProductDetailsSkeleton } from "../../components/skeleton";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import type { Product } from "../../types/product";
+import {
+  handleImageError,
+  resolveProductImages,
+} from "../../utils/productImage";
 
 import "./ProductDetails.css";
 
@@ -75,12 +80,10 @@ function ProductDetails() {
     loadProduct();
   }, [id]);
 
-  const productImages: string[] =
-    product?.images && product.images.length > 0
-      ? product.images
-      : product?.image
-      ? [product.image]
-      : [];
+  const productImages: string[] = useMemo(
+    () => resolveProductImages(product),
+    [product]
+  );
 
   const handlePreviousImage = () => {
     if (productImages.length <= 1) return;
@@ -139,29 +142,32 @@ function ProductDetails() {
     };
   }, [isImageViewerOpen, productImages.length]);
 
+  const isInStock =
+    product?.isActive !== false &&
+    (product?.stockQuantity === undefined ||
+      product.stockQuantity > 0);
+
   const decreaseQuantity = () => {
     setQuantity((previous) => Math.max(1, previous - 1));
   };
 
   const increaseQuantity = () => {
-    setQuantity((previous) => previous + 1);
+    setQuantity((previous) => {
+      if (product?.stockQuantity !== undefined) {
+        return Math.min(previous + 1, product.stockQuantity);
+      }
+      return previous + 1;
+    });
   };
 
   const handleAddToCart = () => {
-    if (!product) return;
-
-    for (let index = 0; index < quantity; index++) {
-      addToCart(product);
-    }
+    if (!product || !isInStock) return;
+    addToCart(product, quantity);
   };
 
   const handleBuyNow = () => {
-    if (!product) return;
-
-    for (let index = 0; index < quantity; index++) {
-      addToCart(product);
-    }
-
+    if (!product || !isInStock) return;
+    addToCart(product, quantity);
     navigate("/cart");
   };
 
@@ -217,11 +223,6 @@ function ProductDetails() {
       ? `${product.stockQuantity} in stock`
       : "In Stock");
 
-  const isInStock =
-    product.isActive !== false &&
-    (product.stockQuantity === undefined ||
-      product.stockQuantity > 0);
-
   return (
     <div className="nx-product-details-page">
 
@@ -272,10 +273,7 @@ function ProductDetails() {
                     src={activeImage}
                     alt={`${product.name} ${currentImage + 1}`}
                     className="nx-details-image"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src =
-                        "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
-                    }}
+                    onError={handleImageError}
                   />
                 ) : (
                   <div className="nx-image-placeholder">
@@ -354,10 +352,7 @@ function ProductDetails() {
                           index + 1
                         }`}
                         className="nx-thumbnail-image"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src =
-                            "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
-                        }}
+                        onError={handleImageError}
                       />
                     </button>
                   ))}
@@ -862,10 +857,7 @@ function ProductDetails() {
               src={activeImage}
               alt={`${product.name} ${currentImage + 1}`}
               className="nx-viewer-image"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src =
-                  "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
-              }}
+              onError={handleImageError}
             />
 
             {productImages.length > 1 && (
@@ -887,6 +879,7 @@ function ProductDetails() {
                       <img
                         src={image}
                         alt={`Preview ${index + 1}`}
+                        onError={handleImageError}
                       />
                     </button>
                   )

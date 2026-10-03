@@ -5,6 +5,7 @@ import { getOrders } from "../../services/orderService";
 import { OrderHistorySkeleton } from "../../components/skeleton";
 import { ErrorState } from "../../components/common/ErrorState";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
+import { resolveProductImage, handleImageError } from "../../utils/productImage";
 
 type Order = {
   id: number;
@@ -18,7 +19,17 @@ type Order = {
   paymentStatus: string;
   orderStatus: string;
 
-  OrderItems: {
+  OrderItems?: {
+    id: number;
+    productId: number;
+    productName: string;
+    productImage: string;
+    unitPrice: number;
+    quantity: number;
+    totalPrice: number;
+  }[];
+
+  orderItems?: {
     id: number;
     productId: number;
     productName: string;
@@ -71,15 +82,7 @@ function OrderHistory() {
   };
 
   const getProductImage = (image: string) => {
-    if (!image) {
-      return "/src/assets/product-images/product1.jpg";
-    }
-
-    if (image.startsWith("/")) {
-      return image;
-    }
-
-    return `/src/assets/product-images/${image}`;
+    return resolveProductImage({ image });
   };
 
   /*
@@ -160,7 +163,7 @@ function OrderHistory() {
         <div className="nx-order-history-list">
 
           {orders.map((order) => {
-            const firstItem = order.OrderItems?.[0];
+            const firstItem = order.orderItems?.[0] || order.OrderItems?.[0];
 
             return (
               <article
@@ -230,6 +233,8 @@ function OrderHistory() {
                           firstItem?.productName ||
                           "Product"
                         }
+                        onError={handleImageError}
+                        loading="lazy"
                       />
                     </div>
 

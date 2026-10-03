@@ -4,6 +4,7 @@ import { getOrderById } from "../../services/orderService";
 import { OrderTrackingSkeleton } from "../../components/skeleton";
 import { ErrorState } from "../../components/common/ErrorState";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
+import { resolveProductImage, handleImageError } from "../../utils/productImage";
 import "./OrderTracking.css";
 
 type Address = {
@@ -113,15 +114,7 @@ function OrderTracking() {
   };
 
   const getImage = (image: string) => {
-    if (!image) {
-      return "/src/assets/product-images/product1.jpg";
-    }
-
-    if (image.startsWith("/")) {
-      return image;
-    }
-
-    return `/src/assets/product-images/${image}`;
+    return resolveProductImage({ image });
   };
 
   if (loading) {
@@ -503,6 +496,8 @@ function OrderTracking() {
                   <img
                     src={getImage(item.productImage)}
                     alt={item.productName}
+                    onError={handleImageError}
+                    loading="lazy"
                   />
                 </div>
 

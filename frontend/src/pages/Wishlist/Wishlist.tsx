@@ -7,6 +7,7 @@ import { getProductById } from "../../services/productService";
 import { ProductCardSkeletonGrid } from "../../components/skeleton";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import type { Product } from "../../types/product";
+import { resolveProductImage, handleImageError } from "../../utils/productImage";
 
 import "./Wishlist.css";
 
@@ -91,14 +92,25 @@ export default function Wishlist() {
 
   // Add individual product to cart
   const handleAddToCart = (product: Product) => {
+    if ((product.stockQuantity ?? 0) <= 0) {
+      showNotification(`"${product.name}" is currently out of stock.`);
+      return;
+    }
     addToCart(product);
     showNotification(`"${product.name}" added to your cart.`);
   };
 
   // Add all saved products to cart
   const handleAddAllToCart = () => {
-    savedProducts.forEach((product) => addToCart(product));
-    showNotification(`All ${savedProducts.length} items added to your cart.`);
+    const inStockItems = savedProducts.filter(
+      (product) => (product.stockQuantity ?? 1) > 0
+    );
+    if (inStockItems.length === 0) {
+      showNotification("No items currently in stock to add.");
+      return;
+    }
+    inStockItems.forEach((product) => addToCart(product));
+    showNotification(`Added ${inStockItems.length} available items to your cart.`);
   };
 
   // Remove individual product from wishlist
@@ -236,8 +248,9 @@ export default function Wishlist() {
                         aria-label={`View ${product.name}`}
                       >
                         <img
-                          src={product.image}
+                          src={resolveProductImage(product)}
                           alt={product.name}
+                          onError={handleImageError}
                           loading="lazy"
                         />
                       </Link>
@@ -318,10 +331,11 @@ export default function Wishlist() {
                         <button
                           type="button"
                           className="wishlist-btn-cart"
+                          disabled={(product.stockQuantity ?? 0) <= 0}
                           onClick={() => handleAddToCart(product)}
                         >
                           <i className="bi bi-bag-plus"></i>
-                          Add to Cart
+                          {(product.stockQuantity ?? 0) <= 0 ? "Out of Stock" : "Add to Cart"}
                         </button>
 
                         <button

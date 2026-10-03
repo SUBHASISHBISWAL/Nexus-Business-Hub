@@ -8,6 +8,7 @@ import {
   InitialLoadingProvider,
   useInitialLoading,
 } from "./context/InitialLoadingContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import { GlobalFullPageSkeleton } from "./components/skeleton";
 
 function AppContent() {
@@ -45,9 +46,11 @@ function AppContent() {
 
 function App() {
   return (
-    <InitialLoadingProvider>
-      <AppContent />
-    </InitialLoadingProvider>
+    <ThemeProvider>
+      <InitialLoadingProvider>
+        <AppContent />
+      </InitialLoadingProvider>
+    </ThemeProvider>
   );
 }
 

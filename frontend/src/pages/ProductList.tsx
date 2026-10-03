@@ -13,7 +13,7 @@ import { getProducts } from "../services/productService";
 import { useInitialLoading } from "../context/InitialLoadingContext";
 
 function ProductList() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
   const { addToCart } = useContext(CartContext);
@@ -39,19 +39,40 @@ function ProductList() {
   // FILTER / SORT STATES
   // =========================
 
-  const initialSearch = searchParams.get("search") || "";
+  const searchTerm = searchParams.get("search")?.trim() || "";
   const initialCategory = searchParams.get("category");
   const initialSort = searchParams.get("sortBy") || "newest";
 
-  const [search, setSearch] = useState<string>(initialSearch);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    initialCategory ? initialCategory.split(",").filter(Boolean) : []
+    initialCategory
+      ? initialCategory
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : []
   );
   const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
   const [sortOpen, setSortOpen] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<number>(412000);
   const [minRating, setMinRating] = useState<number>(0);
   const [sort, setSort] = useState<string>(initialSort);
+
+  // Synchronize state when URL searchParams change (from Navbar, Back/Forward, etc.)
+  useEffect(() => {
+    const urlCategory = searchParams.get("category");
+    const parsedCats = urlCategory
+      ? urlCategory
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+    const urlSort = searchParams.get("sortBy") || "newest";
+    const urlPage = Math.max(1, Number(searchParams.get("page")) || 1);
+
+    setSelectedCategories(parsedCats);
+    setSort(urlSort);
+    setCurrentPage(urlPage);
+  }, [searchParams]);
 
   // =========================
   // CART NOTICE
@@ -77,7 +98,7 @@ function ProductList() {
         page: currentPage,
         pageSize: productsPerPage,
         category: categoryParam,
-        search: search.trim() || undefined,
+        search: searchTerm || undefined,
         maxPrice: priceRange < 412000 ? priceRange : undefined,
         minRating: minRating > 0 ? minRating : undefined,
         sortBy: sort,
@@ -107,7 +128,7 @@ function ProductList() {
     currentPage,
     productsPerPage,
     selectedCategories,
-    search,
+    searchTerm,
     priceRange,
     minRating,
     sort,
@@ -161,6 +182,14 @@ function ProductList() {
   // =========================
 
   const handleAddToCart = (product: Product) => {
+    if ((product.stockQuantity ?? 0) <= 0) {
+      setNotice(`${product.name} is currently out of stock`);
+      window.setTimeout(() => {
+        setNotice("");
+      }, 2600);
+      return;
+    }
+
     addToCart(product);
 
     setNotice(`${product.name} added to cart`);
@@ -175,15 +204,35 @@ function ProductList() {
   // =========================
 
   const handleCategoryChange = (categoryName: string) => {
-    setSelectedCategories((previous) => {
-      if (previous.includes(categoryName)) {
-        return previous.filter((item) => item !== categoryName);
-      }
+    const updated = selectedCategories.includes(categoryName)
+      ? selectedCategories.filter((item) => item !== categoryName)
+      : [...selectedCategories, categoryName];
 
-      return [...previous, categoryName];
-    });
-
+    setSelectedCategories(updated);
     setCurrentPage(1);
+
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (updated.length > 0) {
+        next.set("category", updated.join(","));
+      } else {
+        next.delete("category");
+      }
+      next.delete("page");
+      return next;
+    }, { replace: true });
+  };
+
+  const handleSelectAllCategories = () => {
+    setSelectedCategories([]);
+    setCurrentPage(1);
+
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.delete("category");
+      next.delete("page");
+      return next;
+    }, { replace: true });
   };
 
   // =========================
@@ -194,6 +243,17 @@ function ProductList() {
     setSort(value);
     setSortOpen(false);
     setCurrentPage(1);
+
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (value && value !== "newest") {
+        next.set("sortBy", value);
+      } else {
+        next.delete("sortBy");
+      }
+      next.delete("page");
+      return next;
+    }, { replace: true });
   };
 
   // =========================
@@ -201,13 +261,13 @@ function ProductList() {
   // =========================
 
   const resetFilters = () => {
-    setSearch("");
     setSelectedCategories([]);
     setPriceRange(412000);
     setMinRating(0);
     setSort("newest");
     setSortOpen(false);
     setCurrentPage(1);
+    setSearchParams({}, { replace: true });
   };
 
   // =========================
@@ -217,6 +277,16 @@ function ProductList() {
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
       setCurrentPage(page);
+
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        if (page > 1) {
+          next.set("page", String(page));
+        } else {
+          next.delete("page");
+        }
+        return next;
+      }, { replace: true });
 
       window.scrollTo({
         top: 0,
@@ -272,10 +342,7 @@ function ProductList() {
                     <input
                       type="checkbox"
                       checked={selectedCategories.length === 0}
-                      onChange={() => {
-                        setSelectedCategories([]);
-                        setCurrentPage(1);
-                      }}
+                      onChange={handleSelectAllCategories}
                     />
 
                     <span>All</span>
@@ -451,42 +518,6 @@ function ProductList() {
           ========================== */}
 
           <div className="nx-product-area">
-            {/* CATALOG SEARCH */}
-            <div className="nx-catalog-tools">
-              <div className="nx-tool-controls">
-                <div className="nx-search">
-                  <span className="material-symbols-outlined" aria-hidden="true">
-                    search
-                  </span>
-
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(event) => {
-                      setSearch(event.target.value);
-                      setCurrentPage(1);
-                    }}
-                    placeholder="Search products by name, description, category..."
-                    aria-label="Search catalog"
-                  />
-
-                  {search && (
-                    <button
-                      type="button"
-                      className="nx-search-clear"
-                      onClick={() => {
-                        setSearch("");
-                        setCurrentPage(1);
-                      }}
-                      aria-label="Clear search"
-                    >
-                      <span className="material-symbols-outlined">close</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
             {/* RESULT SUMMARY */}
 
             {!loading && !error && totalItems > 0 && (
@@ -497,9 +528,12 @@ function ProductList() {
                     {resultStart}–{resultEnd}
                   </strong>{" "}
                   of <strong>{totalItems}</strong> products
+                  {searchTerm && (
+                    <span> for &ldquo;<strong>{searchTerm}</strong>&rdquo;</span>
+                  )}
                 </span>
 
-                {(search ||
+                {(searchTerm ||
                   selectedCategories.length > 0 ||
                   minRating > 0 ||
                   priceRange < 412000) && (
@@ -642,9 +676,13 @@ function ProductList() {
               <div className="nx-empty-catalog">
                 <span className="material-symbols-outlined">search_off</span>
 
-                <h2>No matching nodes found</h2>
+                <h2>No matching products found</h2>
 
-                <p>Try a different search phrase or adjust your filters.</p>
+                <p>
+                  {searchTerm
+                    ? `No products found matching "${searchTerm}". Try a different search phrase or adjust your filters.`
+                    : "Try a different search phrase or adjust your filters."}
+                </p>
 
                 <button type="button" onClick={resetFilters}>
                   Reset catalog

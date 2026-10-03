@@ -1,6 +1,7 @@
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
+import { resolveProductImage, handleImageError } from "../../utils/productImage";
 import "./Checkout.css";
 
 type Address = {
@@ -1024,13 +1025,6 @@ function Checkout() {
                         item.quantity ?? 1
                       );
 
-                    const imageSrc =
-                      item.image?.startsWith(
-                        "/src/"
-                      )
-                        ? item.image
-                        : `/src/assets/product-images/${item.image}`;
-
                     return (
                       <div
                         className="nx-summary-item"
@@ -1043,12 +1037,10 @@ function Checkout() {
                         <div className="nx-summary-image">
 
                           <img
-                            src={imageSrc}
+                            src={resolveProductImage(item)}
                             alt={item.name}
-                            onError={(event) => {
-                              event.currentTarget.src =
-                                "/src/assets/product-images/product1.jpg";
-                            }}
+                            onError={handleImageError}
+                            loading="lazy"
                           />
 
                         </div>

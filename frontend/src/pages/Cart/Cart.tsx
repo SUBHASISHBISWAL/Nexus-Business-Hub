@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { CartContext } from "../../context/CartContext";
 import type { Product } from "../../types/product";
+import { resolveProductImage, handleImageError } from "../../utils/productImage";
 
 import "./Cart.css";
 
@@ -25,14 +26,15 @@ export default function Cart() {
     const productMap = new Map<number, GroupedCartItem>();
 
     cart.forEach((product) => {
+      const itemQty = product.quantity && product.quantity > 0 ? product.quantity : 1;
       const existingProduct = productMap.get(product.id);
 
       if (existingProduct) {
-        existingProduct.quantity += 1;
+        existingProduct.quantity += itemQty;
       } else {
         productMap.set(product.id, {
           product,
-          quantity: 1,
+          quantity: itemQty,
         });
       }
     });
@@ -44,13 +46,19 @@ export default function Cart() {
   // TOTAL ITEMS
   // =========================================
 
-  const totalItems = cart.length;
+  const totalItems = useMemo(
+    () => groupedCart.reduce((total, item) => total + item.quantity, 0),
+    [groupedCart]
+  );
 
   // =========================================
   // SUBTOTAL
   // =========================================
 
-  const subtotal = cart.reduce((total, product) => total + product.price, 0);
+  const subtotal = useMemo(
+    () => groupedCart.reduce((total, item) => total + item.product.price * item.quantity, 0),
+    [groupedCart]
+  );
 
   // =========================================
   // DELIVERY
@@ -164,16 +172,10 @@ export default function Cart() {
 
                       <div className="cart-product-image">
                         <img
-                          src={
-                            product.image.startsWith("/src/")
-                              ? product.image
-                              : `/src/assets/product-images/${product.image}`
-                          }
+                          src={resolveProductImage(product)}
                           alt={product.name}
-                          onError={(event) => {
-                            event.currentTarget.src =
-                              "/src/assets/product-images/product1.jpg";
-                          }}
+                          onError={handleImageError}
+                          loading="lazy"
                         />
                       </div>
 
@@ -220,7 +222,11 @@ export default function Cart() {
                           <button
                             type="button"
                             className="quantity-btn"
-                            onClick={() => addToCart(product)}
+                            disabled={
+                              product.stockQuantity !== undefined &&
+                              quantity >= product.stockQuantity
+                            }
+                            onClick={() => addToCart(product, 1)}
                             aria-label={`Increase ${product.name} quantity`}
                           >
                             +

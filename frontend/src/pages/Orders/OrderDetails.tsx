@@ -4,6 +4,7 @@ import { getOrderById } from "../../services/orderService";
 import { OrderDetailSkeleton } from "../../components/skeleton";
 import { ErrorState } from "../../components/common/ErrorState";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
+import { resolveProductImage, handleImageError } from "../../utils/productImage";
 import "./OrderDetails.css";
 
 type OrderItem = {
@@ -132,15 +133,7 @@ function OrderDetails() {
   };
 
   const getImagePath = (image: string) => {
-    if (!image) {
-      return "/src/assets/product-images/product1.jpg";
-    }
-
-    if (image.startsWith("/src/")) {
-      return image;
-    }
-
-    return `/src/assets/product-images/${image}`;
+    return resolveProductImage({ image });
   };
 
   const itemCount = useMemo(() => {
@@ -328,10 +321,8 @@ function OrderDetails() {
                       <img
                         src={getImagePath(item.productImage)}
                         alt={item.productName}
-                        onError={(event) => {
-                          event.currentTarget.src =
-                            "/src/assets/product-images/product1.jpg";
-                        }}
+                        onError={handleImageError}
+                        loading="lazy"
                       />
                     </div>
 
