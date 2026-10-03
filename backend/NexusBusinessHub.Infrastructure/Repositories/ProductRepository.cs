@@ -20,8 +20,8 @@ public class ProductRepository : IProductRepository
         var page = parameters.Page.GetValueOrDefault(1);
         if (page < 1) page = 1;
 
-        var pageSize = parameters.PageSize.GetValueOrDefault(8);
-        if (pageSize < 1) pageSize = 8;
+        var pageSize = parameters.PageSize.GetValueOrDefault(48);
+        if (pageSize < 1) pageSize = 48;
         if (pageSize > 1000) pageSize = 1000;
 
         var query = _context.Products.AsNoTracking();
@@ -120,7 +120,7 @@ public class ProductRepository : IProductRepository
         if (parameters.All == true)
         {
             page = 1;
-            pageSize = totalItems > 0 ? totalItems : 8;
+            pageSize = totalItems > 0 ? totalItems : 48;
         }
 
         var totalPages = totalItems > 0

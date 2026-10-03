@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { AdminTableSkeleton } from "../../../components/skeleton";
 import { ErrorState } from "../../../components/common/ErrorState";
@@ -42,11 +42,13 @@ type Product = {
 
 function AdminProducts() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { markAppReady } = useInitialLoading();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [productAddedSuccess, setProductAddedSuccess] = useState(false);
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -216,8 +218,18 @@ function AdminProducts() {
   );
 
   useEffect(() => {
-    loadProducts(currentPage);
-  }, [currentPage, debouncedSearch, categoryFilter, statusFilter, loadProducts]);
+    if (location.state?.productAdded) {
+      setProductAddedSuccess(true);
+      setCurrentPage(1);
+      loadProducts(1);
+      window.history.replaceState({}, document.title);
+      window.setTimeout(() => {
+        setProductAddedSuccess(false);
+      }, 3000);
+    } else {
+      loadProducts(currentPage);
+    }
+  }, [currentPage, debouncedSearch, categoryFilter, statusFilter, location.key, location.state, loadProducts]);
 
   /*
    * COMPACT PAGINATION PAGES
@@ -394,6 +406,15 @@ function AdminProducts() {
           <i className="bi bi-check-circle-fill" />
           <span>
             Product deleted successfully.
+          </span>
+        </div>
+      )}
+
+      {productAddedSuccess && (
+        <div className="nx-admin-success-message">
+          <i className="bi bi-check-circle-fill" />
+          <span>
+            Product added successfully.
           </span>
         </div>
       )}

@@ -219,11 +219,25 @@ function AddProduct() {
         images: allImageUrls.length > 0 ? allImageUrls : undefined,
       });
 
+      setFormData({
+        name: "",
+        sku: "",
+        category: "",
+        price: "",
+        stock: "",
+        status: "Active",
+        shortDescription: "",
+        description: "",
+        specifications: "",
+        image: "",
+      });
+      setUploadImages(["", "", "", ""]);
+      setImageUrls(["", "", "", ""]);
+      setUrlErrors([false, false, false, false]);
+      setImageError("");
       setSaved(true);
 
-      setTimeout(() => {
-        navigate("/admin/products");
-      }, 800);
+      navigate("/admin/products", { replace: true, state: { productAdded: true } });
     } catch (err: any) {
       console.error("Unable to create product:", err);
       setImageError(

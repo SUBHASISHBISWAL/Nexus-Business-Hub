@@ -1,5 +1,6 @@
 import "./ProductList.css";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 import { CartContext } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -12,6 +13,9 @@ import { getProducts } from "../services/productService";
 import { useInitialLoading } from "../context/InitialLoadingContext";
 
 function ProductList() {
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
   const { markAppReady } = useInitialLoading();
@@ -27,20 +31,27 @@ function ProductList() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  const productsPerPage = 8;
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const productsPerPage = 48;
+  const initialPage = Number(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
 
   // =========================
   // FILTER / SORT STATES
   // =========================
 
-  const [search, setSearch] = useState<string>("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const initialSearch = searchParams.get("search") || "";
+  const initialCategory = searchParams.get("category");
+  const initialSort = searchParams.get("sortBy") || "newest";
+
+  const [search, setSearch] = useState<string>(initialSearch);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    initialCategory ? initialCategory.split(",").filter(Boolean) : []
+  );
   const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
   const [sortOpen, setSortOpen] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<number>(412000);
   const [minRating, setMinRating] = useState<number>(0);
-  const [sort, setSort] = useState<string>("featured");
+  const [sort, setSort] = useState<string>(initialSort);
 
   // =========================
   // CART NOTICE
@@ -105,7 +116,7 @@ function ProductList() {
 
   useEffect(() => {
     loadProducts();
-  }, [loadProducts]);
+  }, [loadProducts, location.key]);
 
   // Total count across all categories from server
   const allCategoryTotal = useMemo(() => {
@@ -120,33 +131,29 @@ function ProductList() {
   // PROFESSIONAL PAGE NUMBERS
   // =========================
 
-  const paginationPages = useMemo(() => {
-    if (totalPages <= 7) {
+  type PaginationItem = number | "ellipsis" | "last";
+
+  const paginationPages = useMemo((): PaginationItem[] => {
+    if (totalPages <= 1) {
+      return [1];
+    }
+    if (totalPages <= 3) {
       return Array.from({ length: totalPages }, (_, index) => index + 1);
     }
-
-    const pages: (number | "ellipsis")[] = [];
-
-    pages.push(1);
-
-    if (currentPage > 4) {
-      pages.push("ellipsis");
+    if (totalPages === 4) {
+      return [1, 2, 3, "last"];
     }
 
-    const start = Math.max(2, currentPage - 2);
-    const end = Math.min(totalPages - 1, currentPage + 2);
-
-    for (let page = start; page <= end; page++) {
-      pages.push(page);
+    // When totalPages >= 5: Show Previous | 1 | 2 | 3 | ... | Last | Next
+    if (currentPage <= 3) {
+      return [1, 2, 3, "ellipsis", "last"];
     }
 
-    if (currentPage < totalPages - 3) {
-      pages.push("ellipsis");
+    if (currentPage >= totalPages - 2) {
+      return [1, "ellipsis", totalPages - 2, totalPages - 1, "last"];
     }
 
-    pages.push(totalPages);
-
-    return pages;
+    return [1, "ellipsis", currentPage - 1, currentPage, currentPage + 1, "ellipsis", "last"];
   }, [currentPage, totalPages]);
 
   // =========================
@@ -198,7 +205,7 @@ function ProductList() {
     setSelectedCategories([]);
     setPriceRange(412000);
     setMinRating(0);
-    setSort("featured");
+    setSort("newest");
     setSortOpen(false);
     setCurrentPage(1);
   };
@@ -208,7 +215,7 @@ function ProductList() {
   // =========================
 
   const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
       setCurrentPage(page);
 
       window.scrollTo({
@@ -341,7 +348,9 @@ function ProductList() {
                       ? "Price: Low to High"
                       : sort === "rating"
                         ? "Spec Rating (5.0 First)"
-                        : "Featured Architecture"}
+                        : sort === "featured"
+                          ? "Featured Architecture"
+                          : "Newest Arrivals"}
                 </span>
 
                 <span
@@ -352,6 +361,26 @@ function ProductList() {
 
               {sortOpen && (
                 <div className="nx-sort-options">
+                  <label className="nx-checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={sort === "newest"}
+                      onChange={() => handleSortChange("newest")}
+                    />
+
+                    <span>Newest Arrivals</span>
+                  </label>
+
+                  <label className="nx-checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={sort === "featured"}
+                      onChange={() => handleSortChange("featured")}
+                    />
+
+                    <span>Featured Architecture</span>
+                  </label>
+
                   <label className="nx-checkbox-row">
                     <input
                       type="checkbox"
@@ -422,6 +451,42 @@ function ProductList() {
           ========================== */}
 
           <div className="nx-product-area">
+            {/* CATALOG SEARCH */}
+            <div className="nx-catalog-tools">
+              <div className="nx-tool-controls">
+                <div className="nx-search">
+                  <span className="material-symbols-outlined" aria-hidden="true">
+                    search
+                  </span>
+
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(event) => {
+                      setSearch(event.target.value);
+                      setCurrentPage(1);
+                    }}
+                    placeholder="Search products by name, description, category..."
+                    aria-label="Search catalog"
+                  />
+
+                  {search && (
+                    <button
+                      type="button"
+                      className="nx-search-clear"
+                      onClick={() => {
+                        setSearch("");
+                        setCurrentPage(1);
+                      }}
+                      aria-label="Clear search"
+                    >
+                      <span className="material-symbols-outlined">close</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* RESULT SUMMARY */}
 
             {!loading && !error && totalItems > 0 && (
@@ -487,18 +552,18 @@ function ProductList() {
 
             {/* PAGINATION */}
 
-            {!loading && !error && products.length > 0 && totalPages > 1 && (
+            {!error && totalItems > 0 && totalPages > 1 && (
               <nav className="nx-pagination" aria-label="Product pagination">
                 {/* PREVIOUS */}
 
                 <button
                   type="button"
                   className="nx-pagination-nav"
-                  disabled={currentPage === 1}
+                  disabled={loading || currentPage === 1}
                   onClick={() => goToPage(currentPage - 1)}
                   aria-label="Previous page"
                 >
-                  <i className="bi bi-chevron-left"></i>
+                  <i className="bi bi-chevron-left" aria-hidden="true"></i>
                   <span>Previous</span>
                 </button>
 
@@ -518,15 +583,37 @@ function ProductList() {
                       );
                     }
 
+                    if (page === "last") {
+                      return (
+                        <button
+                          key="last"
+                          type="button"
+                          className={currentPage === totalPages ? "active" : ""}
+                          disabled={loading}
+                          onClick={() => goToPage(totalPages)}
+                          aria-current={
+                            currentPage === totalPages ? "page" : undefined
+                          }
+                          aria-label={`Last page, page ${totalPages}`}
+                          title={`Page ${totalPages}`}
+                          data-page={totalPages}
+                        >
+                          Last
+                        </button>
+                      );
+                    }
+
                     return (
                       <button
                         key={page}
                         type="button"
                         className={currentPage === page ? "active" : ""}
+                        disabled={loading}
                         onClick={() => goToPage(page)}
                         aria-current={
                           currentPage === page ? "page" : undefined
                         }
+                        aria-label={`Page ${page}`}
                       >
                         {page}
                       </button>
@@ -539,12 +626,12 @@ function ProductList() {
                 <button
                   type="button"
                   className="nx-pagination-nav"
-                  disabled={currentPage === totalPages}
+                  disabled={loading || currentPage === totalPages}
                   onClick={() => goToPage(currentPage + 1)}
                   aria-label="Next page"
                 >
                   <span>Next</span>
-                  <i className="bi bi-chevron-right"></i>
+                  <i className="bi bi-chevron-right" aria-hidden="true"></i>
                 </button>
               </nav>
             )}

@@ -6,3 +6,6 @@ dist/
 
 bin/
 obj/
+
+# Large local performance-test datasets
+backend/NexusBusinessHub.API/SeedData/nexus-products-200000-part*.json
