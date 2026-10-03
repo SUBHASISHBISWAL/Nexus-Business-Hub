@@ -52,7 +52,8 @@ public class AuthService : IAuthService
             ? request.Identifier
             : request.Email).Trim();
 
-        if (string.IsNullOrWhiteSpace(identifier) || string.IsNullOrWhiteSpace(request.Password))
+        if (string.IsNullOrWhiteSpace(identifier) ||
+            string.IsNullOrWhiteSpace(request.Password))
         {
             return null;
         }
@@ -61,27 +62,37 @@ public class AuthService : IAuthService
 
         if (identifier.Contains('@'))
         {
-            user = await _userRepository.GetByEmailAsync(identifier.ToLower());
+            user = await _userRepository.GetByEmailAsync(
+                identifier.ToLower());
         }
         else
         {
-            var digitsOnly = new string(identifier.Where(char.IsDigit).ToArray());
-            if (digitsOnly.Length == 12 && digitsOnly.StartsWith("91"))
+            var digitsOnly =
+                new string(identifier.Where(char.IsDigit).ToArray());
+
+            if (digitsOnly.Length == 12 &&
+                digitsOnly.StartsWith("91"))
             {
                 digitsOnly = digitsOnly.Substring(2);
             }
-            else if (digitsOnly.Length == 11 && digitsOnly.StartsWith("0"))
+            else if (digitsOnly.Length == 11 &&
+                     digitsOnly.StartsWith("0"))
             {
                 digitsOnly = digitsOnly.Substring(1);
             }
 
-            user = await _userRepository.GetByPhoneNumberAsync(identifier)
-                   ?? (digitsOnly.Length == 10 ? await _userRepository.GetByPhoneNumberAsync(digitsOnly) : null);
+            user =
+                await _userRepository.GetByPhoneNumberAsync(identifier)
+                ?? (digitsOnly.Length == 10
+                    ? await _userRepository.GetByPhoneNumberAsync(digitsOnly)
+                    : null);
         }
 
         if (user == null)
         {
-            user = await _userRepository.GetByEmailOrPhoneAsync(identifier);
+            user =
+                await _userRepository.GetByEmailOrPhoneAsync(
+                    identifier);
         }
 
         if (user == null)
@@ -105,7 +116,8 @@ public class AuthService : IAuthService
 
         if (user.Role == UserRole.Admin)
         {
-            var otpSent = await SendAdminOtpAsync(user.Email);
+            var otpSent =
+                await SendAdminOtpAsync(user.Email);
 
             if (!otpSent)
             {
@@ -139,7 +151,8 @@ public class AuthService : IAuthService
         // CUSTOMER LOGIN
         // =====================================================
 
-        var token = GenerateJwtToken(user);
+        var token =
+            GenerateJwtToken(user);
 
         return new LoginResponseDto
         {
@@ -170,8 +183,11 @@ public class AuthService : IAuthService
     public async Task<RegisterResultDto> RegisterAsync(
         RegisterRequestDto request)
     {
-        var email = request.Email.Trim().ToLower();
-        var phone = request.PhoneNumber.Trim();
+        var email =
+            request.Email.Trim().ToLower();
+
+        var phone =
+            request.PhoneNumber.Trim();
 
         // 1. Check duplicate Email
         if (await _userRepository.EmailExistsAsync(email))
@@ -179,8 +195,11 @@ public class AuthService : IAuthService
             return new RegisterResultDto
             {
                 Success = false,
+
                 IsConflict = true,
-                ErrorMessage = "An account with this email already exists."
+
+                ErrorMessage =
+                    "An account with this email already exists."
             };
         }
 
@@ -190,54 +209,91 @@ public class AuthService : IAuthService
             return new RegisterResultDto
             {
                 Success = false,
+
                 IsConflict = true,
-                ErrorMessage = "An account with this phone number already exists."
+
+                ErrorMessage =
+                    "An account with this phone number already exists."
             };
         }
 
-        var firstName = request.FirstName?.Trim() ?? string.Empty;
-        var lastName = request.LastName?.Trim() ?? string.Empty;
+        var firstName =
+            request.FirstName?.Trim() ?? string.Empty;
 
-        if (string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(request.FullName))
+        var lastName =
+            request.LastName?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(firstName) &&
+            !string.IsNullOrWhiteSpace(request.FullName))
         {
-            var parts = request.FullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            firstName = parts.Length > 0 ? parts[0] : "";
-            lastName = parts.Length > 1 ? string.Join(" ", parts.Skip(1)) : "";
+            var parts =
+                request.FullName
+                    .Trim()
+                    .Split(
+                        ' ',
+                        StringSplitOptions.RemoveEmptyEntries);
+
+            firstName =
+                parts.Length > 0
+                    ? parts[0]
+                    : "";
+
+            lastName =
+                parts.Length > 1
+                    ? string.Join(" ", parts.Skip(1))
+                    : "";
         }
 
         var user = new User
         {
             FirstName = firstName,
+
             LastName = lastName,
+
             Email = email,
+
             PhoneNumber = phone,
+
             Role = UserRole.Customer,
+
             IsActive = true
         };
 
-        user.PasswordHash = HashPassword(request.Password);
+        user.PasswordHash =
+            HashPassword(request.Password);
 
         try
         {
             var createdUser =
                 await _userRepository.CreateAsync(user);
 
-            var token = GenerateJwtToken(createdUser);
+            var token =
+                GenerateJwtToken(createdUser);
 
             return new RegisterResultDto
             {
                 Success = true,
+
                 Data = new LoginResponseDto
                 {
                     Token = token,
+
                     UserId = createdUser.Id,
+
                     FirstName = createdUser.FirstName,
+
                     LastName = createdUser.LastName,
+
                     Email = createdUser.Email,
+
                     PhoneNumber = createdUser.PhoneNumber,
+
                     Role = createdUser.Role.ToString(),
+
                     RequiresOtp = false,
-                    Message = "Registration successful."
+
+                    Message =
+                        "Registration successful."
                 }
             };
         }
@@ -248,8 +304,11 @@ public class AuthService : IAuthService
                 return new RegisterResultDto
                 {
                     Success = false,
+
                     IsConflict = true,
-                    ErrorMessage = "An account with this email already exists."
+
+                    ErrorMessage =
+                        "An account with this email already exists."
                 };
             }
 
@@ -258,8 +317,11 @@ public class AuthService : IAuthService
                 return new RegisterResultDto
                 {
                     Success = false,
+
                     IsConflict = true,
-                    ErrorMessage = "An account with this phone number already exists."
+
+                    ErrorMessage =
+                        "An account with this phone number already exists."
                 };
             }
 
@@ -287,7 +349,8 @@ public class AuthService : IAuthService
             return false;
         }
 
-        var random = Random.Shared;
+        var random =
+            Random.Shared;
 
         var otp =
             random.Next(100000, 1000000)
@@ -301,18 +364,15 @@ public class AuthService : IAuthService
                 DateTime.UtcNow.AddMinutes(5)
         };
 
-        AdminOtps[email.Trim().ToLower()] = otpData;
+        AdminOtps[email.Trim().ToLower()] =
+            otpData;
 
         // =====================================================
         // DEVELOPMENT / POC
         // =====================================================
-        // Real project re eithi SMS/Email provider integrate
-        // kariba.
-        //
-        // Local development pain terminal re OTP dekhajiba.
-        // =====================================================
 
-        Console.ForegroundColor = ConsoleColor.Green;
+        Console.ForegroundColor =
+            ConsoleColor.Green;
 
         Console.WriteLine(
             "================================================");
@@ -352,7 +412,8 @@ public class AuthService : IAuthService
             return null;
         }
 
-        var random = Random.Shared;
+        var random =
+            Random.Shared;
 
         var numberOne =
             random.Next(1, 10);
@@ -366,17 +427,20 @@ public class AuthService : IAuthService
         var captchaId =
             Guid.NewGuid().ToString("N");
 
-        Captchas[captchaId] = new CaptchaData
-        {
-            Answer = answer.ToString(),
+        Captchas[captchaId] =
+            new CaptchaData
+            {
+                Answer =
+                    answer.ToString(),
 
-            ExpiresAt =
-                DateTime.UtcNow.AddMinutes(5)
-        };
+                ExpiresAt =
+                    DateTime.UtcNow.AddMinutes(5)
+            };
 
         return new AdminCaptchaResponseDto
         {
-            CaptchaId = captchaId,
+            CaptchaId =
+                captchaId,
 
             Question =
                 $"What is {numberOne} + {numberTwo}?"
@@ -497,7 +561,8 @@ public class AuthService : IAuthService
 
             RequiresOtp = false,
 
-            Message = "Admin verification successful."
+            Message =
+                "Admin verification successful."
         };
     }
 
@@ -574,55 +639,91 @@ public class AuthService : IAuthService
             .WriteToken(token);
     }
 
+    // =========================================================
+    // HASH PASSWORD
+    // =========================================================
+
     private static string HashPassword(string password)
     {
-        byte[] salt = RandomNumberGenerator.GetBytes(16);
-        byte[] hash = Rfc2898DeriveBytes.Pbkdf2(
-            password,
-            salt,
-            iterations: 100_000,
-            hashAlgorithm: HashAlgorithmName.SHA256,
-            outputLength: 32);
+        byte[] salt =
+            RandomNumberGenerator.GetBytes(16);
 
-        return $"{Convert.ToBase64String(salt)}.{Convert.ToBase64String(hash)}";
+        byte[] hash =
+            Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                iterations: 100_000,
+                hashAlgorithm: HashAlgorithmName.SHA256,
+                outputLength: 32);
+
+        return
+            $"{Convert.ToBase64String(salt)}." +
+            $"{Convert.ToBase64String(hash)}";
     }
 
-    private bool VerifyPassword(User user, string password)
-    {
-        if (string.IsNullOrWhiteSpace(user.PasswordHash)) return false;
+    // =========================================================
+    // VERIFY PASSWORD
+    // =========================================================
 
-        // 1. Try Microsoft.AspNetCore.Identity.PasswordHasher<User>
+    private bool VerifyPassword(
+        User user,
+        string password)
+    {
+        if (string.IsNullOrWhiteSpace(
+                user.PasswordHash))
+        {
+            return false;
+        }
+
+        // 1. Try Microsoft Identity PasswordHasher
         try
         {
-            var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-            if (verifyResult == PasswordVerificationResult.Success ||
-                verifyResult == PasswordVerificationResult.SuccessRehashNeeded)
+            var verifyResult =
+                _passwordHasher.VerifyHashedPassword(
+                    user,
+                    user.PasswordHash,
+                    password);
+
+            if (verifyResult ==
+                    PasswordVerificationResult.Success ||
+                verifyResult ==
+                    PasswordVerificationResult.SuccessRehashNeeded)
             {
                 return true;
             }
         }
         catch
         {
-            // fallback to legacy checks
+            // Continue with legacy checks
         }
 
         // 2. Try legacy salt.hash
-        var parts = user.PasswordHash.Split('.');
+        var parts =
+            user.PasswordHash.Split('.');
+
         if (parts.Length == 2)
         {
             try
             {
-                byte[] salt = Convert.FromBase64String(parts[0]);
-                byte[] expectedHash = Convert.FromBase64String(parts[1]);
+                byte[] salt =
+                    Convert.FromBase64String(parts[0]);
 
-                byte[] actualHash = Rfc2898DeriveBytes.Pbkdf2(
-                    password,
-                    salt,
-                    iterations: 100_000,
-                    hashAlgorithm: HashAlgorithmName.SHA256,
-                    outputLength: 32);
+                byte[] expectedHash =
+                    Convert.FromBase64String(parts[1]);
 
-                return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash);
+                byte[] actualHash =
+                    Rfc2898DeriveBytes.Pbkdf2(
+                        password,
+                        salt,
+                        iterations: 100_000,
+                        hashAlgorithm: HashAlgorithmName.SHA256,
+                        outputLength: 32);
+
+                return
+                    CryptographicOperations
+                        .FixedTimeEquals(
+                            actualHash,
+                            expectedHash);
             }
             catch
             {
@@ -630,30 +731,59 @@ public class AuthService : IAuthService
             }
         }
 
-        // 3. Fallback for raw v3 binary if needed
+        // 3. Fallback for raw v3 binary
         try
         {
-            byte[] decoded = Convert.FromBase64String(user.PasswordHash);
-            if (decoded.Length > 13 && decoded[0] == 0x01)
+            byte[] decoded =
+                Convert.FromBase64String(
+                    user.PasswordHash);
+
+            if (decoded.Length > 13 &&
+                decoded[0] == 0x01)
             {
-                int iterCount = (int)System.Buffers.Binary.BinaryPrimitives.ReadUInt32BigEndian(decoded.AsSpan(5, 4));
-                int saltLength = (int)System.Buffers.Binary.BinaryPrimitives.ReadUInt32BigEndian(decoded.AsSpan(9, 4));
-                byte[] salt = decoded.AsSpan(13, saltLength).ToArray();
-                byte[] expectedSubkey = decoded.AsSpan(13 + saltLength).ToArray();
+                int iterCount =
+                    (int)
+                    System.Buffers.Binary
+                        .BinaryPrimitives
+                        .ReadUInt32BigEndian(
+                            decoded.AsSpan(5, 4));
 
-                byte[] actualSubkey = Rfc2898DeriveBytes.Pbkdf2(
-                    password,
-                    salt,
-                    iterations: iterCount,
-                    hashAlgorithm: HashAlgorithmName.SHA256,
-                    outputLength: expectedSubkey.Length);
+                int saltLength =
+                    (int)
+                    System.Buffers.Binary
+                        .BinaryPrimitives
+                        .ReadUInt32BigEndian(
+                            decoded.AsSpan(9, 4));
 
-                return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
+                byte[] salt =
+                    decoded
+                        .AsSpan(13, saltLength)
+                        .ToArray();
+
+                byte[] expectedSubkey =
+                    decoded
+                        .AsSpan(13 + saltLength)
+                        .ToArray();
+
+                byte[] actualSubkey =
+                    Rfc2898DeriveBytes.Pbkdf2(
+                        password,
+                        salt,
+                        iterations: iterCount,
+                        hashAlgorithm: HashAlgorithmName.SHA256,
+                        outputLength:
+                            expectedSubkey.Length);
+
+                return
+                    CryptographicOperations
+                        .FixedTimeEquals(
+                            actualSubkey,
+                            expectedSubkey);
             }
         }
         catch
         {
-            // fallback
+            // Continue
         }
 
         return false;
@@ -663,188 +793,472 @@ public class AuthService : IAuthService
     // FORGOT PASSWORD
     // =========================================================
 
-    public async Task<(bool Success, string Message, int StatusCode)> ForgotPasswordAsync(
-        ForgotPasswordRequestDto request)
+    public async Task<(bool Success, string Message, int StatusCode)>
+        ForgotPasswordAsync(
+            ForgotPasswordRequestDto request)
     {
-        if (request == null || string.IsNullOrWhiteSpace(request.Identifier))
+        if (request == null ||
+            string.IsNullOrWhiteSpace(
+                request.Identifier))
         {
-            return (false, "Email or phone number is required.", 400);
+            return (
+                false,
+                "Email or phone number is required.",
+                400);
         }
 
-        var identifier = request.Identifier.Trim();
+        var identifier =
+            request.Identifier.Trim();
 
         User? user = null;
+
+        // =====================================================
+        // FIND USER BY EMAIL
+        // =====================================================
+
         if (identifier.Contains('@'))
         {
-            user = await _userRepository.GetByEmailAsync(identifier.ToLower());
+            user =
+                await _userRepository.GetByEmailAsync(
+                    identifier.ToLower());
         }
         else
         {
-            var digitsOnly = new string(identifier.Where(char.IsDigit).ToArray());
-            if (digitsOnly.Length == 12 && digitsOnly.StartsWith("91"))
+            // =================================================
+            // FIND USER BY PHONE
+            // =================================================
+
+            var digitsOnly =
+                new string(
+                    identifier.Where(
+                        char.IsDigit)
+                    .ToArray());
+
+            if (digitsOnly.Length == 12 &&
+                digitsOnly.StartsWith("91"))
             {
-                digitsOnly = digitsOnly.Substring(2);
+                digitsOnly =
+                    digitsOnly.Substring(2);
             }
-            else if (digitsOnly.Length == 11 && digitsOnly.StartsWith("0"))
+            else if (digitsOnly.Length == 11 &&
+                     digitsOnly.StartsWith("0"))
             {
-                digitsOnly = digitsOnly.Substring(1);
+                digitsOnly =
+                    digitsOnly.Substring(1);
             }
 
-            user = await _userRepository.GetByPhoneNumberAsync(identifier)
-                   ?? (digitsOnly.Length == 10 ? await _userRepository.GetByPhoneNumberAsync(digitsOnly) : null);
+            user =
+                await _userRepository
+                    .GetByPhoneNumberAsync(
+                        identifier)
+                ?? (digitsOnly.Length == 10
+                    ? await _userRepository
+                        .GetByPhoneNumberAsync(
+                            digitsOnly)
+                    : null);
         }
+
+        // =====================================================
+        // FALLBACK EMAIL OR PHONE SEARCH
+        // =====================================================
 
         if (user == null)
         {
-            user = await _userRepository.GetByEmailOrPhoneAsync(identifier);
+            user =
+                await _userRepository
+                    .GetByEmailOrPhoneAsync(
+                        identifier);
         }
 
-        // Generic response for security if user does not exist or is inactive
-        if (user == null || !user.IsActive || string.IsNullOrWhiteSpace(user.Email))
+        // =====================================================
+        // ACCOUNT NOT FOUND
+        // =====================================================
+
+        if (user == null)
         {
-            return (true, "If an account matching the provided details exists, a verification code has been sent to the registered email.", 200);
+            if (identifier.Contains('@'))
+            {
+                return (
+                    false,
+                    "No account found with this email address. Please check your email and try again.",
+                    404);
+            }
+
+            return (
+                false,
+                "No account found with this phone number. Please check your phone number and try again.",
+                404);
         }
 
-        // Rate limiting: 60-second cooldown
-        var latestOtp = await _passwordResetRepository.GetLatestActiveOtpByUserIdAsync(user.Id);
-        if (latestOtp != null && latestOtp.CreatedAt > DateTime.UtcNow.AddSeconds(-60))
+        // =====================================================
+        // ACCOUNT INACTIVE
+        // =====================================================
+
+        if (!user.IsActive)
         {
-            var remainingSeconds = 60 - (int)(DateTime.UtcNow - latestOtp.CreatedAt).TotalSeconds;
+            return (
+                false,
+                "This account is currently inactive. Please contact support.",
+                403);
+        }
+
+        // =====================================================
+        // NO REGISTERED EMAIL
+        // =====================================================
+
+        if (string.IsNullOrWhiteSpace(user.Email))
+        {
+            return (
+                false,
+                "No registered email address is available for this account.",
+                400);
+        }
+
+        // =====================================================
+        // RATE LIMITING - 60 SECOND COOLDOWN
+        // =====================================================
+
+        var latestOtp =
+            await _passwordResetRepository
+                .GetLatestActiveOtpByUserIdAsync(
+                    user.Id);
+
+        if (latestOtp != null &&
+            latestOtp.CreatedAt >
+                DateTime.UtcNow.AddSeconds(-60))
+        {
+            var remainingSeconds =
+                60 -
+                (int)
+                (DateTime.UtcNow - latestOtp.CreatedAt)
+                    .TotalSeconds;
+
             if (remainingSeconds > 0)
             {
-                return (false, $"Please wait {remainingSeconds} seconds before requesting a new verification code.", 429);
+                return (
+                    false,
+                    $"Please wait {remainingSeconds} seconds before requesting a new verification code.",
+                    429);
             }
         }
 
-        // Invalidate previous OTPs
-        await _passwordResetRepository.InvalidateExistingOtpsAsync(user.Id);
+        // =====================================================
+        // INVALIDATE PREVIOUS OTPs
+        // =====================================================
 
-        // Generate cryptographically secure 6-digit OTP
-        var otp = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
+        await _passwordResetRepository
+            .InvalidateExistingOtpsAsync(
+                user.Id);
 
-        // Cryptographically secure salt & hash
-        byte[] saltBytes = RandomNumberGenerator.GetBytes(16);
-        string salt = Convert.ToBase64String(saltBytes);
-        using var sha = SHA256.Create();
-        byte[] hashBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(salt + ":" + otp));
-        string otpHash = $"{salt}:{Convert.ToBase64String(hashBytes)}";
+        // =====================================================
+        // GENERATE SECURE 6-DIGIT OTP
+        // =====================================================
 
-        var resetOtp = new PasswordResetOtp
-        {
-            UserId = user.Id,
-            OtpHash = otpHash,
-            ExpiresAt = DateTime.UtcNow.AddMinutes(5),
-            AttemptCount = 0,
-            IsUsed = false,
-            IsVerified = false,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+        var otp =
+            RandomNumberGenerator
+                .GetInt32(
+                    100000,
+                    1000000)
+                .ToString();
 
-        await _passwordResetRepository.CreateAsync(resetOtp);
+        // =====================================================
+        // HASH OTP
+        // =====================================================
+
+        byte[] saltBytes =
+            RandomNumberGenerator.GetBytes(16);
+
+        string salt =
+            Convert.ToBase64String(
+                saltBytes);
+
+        using var sha =
+            SHA256.Create();
+
+        byte[] hashBytes =
+            sha.ComputeHash(
+                Encoding.UTF8.GetBytes(
+                    salt + ":" + otp));
+
+        string otpHash =
+            $"{salt}:{Convert.ToBase64String(hashBytes)}";
+
+        // =====================================================
+        // CREATE RESET OTP
+        // =====================================================
+
+        var resetOtp =
+            new PasswordResetOtp
+            {
+                UserId =
+                    user.Id,
+
+                OtpHash =
+                    otpHash,
+
+                ExpiresAt =
+                    DateTime.UtcNow.AddMinutes(5),
+
+                AttemptCount =
+                    0,
+
+                IsUsed =
+                    false,
+
+                IsVerified =
+                    false,
+
+                CreatedAt =
+                    DateTime.UtcNow,
+
+                UpdatedAt =
+                    DateTime.UtcNow
+            };
+
+        await _passwordResetRepository
+            .CreateAsync(
+                resetOtp);
+
+        // =====================================================
+        // SEND OTP EMAIL
+        // =====================================================
 
         try
         {
-            var recipientName = $"{user.FirstName} {user.LastName}".Trim();
-            await _emailService.SendPasswordResetOtpAsync(user.Email, recipientName, otp, 5);
+            var recipientName =
+                $"{user.FirstName} {user.LastName}"
+                    .Trim();
+
+            await _emailService
+                .SendPasswordResetOtpAsync(
+                    user.Email,
+                    recipientName,
+                    otp,
+                    5);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Do NOT fake a successful email response.
-            // If Brevo rejects the request, return an appropriate backend error and explain the actual error without exposing credentials.
-            resetOtp.IsUsed = true;
-            await _passwordResetRepository.UpdateAsync(resetOtp);
+            // Do not keep OTP active
+            // if email sending fails.
 
-            return (false, ex.Message, 502);
+            resetOtp.IsUsed = true;
+
+            await _passwordResetRepository
+                .UpdateAsync(
+                    resetOtp);
+
+            return (
+                false,
+                "We couldn't send the verification code. Please try again later.",
+                502);
         }
 
-        return (true, "If an account matching the provided details exists, a verification code has been sent to the registered email.", 200);
+        // =====================================================
+        // SUCCESS
+        // =====================================================
+
+        return (
+            true,
+            "We've sent a 6-digit verification code to your registered email.",
+            200);
     }
 
     // =========================================================
     // VERIFY RESET OTP
     // =========================================================
 
-    public async Task<(bool Success, string Message, string? ResetToken, int StatusCode)> VerifyResetOtpAsync(
-        VerifyResetOtpRequestDto request)
+    public async Task<(
+        bool Success,
+        string Message,
+        string? ResetToken,
+        int StatusCode)>
+        VerifyResetOtpAsync(
+            VerifyResetOtpRequestDto request)
     {
-        if (request == null || string.IsNullOrWhiteSpace(request.Identifier))
+        if (request == null ||
+            string.IsNullOrWhiteSpace(
+                request.Identifier))
         {
-            return (false, "Email or phone number is required.", null, 400);
+            return (
+                false,
+                "Email or phone number is required.",
+                null,
+                400);
         }
 
-        var otpClean = request.Otp?.Trim();
-        if (string.IsNullOrWhiteSpace(otpClean) || otpClean.Length != 6 || !otpClean.All(char.IsDigit))
+        var otpClean =
+            request.Otp?.Trim();
+
+        if (string.IsNullOrWhiteSpace(otpClean) ||
+            otpClean.Length != 6 ||
+            !otpClean.All(char.IsDigit))
         {
-            return (false, "Please provide a valid 6-digit verification code.", null, 400);
+            return (
+                false,
+                "Please provide a valid 6-digit verification code.",
+                null,
+                400);
         }
 
-        var identifier = request.Identifier.Trim();
+        var identifier =
+            request.Identifier.Trim();
 
         User? user = null;
+
+        // =====================================================
+        // FIND USER BY EMAIL OR PHONE
+        // =====================================================
+
         if (identifier.Contains('@'))
         {
-            user = await _userRepository.GetByEmailAsync(identifier.ToLower());
+            user =
+                await _userRepository
+                    .GetByEmailAsync(
+                        identifier.ToLower());
         }
         else
         {
-            var digitsOnly = new string(identifier.Where(char.IsDigit).ToArray());
-            if (digitsOnly.Length == 12 && digitsOnly.StartsWith("91"))
+            var digitsOnly =
+                new string(
+                    identifier.Where(
+                        char.IsDigit)
+                    .ToArray());
+
+            if (digitsOnly.Length == 12 &&
+                digitsOnly.StartsWith("91"))
             {
-                digitsOnly = digitsOnly.Substring(2);
+                digitsOnly =
+                    digitsOnly.Substring(2);
             }
-            else if (digitsOnly.Length == 11 && digitsOnly.StartsWith("0"))
+            else if (digitsOnly.Length == 11 &&
+                     digitsOnly.StartsWith("0"))
             {
-                digitsOnly = digitsOnly.Substring(1);
+                digitsOnly =
+                    digitsOnly.Substring(1);
             }
 
-            user = await _userRepository.GetByPhoneNumberAsync(identifier)
-                   ?? (digitsOnly.Length == 10 ? await _userRepository.GetByPhoneNumberAsync(digitsOnly) : null);
+            user =
+                await _userRepository
+                    .GetByPhoneNumberAsync(
+                        identifier)
+                ?? (digitsOnly.Length == 10
+                    ? await _userRepository
+                        .GetByPhoneNumberAsync(
+                            digitsOnly)
+                    : null);
         }
 
         if (user == null)
         {
-            user = await _userRepository.GetByEmailOrPhoneAsync(identifier);
+            user =
+                await _userRepository
+                    .GetByEmailOrPhoneAsync(
+                        identifier);
         }
 
-        if (user == null || !user.IsActive)
+        if (user == null ||
+            !user.IsActive)
         {
-            return (false, "Invalid or expired verification code.", null, 400);
+            return (
+                false,
+                "Invalid or expired verification code.",
+                null,
+                400);
         }
 
-        var activeOtp = await _passwordResetRepository.GetLatestActiveOtpByUserIdAsync(user.Id);
-        if (activeOtp == null || activeOtp.IsUsed)
+        // =====================================================
+        // GET ACTIVE OTP
+        // =====================================================
+
+        var activeOtp =
+            await _passwordResetRepository
+                .GetLatestActiveOtpByUserIdAsync(
+                    user.Id);
+
+        if (activeOtp == null ||
+            activeOtp.IsUsed)
         {
-            return (false, "No active verification request found. Please request a new OTP.", null, 400);
+            return (
+                false,
+                "No active verification request found. Please request a new OTP.",
+                null,
+                400);
         }
 
-        if (activeOtp.ExpiresAt < DateTime.UtcNow)
+        // =====================================================
+        // OTP EXPIRY
+        // =====================================================
+
+        if (activeOtp.ExpiresAt <
+            DateTime.UtcNow)
         {
             activeOtp.IsUsed = true;
-            await _passwordResetRepository.UpdateAsync(activeOtp);
-            return (false, "Verification code has expired. Please request a new OTP.", null, 400);
+
+            await _passwordResetRepository
+                .UpdateAsync(
+                    activeOtp);
+
+            return (
+                false,
+                "Verification code has expired. Please request a new OTP.",
+                null,
+                400);
         }
+
+        // =====================================================
+        // MAX ATTEMPTS
+        // =====================================================
 
         if (activeOtp.AttemptCount >= 5)
         {
             activeOtp.IsUsed = true;
-            await _passwordResetRepository.UpdateAsync(activeOtp);
-            return (false, "Maximum verification attempts exceeded. Please request a new OTP.", null, 400);
+
+            await _passwordResetRepository
+                .UpdateAsync(
+                    activeOtp);
+
+            return (
+                false,
+                "Maximum verification attempts exceeded. Please request a new OTP.",
+                null,
+                400);
         }
 
         activeOtp.AttemptCount++;
 
+        // =====================================================
+        // VERIFY OTP HASH
+        // =====================================================
+
         bool matches = false;
-        var parts = activeOtp.OtpHash.Split(':');
+
+        var parts =
+            activeOtp.OtpHash.Split(':');
+
         if (parts.Length == 2)
         {
-            var salt = parts[0];
+            var salt =
+                parts[0];
+
             try
             {
-                var expectedHash = Convert.FromBase64String(parts[1]);
-                using var sha = SHA256.Create();
-                var actualHash = sha.ComputeHash(Encoding.UTF8.GetBytes(salt + ":" + otpClean));
-                matches = CryptographicOperations.FixedTimeEquals(actualHash, expectedHash);
+                var expectedHash =
+                    Convert.FromBase64String(
+                        parts[1]);
+
+                using var sha =
+                    SHA256.Create();
+
+                var actualHash =
+                    sha.ComputeHash(
+                        Encoding.UTF8.GetBytes(
+                            salt + ":" + otpClean));
+
+                matches =
+                    CryptographicOperations
+                        .FixedTimeEquals(
+                            actualHash,
+                            expectedHash);
             }
             catch
             {
@@ -852,94 +1266,222 @@ public class AuthService : IAuthService
             }
         }
 
+        // =====================================================
+        // INVALID OTP
+        // =====================================================
+
         if (!matches)
         {
             if (activeOtp.AttemptCount >= 5)
             {
                 activeOtp.IsUsed = true;
-                await _passwordResetRepository.UpdateAsync(activeOtp);
-                return (false, "Maximum verification attempts exceeded. Please request a new OTP.", null, 400);
+
+                await _passwordResetRepository
+                    .UpdateAsync(
+                        activeOtp);
+
+                return (
+                    false,
+                    "Maximum verification attempts exceeded. Please request a new OTP.",
+                    null,
+                    400);
             }
 
-            await _passwordResetRepository.UpdateAsync(activeOtp);
-            int remaining = 5 - activeOtp.AttemptCount;
-            return (false, $"Invalid verification code. {remaining} attempt{(remaining == 1 ? "" : "s")} remaining.", null, 400);
+            await _passwordResetRepository
+                .UpdateAsync(
+                    activeOtp);
+
+            int remaining =
+                5 - activeOtp.AttemptCount;
+
+            return (
+                false,
+                $"Invalid verification code. {remaining} attempt{(remaining == 1 ? "" : "s")} remaining.",
+                null,
+                400);
         }
 
-        // Valid OTP -> Generate short-lived reset token
-        var resetToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-        activeOtp.IsVerified = true;
-        activeOtp.ResetToken = resetToken;
-        activeOtp.ResetTokenExpiresAt = DateTime.UtcNow.AddMinutes(15);
-        await _passwordResetRepository.UpdateAsync(activeOtp);
+        // =====================================================
+        // VALID OTP -> GENERATE RESET TOKEN
+        // =====================================================
 
-        return (true, "OTP verified successfully.", resetToken, 200);
+        var resetToken =
+            Convert.ToHexString(
+                RandomNumberGenerator
+                    .GetBytes(32));
+
+        activeOtp.IsVerified =
+            true;
+
+        activeOtp.ResetToken =
+            resetToken;
+
+        activeOtp.ResetTokenExpiresAt =
+            DateTime.UtcNow.AddMinutes(15);
+
+        await _passwordResetRepository
+            .UpdateAsync(
+                activeOtp);
+
+        return (
+            true,
+            "OTP verified successfully.",
+            resetToken,
+            200);
     }
 
     // =========================================================
     // RESET PASSWORD
     // =========================================================
 
-    public async Task<(bool Success, string Message, int StatusCode)> ResetPasswordAsync(
-        ResetPasswordRequestDto request)
+    public async Task<(bool Success, string Message, int StatusCode)>
+        ResetPasswordAsync(
+            ResetPasswordRequestDto request)
     {
-        if (request == null || string.IsNullOrWhiteSpace(request.ResetToken))
+        if (request == null ||
+            string.IsNullOrWhiteSpace(
+                request.ResetToken))
         {
-            return (false, "Password reset token is required.", 400);
+            return (
+                false,
+                "Password reset token is required.",
+                400);
         }
 
-        if (string.IsNullOrWhiteSpace(request.NewPassword))
+        if (string.IsNullOrWhiteSpace(
+                request.NewPassword))
         {
-            return (false, "New password is required.", 400);
+            return (
+                false,
+                "New password is required.",
+                400);
         }
 
-        var password = request.NewPassword;
+        var password =
+            request.NewPassword;
+
+        // =====================================================
+        // PASSWORD VALIDATION
+        // =====================================================
+
         if (password.Length < 8)
         {
-            return (false, "Password must be at least 8 characters long.", 400);
+            return (
+                false,
+                "Password must be at least 8 characters long.",
+                400);
         }
+
         if (!password.Any(char.IsUpper))
         {
-            return (false, "Password must contain at least one uppercase letter.", 400);
+            return (
+                false,
+                "Password must contain at least one uppercase letter.",
+                400);
         }
+
         if (!password.Any(char.IsLower))
         {
-            return (false, "Password must contain at least one lowercase letter.", 400);
+            return (
+                false,
+                "Password must contain at least one lowercase letter.",
+                400);
         }
+
         if (!password.Any(char.IsDigit))
         {
-            return (false, "Password must contain at least one number.", 400);
+            return (
+                false,
+                "Password must contain at least one number.",
+                400);
         }
 
-        var otpEntity = await _passwordResetRepository.GetByResetTokenAsync(request.ResetToken.Trim());
-        if (otpEntity == null || !otpEntity.IsVerified || otpEntity.IsUsed)
+        // =====================================================
+        // FIND RESET TOKEN
+        // =====================================================
+
+        var otpEntity =
+            await _passwordResetRepository
+                .GetByResetTokenAsync(
+                    request.ResetToken.Trim());
+
+        if (otpEntity == null ||
+            !otpEntity.IsVerified ||
+            otpEntity.IsUsed)
         {
-            return (false, "Invalid or expired password reset token. Please request a new OTP.", 400);
+            return (
+                false,
+                "Invalid or expired password reset token. Please request a new OTP.",
+                400);
         }
 
-        if (otpEntity.ResetTokenExpiresAt == null || otpEntity.ResetTokenExpiresAt < DateTime.UtcNow)
+        // =====================================================
+        // RESET TOKEN EXPIRY
+        // =====================================================
+
+        if (otpEntity.ResetTokenExpiresAt == null ||
+            otpEntity.ResetTokenExpiresAt <
+                DateTime.UtcNow)
         {
             otpEntity.IsUsed = true;
-            await _passwordResetRepository.UpdateAsync(otpEntity);
-            return (false, "Password reset token has expired. Please request a new OTP.", 400);
+
+            await _passwordResetRepository
+                .UpdateAsync(
+                    otpEntity);
+
+            return (
+                false,
+                "Password reset token has expired. Please request a new OTP.",
+                400);
         }
 
-        var user = await _userRepository.GetByIdAsync(otpEntity.UserId);
-        if (user == null || !user.IsActive)
+        // =====================================================
+        // GET USER
+        // =====================================================
+
+        var user =
+            await _userRepository
+                .GetByIdAsync(
+                    otpEntity.UserId);
+
+        if (user == null ||
+            !user.IsActive)
         {
-            return (false, "User account not found or inactive.", 400);
+            return (
+                false,
+                "User account not found or inactive.",
+                400);
         }
 
-        // Use PasswordHasher<User>
-        user.PasswordHash = _passwordHasher.HashPassword(user, password);
-        await _userRepository.UpdateAsync(user);
+        // =====================================================
+        // UPDATE PASSWORD
+        // =====================================================
 
-        // Mark OTP entity as used and invalidate token
+        user.PasswordHash =
+            _passwordHasher.HashPassword(
+                user,
+                password);
+
+        await _userRepository
+            .UpdateAsync(
+                user);
+
+        // =====================================================
+        // INVALIDATE RESET TOKEN
+        // =====================================================
+
         otpEntity.IsUsed = true;
-        otpEntity.ResetToken = null;
-        await _passwordResetRepository.UpdateAsync(otpEntity);
 
-        return (true, "Password has been reset successfully. Please login with your new password.", 200);
+        otpEntity.ResetToken = null;
+
+        await _passwordResetRepository
+            .UpdateAsync(
+                otpEntity);
+
+        return (
+            true,
+            "Password has been reset successfully. Please login with your new password.",
+            200);
     }
 
     // =========================================================
@@ -948,14 +1490,16 @@ public class AuthService : IAuthService
 
     private class AdminOtpData
     {
-        public string Otp { get; set; } = string.Empty;
+        public string Otp { get; set; } =
+            string.Empty;
 
         public DateTime ExpiresAt { get; set; }
     }
 
     private class CaptchaData
     {
-        public string Answer { get; set; } = string.Empty;
+        public string Answer { get; set; } =
+            string.Empty;
 
         public DateTime ExpiresAt { get; set; }
     }
