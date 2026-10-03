@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+
 import {
   forgotPassword,
   loginUser,
@@ -7,6 +9,7 @@ import {
   resetPassword,
   verifyResetOtp,
 } from "../../services/authService";
+
 import "./login.css";
 
 type ForgotStep = 1 | 2 | 3;
@@ -53,7 +56,8 @@ const Login: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] =
+    useState(false);
   const [forgotError, setForgotError] = useState("");
   const [forgotSuccess, setForgotSuccess] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
@@ -117,25 +121,36 @@ const Login: React.FC = () => {
     setLoginLoading(true);
 
     try {
-      // Admin login
+      // =========================================================
+      // ADMIN LOGIN
+      // =========================================================
       if (
         cleanEmail === ADMIN_EMAIL &&
         cleanPassword === ADMIN_PASSWORD
       ) {
         localStorage.setItem("adminEmail", cleanEmail);
-        localStorage.setItem("adminLoginPending", "true");
+
+        // IMPORTANT:
+        // AdminOTP.tsx checks this exact key.
+        localStorage.setItem(
+          "nexus_admin_pending_otp",
+          "true"
+        );
 
         navigate("/admin/verify-otp");
         return;
       }
 
-      // Customer login
+      // =========================================================
+      // CUSTOMER LOGIN
+      // =========================================================
       const response = await loginUser({
         email: cleanEmail,
         identifier: cleanEmail,
         password: cleanPassword,
       });
 
+      // Customer must not enter admin OTP flow.
       if (
         response.role?.toLowerCase() === "admin" ||
         response.requiresOtp
@@ -149,27 +164,67 @@ const Login: React.FC = () => {
         return;
       }
 
+      // =========================================================
+      // SAVE AUTHENTICATION DATA
+      // =========================================================
+
       localStorage.setItem("authToken", response.token);
-      localStorage.setItem("userId", String(response.userId));
-      localStorage.setItem("userEmail", response.email);
+
+      localStorage.setItem(
+        "userId",
+        String(response.userId ?? "")
+      );
+
+      localStorage.setItem(
+        "userEmail",
+        response.email || cleanEmail
+      );
+
       localStorage.setItem(
         "userFirstName",
         response.firstName || ""
       );
+
       localStorage.setItem(
         "userLastName",
         response.lastName || ""
       );
+
       localStorage.setItem(
         "userPhone",
         response.phoneNumber || ""
       );
+
       localStorage.setItem(
         "userRole",
         response.role || "Customer"
       );
 
-      window.dispatchEvent(new Event("authChanged"));
+      // =========================================================
+      // IMPORTANT:
+      // Navbar reads the complete user from localStorage key
+      // "user". Save the complete customer object here.
+      // =========================================================
+
+      const storedUser = {
+        userId: response.userId,
+        firstName: response.firstName || "",
+        lastName: response.lastName || "",
+        email: response.email || cleanEmail,
+        phoneNumber: response.phoneNumber || "",
+        role: response.role || "Customer",
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(storedUser)
+      );
+
+      // Navbar checks this value.
+      localStorage.setItem("isLoggedIn", "true");
+
+      // Navbar listens for this event.
+      window.dispatchEvent(new Event("userUpdated"));
 
       navigate("/");
     } catch (error: any) {
@@ -372,7 +427,9 @@ const Login: React.FC = () => {
       );
 
       setResetToken(response.resetToken);
+
       setForgotSuccess("Verification successful.");
+
       setForgotStep(3);
     } catch (error: any) {
       const message =
@@ -509,6 +566,7 @@ const Login: React.FC = () => {
 
                 <div>
                   <strong>Secure access</strong>
+
                   <span>
                     Enterprise-ready authentication
                   </span>
@@ -520,6 +578,7 @@ const Login: React.FC = () => {
 
                 <div>
                   <strong>Connected workflow</strong>
+
                   <span>
                     Manage your business in one place
                   </span>
@@ -984,6 +1043,7 @@ const Login: React.FC = () => {
               </div>
             )}
 
+            {/* FORGOT STEP 1 */}
             {forgotStep === 1 && (
               <form
                 onSubmit={handleForgotPassword}
@@ -1033,6 +1093,7 @@ const Login: React.FC = () => {
               </form>
             )}
 
+            {/* FORGOT STEP 2 */}
             {forgotStep === 2 && (
               <form
                 onSubmit={handleVerifyResetOtp}
@@ -1098,6 +1159,7 @@ const Login: React.FC = () => {
               </form>
             )}
 
+            {/* FORGOT STEP 3 */}
             {forgotStep === 3 && (
               <form
                 onSubmit={handleResetPassword}
