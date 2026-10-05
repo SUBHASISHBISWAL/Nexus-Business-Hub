@@ -1,0 +1,707 @@
+/* =========================
+   PAYMENT PAGE
+========================= */
+
+.nx-payment-page {
+  min-height: calc(100vh - 72px);
+  background: #f6f8fb;
+  padding: 34px 0 60px;
+  color: #111827;
+}
+
+.nx-payment-header {
+  margin-bottom: 28px;
+}
+
+.nx-payment-header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.nx-payment-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.nx-payment-secure {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 7px 12px;
+  border-radius: 7px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nx-payment-secure .material-symbols-outlined {
+  font-size: 17px;
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+.nx-payment-error {
+  margin-bottom: 20px;
+  padding: 13px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* =========================
+   MAIN GRID
+========================= */
+
+.nx-payment-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.nx-payment-main {
+  min-width: 0;
+}
+
+
+/* =========================
+   PAYMENT METHOD CARD
+========================= */
+
+.nx-payment-method-card,
+.nx-payment-items-card,
+.nx-payment-summary {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+}
+
+.nx-payment-method-card {
+  padding: 24px;
+}
+
+.nx-payment-section-header {
+  margin-bottom: 20px;
+}
+
+.nx-payment-section-header h2 {
+  margin: 0 0 5px;
+  font-size: 19px;
+  font-weight: 750;
+  color: #111827;
+}
+
+.nx-payment-section-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+
+/* =========================
+   PAYMENT METHODS
+========================= */
+
+.nx-payment-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.nx-payment-method {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 68px;
+  padding: 13px 15px;
+  border: 1px solid #dbe1e8;
+  border-radius: 9px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.nx-payment-method:hover {
+  border-color: #93c5fd;
+  background: #f8fbff;
+}
+
+.nx-payment-method.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+.nx-payment-method input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: #2563eb;
+  flex-shrink: 0;
+}
+
+.nx-payment-method-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #f3f4f6;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.nx-payment-method-icon .material-symbols-outlined {
+  font-size: 21px;
+}
+
+.nx-payment-method-content {
+  min-width: 0;
+}
+
+.nx-payment-method-content strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 14px;
+  color: #111827;
+}
+
+.nx-payment-method-content span {
+  display: block;
+  color: #6b7280;
+  font-size: 11px;
+}
+
+
+/* =========================
+   PAYMENT FORM
+========================= */
+
+.nx-payment-form {
+  padding-top: 4px;
+}
+
+.nx-payment-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.nx-payment-form-group {
+  margin-bottom: 16px;
+}
+
+.nx-payment-form-group label {
+  display: block;
+  margin-bottom: 7px;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.nx-payment-form-group input,
+.nx-payment-form-group select {
+  width: 100%;
+  height: 44px;
+  padding: 0 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.nx-payment-form-group input:focus,
+.nx-payment-form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.nx-payment-form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.nx-other-payment-info {
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+/* =========================
+   ORDER ITEMS
+========================= */
+
+.nx-payment-items-card {
+  margin-top: 20px;
+  padding: 22px 24px;
+}
+
+.nx-payment-items-card > h2 {
+  margin: 0 0 17px;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.nx-payment-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-payment-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid #edf0f3;
+}
+
+.nx-payment-item:first-child {
+  padding-top: 0;
+}
+
+.nx-payment-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.nx-payment-item-image {
+  width: 62px;
+  height: 62px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+  object-fit: contain;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+.nx-payment-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-payment-item-info h3 {
+  margin: 0 0 5px;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.nx-payment-item-info span {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.nx-payment-item-price {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+
+/* =========================
+   SUMMARY
+========================= */
+
+.nx-payment-summary {
+  position: sticky;
+  top: 20px;
+  padding: 22px;
+}
+
+.nx-payment-summary-header {
+  margin-bottom: 19px;
+}
+
+.nx-payment-summary-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.nx-payment-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 13px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.nx-payment-summary-row strong {
+  color: #111827;
+  font-weight: 650;
+}
+
+.nx-payment-discount {
+  color: #059669;
+}
+
+.nx-payment-discount strong {
+  color: #059669;
+}
+
+.nx-payment-summary-divider {
+  height: 1px;
+  margin: 18px 0;
+  background: #e5e7eb;
+}
+
+.nx-payment-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.nx-payment-total span {
+  color: #111827;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.nx-payment-total strong {
+  color: #111827;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+
+/* =========================
+   PAY NOW
+========================= */
+
+.nx-pay-now-button {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.nx-pay-now-button:hover {
+  background: #1d4ed8;
+}
+
+.nx-pay-now-button:active {
+  transform: translateY(1px);
+}
+
+.nx-pay-now-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.nx-payment-spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: nx-payment-spin 0.7s linear infinite;
+}
+
+@keyframes nx-payment-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.nx-payment-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 13px;
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.nx-payment-security .material-symbols-outlined {
+  font-size: 15px;
+  color: #059669;
+}
+
+.nx-payment-back {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nx-payment-back:hover {
+  color: #2563eb;
+}
+
+
+/* =========================
+   SUCCESS PAGE
+========================= */
+
+.nx-payment-success {
+  width: min(720px, calc(100% - 30px));
+  margin: 30px auto 0;
+  text-align: center;
+}
+
+.nx-payment-success-icon {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.nx-payment-success-icon .material-symbols-outlined {
+  font-size: 44px;
+  font-weight: 600;
+}
+
+.nx-payment-success h1 {
+  margin: 0 0 8px;
+  color: #111827;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.nx-payment-success > p {
+  max-width: 560px;
+  margin: 0 auto 25px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.nx-payment-label {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.nx-payment-success-card {
+  overflow: hidden;
+  text-align: left;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.07);
+}
+
+.nx-payment-success-card > div {
+  padding: 16px 20px;
+  border-bottom: 1px solid #edf0f3;
+}
+
+.nx-payment-success-card > div:last-child {
+  border-bottom: none;
+}
+
+.nx-payment-success-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.nx-payment-success-card span,
+.nx-payment-success-card p {
+  margin: 0;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.nx-payment-paid {
+  color: #15803d !important;
+  font-weight: 800 !important;
+}
+
+.nx-payment-shipment {
+  background: #f8fafc;
+}
+
+.nx-payment-shipment strong {
+  color: #475569;
+}
+
+.nx-payment-shipment p {
+  line-height: 1.7;
+}
+
+.nx-payment-success-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.nx-payment-success-actions button,
+.nx-payment-success-actions a {
+  min-width: 145px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.nx-payment-success-actions button:first-child,
+.nx-payment-success-actions a:first-child {
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.nx-payment-success-actions button:first-child:hover,
+.nx-payment-success-actions a:first-child:hover {
+  background: #1d4ed8;
+}
+
+.nx-payment-success-actions button:last-child,
+.nx-payment-success-actions a:last-child {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.nx-payment-success-actions button:last-child:hover,
+.nx-payment-success-actions a:last-child:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .nx-payment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-payment-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 650px) {
+  .nx-payment-page {
+    padding: 25px 0 45px;
+  }
+
+  .nx-payment-header h1 {
+    font-size: 25px;
+  }
+
+  .nx-payment-method-card {
+    padding: 18px;
+  }
+
+  .nx-payment-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-payment-form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .nx-payment-items-card,
+  .nx-payment-summary {
+    padding: 18px;
+  }
+
+  .nx-payment-success h1 {
+    font-size: 25px;
+  }
+
+  .nx-payment-success-actions {
+    flex-direction: column;
+  }
+
+  .nx-payment-success-actions button,
+  .nx-payment-success-actions a {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .nx-payment-item-image {
+    width: 52px;
+    height: 52px;
+  }
+
+  .nx-payment-item {
+    gap: 10px;
+  }
+
+  .nx-payment-item-info h3 {
+    font-size: 13px;
+  }
+
+  .nx-payment-item-price {
+    font-size: 13px;
+  }
+}
