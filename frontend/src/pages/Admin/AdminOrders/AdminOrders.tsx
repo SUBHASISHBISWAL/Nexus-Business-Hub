@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AdminTableSkeleton } from "../../../components/skeleton";
+import { AdminTableSkeleton } from "../../../components/skeleton/AdminTableSkeleton";
 import { getOrders } from "../../../services/orderService";
 import { useInitialLoading } from "../../../context/InitialLoadingContext";
 import "./AdminOrders.css";

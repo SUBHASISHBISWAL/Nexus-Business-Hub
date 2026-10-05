@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./OrderHistory.css";
 import { getOrders } from "../../services/orderService";
-import { OrderHistorySkeleton } from "../../components/skeleton";
+import { OrderHistorySkeleton } from "../../components/skeleton/OrderHistorySkeleton";
 import { ErrorState } from "../../components/common/ErrorState";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import { resolveProductImage, handleImageError } from "../../utils/productImage";

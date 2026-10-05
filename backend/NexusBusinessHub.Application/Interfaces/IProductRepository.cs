@@ -23,5 +23,5 @@ public interface IProductRepository
 
     Task<Category> EnsureCategoryAsync(string name);
 
-    Task<IEnumerable<Category>> GetCategoriesAsync();
+    Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
 }

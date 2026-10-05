@@ -37,3 +37,37 @@ select,
 textarea {
   font-family: inherit;
 }
+
+/* Route Suspense Loading Fallback */
+.nx-route-loading {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--nx-text-muted, #64748b);
+  font-family: inherit;
+}
+
+.nx-route-loading .material-symbols-outlined {
+  font-size: 32px;
+  color: var(--nx-primary, #087df5);
+  animation: nx-spin 1s linear infinite;
+}
+
+.nx-route-loading p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+@keyframes nx-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

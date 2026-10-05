@@ -1,21 +1,23 @@
 import type { Product, ProductCategory } from "../types/product";
 
-import product1 from "../assets/product-images/product1.jpg";
-import product2 from "../assets/product-images/product2.jpg";
-import product3 from "../assets/product-images/product3.jpg";
-import product4 from "../assets/product-images/product4.jpg";
-import product5 from "../assets/product-images/product5.jpg";
-import product6 from "../assets/product-images/product6.jpg";
-import product7 from "../assets/product-images/product7.jpg";
-import product8 from "../assets/product-images/product8.jpg";
-import product9 from "../assets/product-images/product9.jpg";
-import product10 from "../assets/product-images/product10.jpg";
-import product11 from "../assets/product-images/product11.jpg";
-import product12 from "../assets/product-images/product12.jpg";
-import product13 from "../assets/product-images/product13.jpg";
-import product14 from "../assets/product-images/product14.jpg";
-import product15 from "../assets/product-images/product15.jpg";
-import product16 from "../assets/product-images/product16.jpg";
+// Static URL resolutions (native ESM - avoids Vite glob import expansion)
+const product1 = new URL("../assets/product-images/product1.jpg", import.meta.url).href;
+const product2 = new URL("../assets/product-images/product2.jpg", import.meta.url).href;
+const product3 = new URL("../assets/product-images/product3.jpg", import.meta.url).href;
+const product4 = new URL("../assets/product-images/product4.jpg", import.meta.url).href;
+const product5 = new URL("../assets/product-images/product5.jpg", import.meta.url).href;
+const product6 = new URL("../assets/product-images/product6.jpg", import.meta.url).href;
+const product7 = new URL("../assets/product-images/product7.jpg", import.meta.url).href;
+const product8 = new URL("../assets/product-images/product8.jpg", import.meta.url).href;
+const product9 = new URL("../assets/product-images/product9.jpg", import.meta.url).href;
+const product10 = new URL("../assets/product-images/product10.jpg", import.meta.url).href;
+const product11 = new URL("../assets/product-images/product11.jpg", import.meta.url).href;
+const product12 = new URL("../assets/product-images/product12.jpg", import.meta.url).href;
+const product13 = new URL("../assets/product-images/product13.jpg", import.meta.url).href;
+const product14 = new URL("../assets/product-images/product14.jpg", import.meta.url).href;
+const product15 = new URL("../assets/product-images/product15.jpg", import.meta.url).href;
+const product16 = new URL("../assets/product-images/product16.jpg", import.meta.url).href;
+
 
 export const products: Product[] = [
   {
@@ -250,7 +252,7 @@ export const productCategories: ProductCategory[] = [
   {
     id: "software",
     name: "Software",
-    count: products.filter((p) => p.category === "Software").length,
+    count: 5,
     description:
       "Mission-critical operating environments, fleet orchestrators & real-time telemetry analytics.",
     icon: "bi-code-square",
@@ -259,7 +261,7 @@ export const productCategories: ProductCategory[] = [
   {
     id: "hardware",
     name: "Hardware",
-    count: products.filter((p) => p.category === "Hardware").length,
+    count: 5,
     description:
       "High-throughput industrial computing units, cryptographic racks & edge appliances.",
     icon: "bi-cpu",
@@ -268,7 +270,7 @@ export const productCategories: ProductCategory[] = [
   {
     id: "electronics",
     name: "Electronics",
-    count: products.filter((p) => p.category === "Electronics").length,
+    count: 4,
     description:
       "Precision IoT gateways, thermal imaging arrays & isolated field communication modules.",
     icon: "bi-broadcast-pin",
@@ -277,7 +279,7 @@ export const productCategories: ProductCategory[] = [
   {
     id: "accessories",
     name: "Accessories",
-    count: products.filter((p) => p.category === "Accessories").length,
+    count: 2,
     description:
       "Industrial washdown cabling, DIN-rail mounting kits & certified field deployment tools.",
     icon: "bi-tools",

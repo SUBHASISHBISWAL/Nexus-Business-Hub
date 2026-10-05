@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using NexusBusinessHub.Application.DTOs;
 using NexusBusinessHub.Application.Interfaces;
@@ -244,45 +245,39 @@ public class ProductRepository : IProductRepository
         // PAGINATED PRODUCTS
         // =========================================================
 
-        var skip = (page - 1) * pageSize;
+        List<ProductDto> items;
 
-        var items = await query
-            .Skip(skip)
-            .Take(pageSize)
-            .Select(p => new ProductDto
-            {
-                Id = p.Id,
-
-                Name = p.Name,
-
-                Description = p.Description,
-
-                Price = p.Price,
-
-                Image = p.ImageUrl,
-
-                ImageUrl = p.ImageUrl,
-
-                Images = new List<string>
+        if (totalItems == 0)
+        {
+            items = new List<ProductDto>();
+        }
+        else
+        {
+            items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new ProductDto
                 {
-                    p.ImageUrl
-                },
-
-                Category = p.Category.Name,
-
-                CategoryId = p.CategoryId,
-
-                Rating = p.Rating,
-
-                StockQuantity = p.StockQuantity,
-
-                IsActive = p.IsActive,
-
-                CreatedAt = p.CreatedAt,
-
-                UpdatedAt = p.UpdatedAt
-            })
-            .ToListAsync();
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Image = p.ImageUrl,
+                    ImageUrl = p.ImageUrl,
+                    Images = new List<string>
+                    {
+                        p.ImageUrl
+                    },
+                    Category = p.Category.Name,
+                    CategoryId = p.CategoryId,
+                    Rating = p.Rating,
+                    StockQuantity = p.StockQuantity,
+                    IsActive = p.IsActive,
+                    CreatedAt = p.CreatedAt,
+                    UpdatedAt = p.UpdatedAt
+                })
+                .ToListAsync();
+        }
 
         // =========================================================
         // CATEGORY COUNTS
@@ -290,6 +285,7 @@ public class ProductRepository : IProductRepository
 
         var categoryCounts = await _context.Categories
             .AsNoTracking()
+            .Where(c => c.IsActive)
             .Select(c => new
             {
                 c.Name,
@@ -309,18 +305,22 @@ public class ProductRepository : IProductRepository
 
         if (parameters.IncludeInactive == true)
         {
-            activeCount = await _context.Products
+            var counts = await _context.Products
                 .AsNoTracking()
-                .CountAsync(p =>
-                    p.IsActive &&
-                    p.StockQuantity > 0);
+                .Where(p => p.IsActive)
+                .GroupBy(_ => 1)
+                .Select(g => new
+                {
+                    Active = g.Count(p =>
+                        p.StockQuantity > 0),
 
-            outOfStockCount = await _context.Products
-                .AsNoTracking()
-                .CountAsync(p =>
-                    p.IsActive &&
-                    p.StockQuantity == 0);
+                    OutOfStock = g.Count(p =>
+                        p.StockQuantity == 0)
+                })
+                .FirstOrDefaultAsync();
 
+            activeCount = counts?.Active ?? 0;
+            outOfStockCount = counts?.OutOfStock ?? 0;
             draftCount = 0;
         }
 
@@ -331,21 +331,13 @@ public class ProductRepository : IProductRepository
         return new PagedResult<ProductDto>
         {
             Items = items,
-
             Page = page,
-
             PageSize = pageSize,
-
             TotalItems = totalItems,
-
             TotalPages = totalPages,
-
             CategoryCounts = categoryCounts,
-
             ActiveCount = activeCount,
-
             OutOfStockCount = outOfStockCount,
-
             DraftCount = draftCount
         };
     }
@@ -371,34 +363,21 @@ public class ProductRepository : IProductRepository
             .Select(p => new ProductDto
             {
                 Id = p.Id,
-
                 Name = p.Name,
-
                 Description = p.Description,
-
                 Price = p.Price,
-
                 Image = p.ImageUrl,
-
                 ImageUrl = p.ImageUrl,
-
                 Images = new List<string>
                 {
                     p.ImageUrl
                 },
-
                 Category = p.Category.Name,
-
                 CategoryId = p.CategoryId,
-
                 Rating = p.Rating,
-
                 StockQuantity = p.StockQuantity,
-
                 IsActive = p.IsActive,
-
                 CreatedAt = p.CreatedAt,
-
                 UpdatedAt = p.UpdatedAt
             })
             .ToListAsync();
@@ -481,7 +460,6 @@ public class ProductRepository : IProductRepository
         }
 
         product.IsActive = false;
-
         product.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -546,13 +524,9 @@ public class ProductRepository : IProductRepository
         var category = new Category
         {
             Name = trimmedName,
-
             Description = $"{trimmedName} products",
-
             IsActive = true,
-
             CreatedAt = now,
-
             UpdatedAt = now
         };
 
@@ -567,13 +541,20 @@ public class ProductRepository : IProductRepository
     // GET CATEGORIES
     // =============================================================
 
-    public async Task<IEnumerable<Category>> GetCategoriesAsync()
+    public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
     {
         return await _context.Categories
             .AsNoTracking()
-            .Include(c => c.Products)
             .Where(c => c.IsActive)
             .OrderBy(c => c.Name)
+            .Select(c => new CategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                ProductCount = c.Products.Count(p => p.IsActive)
+            })
             .ToListAsync();
     }
 }
+

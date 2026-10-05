@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getOrderById } from "../../services/orderService";
-import { OrderTrackingSkeleton } from "../../components/skeleton";
+import { OrderTrackingSkeleton } from "../../components/skeleton/OrderTrackingSkeleton";
 import { ErrorState } from "../../components/common/ErrorState";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import { resolveProductImage, handleImageError } from "../../utils/productImage";

@@ -9,7 +9,7 @@ import {
   useInitialLoading,
 } from "./context/InitialLoadingContext";
 import { ThemeProvider } from "./context/ThemeContext";
-import { GlobalFullPageSkeleton } from "./components/skeleton";
+import { GlobalFullPageSkeleton } from "./components/skeleton/GlobalFullPageSkeleton";
 
 function AppContent() {
   const { isInitialReady, isFadingOut } = useInitialLoading();

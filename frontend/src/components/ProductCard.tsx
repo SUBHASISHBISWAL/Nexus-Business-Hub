@@ -69,6 +69,7 @@ function ProductCard({
             src={resolvedImage}
             alt={product.name}
             loading="lazy"
+            decoding="async"
             onError={handleImageError}
           />
         </Link>

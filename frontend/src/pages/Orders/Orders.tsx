@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getOrders } from "../../services/orderService";
-import { OrdersSkeleton } from "../../components/skeleton";
+import { OrdersSkeleton } from "../../components/skeleton/OrdersSkeleton";
 import { ErrorState } from "../../components/common/ErrorState";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import "./Orders.css";

@@ -14,7 +14,7 @@ import {
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { getProductById } from "../../services/productService";
-import { ProductDetailsSkeleton } from "../../components/skeleton";
+import { ProductDetailsSkeleton } from "../../components/skeleton/ProductDetailsSkeleton";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import type { Product } from "../../types/product";
 import {
@@ -273,6 +273,8 @@ function ProductDetails() {
                     src={activeImage}
                     alt={`${product.name} ${currentImage + 1}`}
                     className="nx-details-image"
+                    loading="eager"
+                    decoding="async"
                     onError={handleImageError}
                   />
                 ) : (
@@ -352,6 +354,8 @@ function ProductDetails() {
                           index + 1
                         }`}
                         className="nx-thumbnail-image"
+                        loading="lazy"
+                        decoding="async"
                         onError={handleImageError}
                       />
                     </button>
@@ -857,6 +861,8 @@ function ProductDetails() {
               src={activeImage}
               alt={`${product.name} ${currentImage + 1}`}
               className="nx-viewer-image"
+              loading="lazy"
+              decoding="async"
               onError={handleImageError}
             />
 
@@ -879,6 +885,8 @@ function ProductDetails() {
                       <img
                         src={image}
                         alt={`Preview ${index + 1}`}
+                        loading="lazy"
+                        decoding="async"
                         onError={handleImageError}
                       />
                     </button>

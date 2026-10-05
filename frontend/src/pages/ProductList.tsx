@@ -1,4 +1,3 @@
-
 import "./ProductList.css";
 
 import {
@@ -6,7 +5,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
@@ -15,11 +13,11 @@ import { useSearchParams } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import ProductCard from "../components/ProductCard";
-import { ProductCardSkeletonGrid } from "../components/skeleton";
+import { ProductCardSkeletonGrid } from "../components/skeleton/ProductCardSkeleton";
 import { ErrorState } from "../components/common/ErrorState";
 import { categoryLabels } from "../data/products";
 import type { Product } from "../types/product";
-import { getProducts } from "../services/productService";
+import { getCategories, getProducts } from "../services/productService";
 import { useInitialLoading } from "../context/InitialLoadingContext";
 
 function ProductList() {
@@ -47,36 +45,32 @@ function ProductList() {
   // READ VALUES FROM URL
   // =========================
 
-  const urlPage = Math.max(
+  const currentPage = Math.max(
     1,
     Number(searchParams.get("page")) || 1
   );
 
-  const urlCategory = searchParams.get("category");
+  const categoryParam =
+    searchParams.get("category") || "";
 
-  const urlCategories = useMemo(() => {
-    return urlCategory
-      ? urlCategory
+  const selectedCategories = useMemo(() => {
+    return categoryParam
+      ? categoryParam
           .split(",")
           .map((item) => item.trim())
           .filter(Boolean)
       : [];
-  }, [urlCategory]);
-
-  const urlSort = searchParams.get("sortBy") || "newest";
+  }, [categoryParam]);
 
   const searchTerm =
     searchParams.get("search")?.trim() || "";
 
-  // =========================
-  // FILTER / SORT STATES
-  // =========================
+  const sort =
+    searchParams.get("sortBy") || "newest";
 
-  const [currentPage, setCurrentPage] =
-    useState<number>(urlPage);
-
-  const [selectedCategories, setSelectedCategories] =
-    useState<string[]>(urlCategories);
+  // =========================
+  // FILTER UI STATES
+  // =========================
 
   const [categoryOpen, setCategoryOpen] =
     useState<boolean>(true);
@@ -90,162 +84,164 @@ function ProductList() {
   const [minRating, setMinRating] =
     useState<number>(0);
 
-  const [sort, setSort] =
-    useState<string>(urlSort);
-
   // =========================
   // CART NOTICE
   // =========================
 
-  const [notice, setNotice] = useState<string>("");
+  const [notice, setNotice] =
+    useState<string>("");
 
   // =========================
-  // PREVENT UNNECESSARY REQUEST
-  // =========================
-
-  const lastRequestKey = useRef<string>("");
-
-  // =========================
-  // SYNC URL -> STATE
+  // LOAD CATEGORIES FROM API
   // =========================
 
   useEffect(() => {
-    setSelectedCategories((previous) => {
-      const same =
-        previous.length === urlCategories.length &&
-        previous.every(
-          (value, index) =>
-            value === urlCategories[index]
-        );
+    const controller =
+      new AbortController();
 
-      return same ? previous : urlCategories;
-    });
+    getCategories(controller.signal)
+      .then((categories) => {
+        if (!Array.isArray(categories)) {
+          return;
+        }
 
-    setSort((previous) => {
-      return previous === urlSort
-        ? previous
-        : urlSort;
-    });
+        const counts: Record<string, number> = {};
 
-    setCurrentPage((previous) => {
-      return previous === urlPage
-        ? previous
-        : urlPage;
-    });
-  }, [urlCategories, urlSort, urlPage]);
+        categories.forEach((category) => {
+          counts[category.name] =
+            category.productCount ?? 0;
+        });
+
+        setCategoryCounts((previous) => ({
+          ...counts,
+          ...previous,
+        }));
+      })
+      .catch((err) => {
+        if (
+          err?.name !== "CanceledError" &&
+          err?.name !== "AbortError"
+        ) {
+          console.error(
+            "Failed to load categories:",
+            err
+          );
+        }
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   // =========================
   // LOAD PRODUCTS FROM API
   // =========================
 
-  const loadProducts = useCallback(async () => {
-    const categoryParam =
-      selectedCategories.length > 0
-        ? selectedCategories.join(",")
-        : undefined;
+  const loadProducts = useCallback(
+    async (signal?: AbortSignal) => {
+      try {
+        setLoading(true);
+        setError("");
 
-    const requestKey = JSON.stringify({
-      page: currentPage,
-      pageSize: productsPerPage,
-      category: categoryParam,
-      search: searchTerm || undefined,
-      maxPrice:
-        priceRange < 412000
-          ? priceRange
-          : undefined,
-      minRating:
-        minRating > 0
-          ? minRating
-          : undefined,
-      sortBy: sort,
-    });
+        const categoryFilter =
+          selectedCategories.length > 0
+            ? selectedCategories.join(",")
+            : undefined;
 
-    // Prevent the same request from being triggered
-    // repeatedly during the same component lifecycle.
-    if (lastRequestKey.current === requestKey) {
-      return;
-    }
-
-    lastRequestKey.current = requestKey;
-
-    try {
-      setLoading(true);
-      setError("");
-
-      const data = await getProducts({
-        page: currentPage,
-        pageSize: productsPerPage,
-        category: categoryParam,
-        search: searchTerm || undefined,
-        maxPrice:
-          priceRange < 412000
-            ? priceRange
-            : undefined,
-        minRating:
-          minRating > 0
-            ? minRating
-            : undefined,
-        sortBy: sort,
-      });
-
-      const items = Array.isArray(data)
-        ? data
-        : data?.items ?? [];
-
-      setProducts(items);
-
-      setTotalItems(
-        data?.totalItems ?? items.length
-      );
-
-      setTotalPages(
-        data?.totalPages ??
-          Math.max(
-            1,
-            Math.ceil(
-              (data?.totalItems ?? items.length) /
-                productsPerPage
-            )
-          )
-      );
-
-      if (data?.categoryCounts) {
-        setCategoryCounts(
-          data.categoryCounts
+        const data = await getProducts(
+          {
+            page: currentPage,
+            pageSize: productsPerPage,
+            category: categoryFilter,
+            search: searchTerm || undefined,
+            maxPrice:
+              priceRange < 412000
+                ? priceRange
+                : undefined,
+            minRating:
+              minRating > 0
+                ? minRating
+                : undefined,
+            sortBy: sort,
+          },
+          signal
         );
+
+        const items = Array.isArray(data)
+          ? data
+          : data?.items ?? [];
+
+        setProducts(items);
+
+        setTotalItems(
+          data?.totalItems ?? items.length
+        );
+
+        setTotalPages(
+          data?.totalPages ??
+            Math.max(
+              1,
+              Math.ceil(
+                (data?.totalItems ??
+                  items.length) /
+                  productsPerPage
+              )
+            )
+        );
+
+        if (data?.categoryCounts) {
+          setCategoryCounts(
+            data.categoryCounts
+          );
+        }
+      } catch (err: any) {
+        if (
+          err?.name === "CanceledError" ||
+          err?.name === "AbortError"
+        ) {
+          return;
+        }
+
+        console.error(
+          "Failed to load products:",
+          err
+        );
+
+        setError(
+          "Unable to load products. Please make sure the backend API is running."
+        );
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+          markAppReady();
+        }
       }
-    } catch (err) {
-      console.error(
-        "Failed to load products:",
-        err
-      );
-
-      setError(
-        "Unable to load products. Please make sure the backend API is running."
-      );
-
-      // Allow retry after an error.
-      lastRequestKey.current = "";
-    } finally {
-      setLoading(false);
-      markAppReady();
-    }
-  }, [
-    currentPage,
-    selectedCategories,
-    searchTerm,
-    priceRange,
-    minRating,
-    sort,
-    markAppReady,
-  ]);
+    },
+    [
+      currentPage,
+      selectedCategories,
+      searchTerm,
+      priceRange,
+      minRating,
+      sort,
+      markAppReady,
+    ]
+  );
 
   // =========================
   // LOAD PRODUCTS
   // =========================
 
   useEffect(() => {
-    loadProducts();
+    const controller =
+      new AbortController();
+
+    loadProducts(controller.signal);
+
+    return () => {
+      controller.abort();
+    };
   }, [loadProducts]);
 
   // =========================
@@ -258,7 +254,8 @@ function ProductList() {
 
     if (counts.length > 0) {
       return counts.reduce(
-        (total, count) => total + count,
+        (total, count) =>
+          total + count,
         0
       );
     }
@@ -380,12 +377,6 @@ function ProductList() {
             categoryName,
           ];
 
-    setSelectedCategories(updated);
-    setCurrentPage(1);
-
-    // New filter = new API request
-    lastRequestKey.current = "";
-
     setSearchParams(
       (previous) => {
         const next =
@@ -414,11 +405,6 @@ function ProductList() {
 
   const handleSelectAllCategories =
     () => {
-      setSelectedCategories([]);
-      setCurrentPage(1);
-
-      lastRequestKey.current = "";
-
       setSearchParams(
         (previous) => {
           const next =
@@ -440,11 +426,7 @@ function ProductList() {
   const handleSortChange = (
     value: string
   ) => {
-    setSort(value);
     setSortOpen(false);
-    setCurrentPage(1);
-
-    lastRequestKey.current = "";
 
     setSearchParams(
       (previous) => {
@@ -473,14 +455,9 @@ function ProductList() {
   // =========================
 
   const resetFilters = () => {
-    setSelectedCategories([]);
     setPriceRange(412000);
     setMinRating(0);
-    setSort("newest");
     setSortOpen(false);
-    setCurrentPage(1);
-
-    lastRequestKey.current = "";
 
     setSearchParams(
       {},
@@ -498,10 +475,6 @@ function ProductList() {
       page <= totalPages &&
       page !== currentPage
     ) {
-      setCurrentPage(page);
-
-      lastRequestKey.current = "";
-
       setSearchParams(
         (previous) => {
           const next =
@@ -666,9 +639,26 @@ function ProductList() {
                       event.target.value
                     )
                   );
-                  setCurrentPage(1);
-                  lastRequestKey.current =
-                    "";
+
+                  setSearchParams(
+                    (previous) => {
+                      if (
+                        !previous.has("page")
+                      ) {
+                        return previous;
+                      }
+
+                      const next =
+                        new URLSearchParams(
+                          previous
+                        );
+
+                      next.delete("page");
+
+                      return next;
+                    },
+                    { replace: true }
+                  );
                 }}
                 className="nx-price-slider"
               />
@@ -849,10 +839,29 @@ function ProductList() {
                             : rating
                         );
 
-                        setCurrentPage(1);
+                        setSearchParams(
+                          (previous) => {
+                            if (
+                              !previous.has(
+                                "page"
+                              )
+                            ) {
+                              return previous;
+                            }
 
-                        lastRequestKey.current =
-                          "";
+                            const next =
+                              new URLSearchParams(
+                                previous
+                              );
+
+                            next.delete(
+                              "page"
+                            );
+
+                            return next;
+                          },
+                          { replace: true }
+                        );
                       }}
                     />
 
@@ -956,11 +965,9 @@ function ProductList() {
               <ErrorState
                 title="Unable to load content"
                 message={error}
-                onRetry={() => {
-                  lastRequestKey.current =
-                    "";
-                  loadProducts();
-                }}
+                onRetry={() =>
+                  loadProducts()
+                }
               />
             )}
 
@@ -1183,4 +1190,3 @@ function ProductList() {
 }
 
 export default ProductList;
-
