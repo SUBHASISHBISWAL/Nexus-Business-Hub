@@ -127,30 +127,39 @@ public class ProductRepository : IProductRepository
             ? (int)Math.Ceiling(totalItems / (double)pageSize)
             : 0;
 
-        var items = await query
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(p => new ProductDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                Image = p.ImageUrl,
-                ImageUrl = p.ImageUrl,
-                Images = new List<string> { p.ImageUrl },
-                Category = p.Category.Name,
-                CategoryId = p.CategoryId,
-                Rating = p.Rating,
-                StockQuantity = p.StockQuantity,
-                IsActive = p.IsActive,
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt
-            })
-            .ToListAsync();
+        List<ProductDto> items;
+        if (totalItems == 0)
+        {
+            items = new List<ProductDto>();
+        }
+        else
+        {
+            items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Image = p.ImageUrl,
+                    ImageUrl = p.ImageUrl,
+                    Images = new List<string> { p.ImageUrl },
+                    Category = p.Category.Name,
+                    CategoryId = p.CategoryId,
+                    Rating = p.Rating,
+                    StockQuantity = p.StockQuantity,
+                    IsActive = p.IsActive,
+                    CreatedAt = p.CreatedAt,
+                    UpdatedAt = p.UpdatedAt
+                })
+                .ToListAsync();
+        }
 
         var categoryCounts = await _context.Categories
             .AsNoTracking()
+            .Where(c => c.IsActive)
             .Select(c => new
             {
                 c.Name,
@@ -164,8 +173,19 @@ public class ProductRepository : IProductRepository
 
         if (parameters.IncludeInactive == true)
         {
-            activeCount = await _context.Products.CountAsync(p => p.IsActive && p.StockQuantity > 0);
-            outOfStockCount = await _context.Products.CountAsync(p => p.IsActive && p.StockQuantity == 0);
+            var counts = await _context.Products
+                .AsNoTracking()
+                .Where(p => p.IsActive)
+                .GroupBy(_ => 1)
+                .Select(g => new
+                {
+                    Active = g.Count(p => p.StockQuantity > 0),
+                    OutOfStock = g.Count(p => p.StockQuantity == 0)
+                })
+                .FirstOrDefaultAsync();
+
+            activeCount = counts?.Active ?? 0;
+            outOfStockCount = counts?.OutOfStock ?? 0;
             draftCount = 0;
         }
 
@@ -303,13 +323,19 @@ public class ProductRepository : IProductRepository
         return category;
     }
 
-    public async Task<IEnumerable<Category>> GetCategoriesAsync()
+    public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
     {
         return await _context.Categories
             .AsNoTracking()
-            .Include(c => c.Products)
             .Where(c => c.IsActive)
             .OrderBy(c => c.Name)
+            .Select(c => new CategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                ProductCount = c.Products.Count(p => p.IsActive)
+            })
             .ToListAsync();
     }
 }

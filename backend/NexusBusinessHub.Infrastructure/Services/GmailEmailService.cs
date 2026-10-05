@@ -28,12 +28,12 @@ public class GmailEmailService : IEmailService
         string otp,
         int expiryMinutes = 5)
     {
-        var senderEmail = _configuration["Gmail:Email"];
-        var appPassword = _configuration["Gmail:AppPassword"];
+        var senderEmail = _configuration["Gmail:Email"]?.Trim();
+        var appPassword = _configuration["Gmail:AppPassword"]?.Replace(" ", "").Trim();
 
         if (string.IsNullOrWhiteSpace(senderEmail))
         {
-            _logger.LogError("Gmail sender email is missing.");
+            _logger.LogError("Gmail sender email is missing. Please configure 'Gmail:Email' in User Secrets.");
 
             throw new InvalidOperationException(
                 "Email service configuration error: Gmail email is not configured.");
@@ -41,7 +41,7 @@ public class GmailEmailService : IEmailService
 
         if (string.IsNullOrWhiteSpace(appPassword))
         {
-            _logger.LogError("Gmail app password is missing.");
+            _logger.LogError("Gmail app password is missing. Please configure 'Gmail:AppPassword' in User Secrets.");
 
             throw new InvalidOperationException(
                 "Email service configuration error: Gmail app password is not configured.");
@@ -98,8 +98,26 @@ public class GmailEmailService : IEmailService
         catch (MailKit.Security.AuthenticationException ex)
         {
             _logger.LogError(
-                ex,
-                "Gmail SMTP authentication failed.");
+                "Gmail SMTP authentication failed: Invalid username or App Password. Please verify that 'Gmail:Email' and a valid 16-character Google App Password (not the normal account password) are configured in User Secrets.");
+
+            throw new InvalidOperationException(
+                "Email authentication failed. Please check the Gmail App Password configuration.",
+                ex);
+        }
+        catch (SmtpCommandException ex) when (ex.StatusCode == SmtpStatusCode.AuthenticationRequired ||
+                                              (ex.Message != null && (ex.Message.Contains("5.7.8") || ex.Message.Contains("Username and Password not accepted"))))
+        {
+            _logger.LogError(
+                "Gmail SMTP authentication failed (5.7.8): Username and Password not accepted. Please verify that 'Gmail:Email' and a valid 16-character Google App Password (not the normal account password) are configured in User Secrets.");
+
+            throw new InvalidOperationException(
+                "Email authentication failed. Please check the Gmail App Password configuration.",
+                ex);
+        }
+        catch (SmtpProtocolException ex) when (ex.Message != null && (ex.Message.Contains("5.7.8") || ex.Message.Contains("Username and Password not accepted")))
+        {
+            _logger.LogError(
+                "Gmail SMTP authentication failed (5.7.8): The SMTP server disconnected because the Username and Password were not accepted. Please verify that 'Gmail:Email' and a valid 16-character Google App Password (not the normal account password) are configured in User Secrets.");
 
             throw new InvalidOperationException(
                 "Email authentication failed. Please check the Gmail App Password configuration.",
@@ -108,8 +126,8 @@ public class GmailEmailService : IEmailService
         catch (Exception ex)
         {
             _logger.LogError(
-                ex,
-                "Failed to send password reset email through Gmail SMTP.");
+                "Failed to send password reset email through Gmail SMTP. Reason: {ErrorMessage}",
+                ex.Message);
 
             throw new HttpRequestException(
                 "Failed to send password reset email. Please try again later.",

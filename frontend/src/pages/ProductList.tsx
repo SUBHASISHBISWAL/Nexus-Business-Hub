@@ -1,20 +1,20 @@
 import "./ProductList.css";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 
 import { CartContext } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import ProductCard from "../components/ProductCard";
-import { ProductCardSkeletonGrid } from "../components/skeleton";
+import { ProductCardSkeletonGrid } from "../components/skeleton/ProductCardSkeleton";
 import { ErrorState } from "../components/common/ErrorState";
 import { categoryLabels } from "../data/products";
 import type { Product } from "../types/product";
-import { getProducts } from "../services/productService";
+import { getCategories, getProducts } from "../services/productService";
 import { useInitialLoading } from "../context/InitialLoadingContext";
 
 function ProductList() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
 
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
@@ -32,47 +32,28 @@ function ProductList() {
   const [error, setError] = useState<string>("");
 
   const productsPerPage = 48;
-  const initialPage = Number(searchParams.get("page")) || 1;
-  const [currentPage, setCurrentPage] = useState<number>(initialPage);
+  const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
 
   // =========================
-  // FILTER / SORT STATES
+  // FILTER / SORT STATES (DERIVED FROM URL)
   // =========================
 
   const searchTerm = searchParams.get("search")?.trim() || "";
-  const initialCategory = searchParams.get("category");
-  const initialSort = searchParams.get("sortBy") || "newest";
-
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    initialCategory
-      ? initialCategory
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean)
-      : []
-  );
-  const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
-  const [sortOpen, setSortOpen] = useState<boolean>(false);
-  const [priceRange, setPriceRange] = useState<number>(412000);
-  const [minRating, setMinRating] = useState<number>(0);
-  const [sort, setSort] = useState<string>(initialSort);
-
-  // Synchronize state when URL searchParams change (from Navbar, Back/Forward, etc.)
-  useEffect(() => {
-    const urlCategory = searchParams.get("category");
-    const parsedCats = urlCategory
-      ? urlCategory
+  const categoryParam = searchParams.get("category") || "";
+  const selectedCategories = useMemo(() => {
+    return categoryParam
+      ? categoryParam
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean)
       : [];
-    const urlSort = searchParams.get("sortBy") || "newest";
-    const urlPage = Math.max(1, Number(searchParams.get("page")) || 1);
+  }, [categoryParam]);
+  const sort = searchParams.get("sortBy") || "newest";
 
-    setSelectedCategories(parsedCats);
-    setSort(urlSort);
-    setCurrentPage(urlPage);
-  }, [searchParams]);
+  const [categoryOpen, setCategoryOpen] = useState<boolean>(true);
+  const [sortOpen, setSortOpen] = useState<boolean>(false);
+  const [priceRange, setPriceRange] = useState<number>(412000);
+  const [minRating, setMinRating] = useState<number>(0);
 
   // =========================
   // CART NOTICE
@@ -81,28 +62,61 @@ function ProductList() {
   const [notice, setNotice] = useState<string>("");
 
   // =========================
+  // LOAD CATEGORIES FROM API
+  // =========================
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getCategories(controller.signal)
+      .then((cats) => {
+        if (Array.isArray(cats)) {
+          const counts: Record<string, number> = {};
+          cats.forEach((cat) => {
+            counts[cat.name] = cat.productCount ?? 0;
+          });
+          setCategoryCounts((prev) => ({
+            ...counts,
+            ...prev,
+          }));
+        }
+      })
+      .catch((err) => {
+        if (err?.name !== "CanceledError" && err?.name !== "AbortError") {
+          console.error("Failed to load categories:", err);
+        }
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  // =========================
   // LOAD PRODUCTS FROM API
   // =========================
 
-  const loadProducts = useCallback(async () => {
+  const loadProducts = useCallback(async (signal?: AbortSignal) => {
     try {
       setLoading(true);
       setError("");
 
-      const categoryParam =
+      const categoryFilter =
         selectedCategories.length > 0
           ? selectedCategories.join(",")
           : undefined;
 
-      const data = await getProducts({
-        page: currentPage,
-        pageSize: productsPerPage,
-        category: categoryParam,
-        search: searchTerm || undefined,
-        maxPrice: priceRange < 412000 ? priceRange : undefined,
-        minRating: minRating > 0 ? minRating : undefined,
-        sortBy: sort,
-      });
+      const data = await getProducts(
+        {
+          page: currentPage,
+          pageSize: productsPerPage,
+          category: categoryFilter,
+          search: searchTerm || undefined,
+          maxPrice: priceRange < 412000 ? priceRange : undefined,
+          minRating: minRating > 0 ? minRating : undefined,
+          sortBy: sort,
+        },
+        signal
+      );
 
       const items = Array.isArray(data) ? data : data?.items ?? [];
       setProducts(items);
@@ -114,15 +128,20 @@ function ProductList() {
       if (data?.categoryCounts) {
         setCategoryCounts(data.categoryCounts);
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (axios.isCancel(err) || err?.name === "CanceledError" || err?.name === "AbortError") {
+        return;
+      }
       console.error("Failed to load products:", err);
 
       setError(
         "Unable to load products. Please make sure the backend API is running."
       );
     } finally {
-      setLoading(false);
-      markAppReady();
+      if (!signal?.aborted) {
+        setLoading(false);
+        markAppReady();
+      }
     }
   }, [
     currentPage,
@@ -136,8 +155,12 @@ function ProductList() {
   ]);
 
   useEffect(() => {
-    loadProducts();
-  }, [loadProducts, location.key]);
+    const controller = new AbortController();
+    loadProducts(controller.signal);
+    return () => {
+      controller.abort();
+    };
+  }, [loadProducts]);
 
   // Total count across all categories from server
   const allCategoryTotal = useMemo(() => {
@@ -208,9 +231,6 @@ function ProductList() {
       ? selectedCategories.filter((item) => item !== categoryName)
       : [...selectedCategories, categoryName];
 
-    setSelectedCategories(updated);
-    setCurrentPage(1);
-
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
       if (updated.length > 0) {
@@ -224,9 +244,6 @@ function ProductList() {
   };
 
   const handleSelectAllCategories = () => {
-    setSelectedCategories([]);
-    setCurrentPage(1);
-
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
       next.delete("category");
@@ -240,9 +257,7 @@ function ProductList() {
   // =========================
 
   const handleSortChange = (value: string) => {
-    setSort(value);
     setSortOpen(false);
-    setCurrentPage(1);
 
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -261,12 +276,9 @@ function ProductList() {
   // =========================
 
   const resetFilters = () => {
-    setSelectedCategories([]);
     setPriceRange(412000);
     setMinRating(0);
-    setSort("newest");
     setSortOpen(false);
-    setCurrentPage(1);
     setSearchParams({}, { replace: true });
   };
 
@@ -276,8 +288,6 @@ function ProductList() {
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
-      setCurrentPage(page);
-
       setSearchParams((prev) => {
         const next = new URLSearchParams(prev);
         if (page > 1) {
@@ -388,7 +398,12 @@ function ProductList() {
                 value={priceRange}
                 onChange={(event) => {
                   setPriceRange(Number(event.target.value));
-                  setCurrentPage(1);
+                  setSearchParams((prev) => {
+                    if (!prev.has("page")) return prev;
+                    const next = new URLSearchParams(prev);
+                    next.delete("page");
+                    return next;
+                  }, { replace: true });
                 }}
                 className="nx-price-slider"
               />
@@ -493,7 +508,12 @@ function ProductList() {
                     checked={minRating === rating}
                     onChange={() => {
                       setMinRating(minRating === rating ? 0 : rating);
-                      setCurrentPage(1);
+                      setSearchParams((prev) => {
+                        if (!prev.has("page")) return prev;
+                        const next = new URLSearchParams(prev);
+                        next.delete("page");
+                        return next;
+                      }, { replace: true });
                     }}
                   />
 

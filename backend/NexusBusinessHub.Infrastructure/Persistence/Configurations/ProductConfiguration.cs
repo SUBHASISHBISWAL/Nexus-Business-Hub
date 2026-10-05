@@ -37,5 +37,10 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.HasIndex(p => new { p.IsActive, p.CategoryId })
             .IncludeProperties(p => new { p.Name, p.Price, p.ImageUrl, p.Rating, p.StockQuantity });
+
+        builder.HasIndex(p => new { p.IsActive, p.CreatedAt, p.Id })
+            .IsDescending(false, true, true);
+
+        builder.HasIndex(p => new { p.IsActive, p.StockQuantity });
     }
 }

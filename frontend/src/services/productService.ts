@@ -63,11 +63,70 @@ export interface CategoryDto {
   productCount?: number;
 }
 
-export const getProducts = async (
-  params?: ProductQueryParams
+const inFlightProducts = new Map<string, Promise<PagedProductResult>>();
+let inFlightCategories: Promise<CategoryDto[]> | null = null;
+
+function serializeParams(params?: ProductQueryParams): string {
+  if (!params) return "";
+  return Object.entries(params)
+    .filter(([_, v]) => v !== undefined && v !== null && v !== "")
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([k, v]) => `${k}=${v}`)
+    .join("&");
+}
+
+export const getProducts = (
+  params?: ProductQueryParams,
+  signal?: AbortSignal
 ): Promise<PagedProductResult> => {
-  const response = await axios.get<PagedProductResult>(API_URL, { params });
-  return response.data;
+  const key = serializeParams(params);
+  let inFlight = inFlightProducts.get(key);
+
+  if (!inFlight) {
+    inFlight = axios
+      .get<PagedProductResult>(API_URL, { params })
+      .then((response) => response.data)
+      .finally(() => {
+        inFlightProducts.delete(key);
+      });
+    inFlightProducts.set(key, inFlight);
+  }
+
+  if (!signal) {
+    return inFlight;
+  }
+
+  if (signal.aborted) {
+    const err = new Error("canceled");
+    err.name = "CanceledError";
+    return Promise.reject(err);
+  }
+
+  return new Promise<PagedProductResult>((resolve, reject) => {
+    const onAbort = () => {
+      const err = new Error("canceled");
+      err.name = "CanceledError";
+      reject(err);
+    };
+
+    signal.addEventListener("abort", onAbort, { once: true });
+
+    inFlight!
+      .then((data) => {
+        signal.removeEventListener("abort", onAbort);
+        if (signal.aborted) {
+          const err = new Error("canceled");
+          err.name = "CanceledError";
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      })
+      .catch((err) => {
+        signal.removeEventListener("abort", onAbort);
+        reject(err);
+      });
+  });
 };
 
 export const getProductById = async (
@@ -99,7 +158,49 @@ export const deleteProduct = async (id: number): Promise<void> => {
   await axios.delete(`${API_URL}/${id}`);
 };
 
-export const getCategories = async (): Promise<CategoryDto[]> => {
-  const response = await axios.get<CategoryDto[]>(`${API_URL}/categories`);
-  return response.data;
+export const getCategories = (signal?: AbortSignal): Promise<CategoryDto[]> => {
+  if (!inFlightCategories) {
+    inFlightCategories = axios
+      .get<CategoryDto[]>(`${API_URL}/categories`)
+      .then((response) => response.data)
+      .finally(() => {
+        inFlightCategories = null;
+      });
+  }
+
+  if (!signal) {
+    return inFlightCategories;
+  }
+
+  if (signal.aborted) {
+    const err = new Error("canceled");
+    err.name = "CanceledError";
+    return Promise.reject(err);
+  }
+
+  return new Promise<CategoryDto[]>((resolve, reject) => {
+    const onAbort = () => {
+      const err = new Error("canceled");
+      err.name = "CanceledError";
+      reject(err);
+    };
+
+    signal.addEventListener("abort", onAbort, { once: true });
+
+    inFlightCategories!
+      .then((data) => {
+        signal.removeEventListener("abort", onAbort);
+        if (signal.aborted) {
+          const err = new Error("canceled");
+          err.name = "CanceledError";
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      })
+      .catch((err) => {
+        signal.removeEventListener("abort", onAbort);
+        reject(err);
+      });
+  });
 };

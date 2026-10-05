@@ -233,13 +233,6 @@ public class ProductService : IProductService
 
     public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
     {
-        var categories = await _repository.GetCategoriesAsync();
-        return categories.Select(c => new CategoryDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            Description = c.Description,
-            ProductCount = c.Products.Count(p => p.IsActive)
-        });
+        return await _repository.GetCategoriesAsync();
     }
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import ProductCard from "../../components/ProductCard";
-import { ProductCardSkeleton } from "../../components/skeleton";
+import { ProductCardSkeleton } from "../../components/skeleton/ProductCardSkeleton";
 import { ErrorState } from "../../components/common/ErrorState";
 import { productCategories } from "../../data/products";
 import type { Product } from "../../types/product";

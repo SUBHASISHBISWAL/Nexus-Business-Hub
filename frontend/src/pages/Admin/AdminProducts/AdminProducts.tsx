@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { AdminTableSkeleton } from "../../../components/skeleton";
+import { AdminTableSkeleton } from "../../../components/skeleton/AdminTableSkeleton";
 import { ErrorState } from "../../../components/common/ErrorState";
 import {
   deleteProduct as apiDeleteProduct,

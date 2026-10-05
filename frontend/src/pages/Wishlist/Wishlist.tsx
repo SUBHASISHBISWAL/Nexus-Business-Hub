@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
 import { CartContext } from "../../context/CartContext";
 import { getProductById } from "../../services/productService";
-import { ProductCardSkeletonGrid } from "../../components/skeleton";
+import { ProductCardSkeletonGrid } from "../../components/skeleton/ProductCardSkeleton";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import type { Product } from "../../types/product";
 import { resolveProductImage, handleImageError } from "../../utils/productImage";
