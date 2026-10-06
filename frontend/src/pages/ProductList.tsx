@@ -40,6 +40,7 @@ function ProductList() {
   const [error, setError] = useState<string>("");
 
   const productsPerPage = 48;
+  const productSkeletonCount = Math.min(productsPerPage, 8);
 
   // =========================
   // READ VALUES FROM URL
@@ -954,7 +955,7 @@ function ProductList() {
                 aria-busy="true"
               >
                 <ProductCardSkeletonGrid
-                  count={productsPerPage}
+                  count={productSkeletonCount}
                 />
               </div>
             )}

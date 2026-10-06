@@ -10,6 +10,7 @@ import type { Product } from "../../types/product";
 import { getProducts } from "../../services/productService";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import heroImg from "../../assets/hero.png";
+import "../ProductList.css";
 import "./Home.css";
 
 function Home() {
