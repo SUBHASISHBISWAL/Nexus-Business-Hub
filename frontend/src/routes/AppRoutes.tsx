@@ -131,8 +131,8 @@ const AdminReturnDetails = lazy(
 
 const routeLoadingFallback = (
   <div className="nx-route-loading">
-    <span className="material-symbols-outlined">progress_activity</span>
-    <p>Loading...</p>
+    {/* <span className="material-symbols-outlined">progress_activity</span>
+    <p>Loading...</p> */}
   </div>
 );
 

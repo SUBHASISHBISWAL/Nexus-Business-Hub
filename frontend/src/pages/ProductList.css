@@ -1,5 +1,3 @@
-@import "../components/ProductCard.css";
-
 /* =========================================================
    Nexus Business Hub — Product Catalog
    ========================================================= */
@@ -8,11 +6,14 @@
   --nx-ground: #fbfbfc;
   --nx-surface: #ffffff;
   --nx-recessed: #f1f5f9;
+
   --nx-ink: #0f172a;
   --nx-ink-secondary: #334155;
   --nx-ink-muted: #64748b;
+
   --nx-accent: #0284c7;
   --nx-accent-hover: #0369a1;
+
   --nx-hairline: #e2e8f0;
   --nx-hairline-strong: #cbd5e1;
   --nx-hairline-hover: #94a3b8;
@@ -108,18 +109,24 @@
 .nx-category-dropdown {
   width: 100%;
   height: 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 4px;
   margin: 0;
+
   border: none;
   background: transparent;
+
   color: #111827;
   font-size: 14px;
   font-weight: 700;
+
   cursor: pointer;
   text-align: left;
+
   box-sizing: border-box;
 }
 
@@ -134,12 +141,16 @@
 .nx-chevron {
   width: 8px;
   height: 8px;
+
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
+
   transform: rotate(45deg);
   transition: transform 0.2s ease;
+
   margin-right: 5px;
   margin-top: -4px;
+
   flex-shrink: 0;
 }
 
@@ -156,8 +167,10 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
+
   margin-top: 2px;
   padding-top: 4px;
+
   border-top: 1px solid #eef0f3;
 }
 
@@ -168,13 +181,19 @@
 .nx-checkbox-row {
   width: 100%;
   min-height: 26px;
+
   display: flex;
   align-items: center;
+
   gap: 10px;
   padding: 1px 0;
+
   box-sizing: border-box;
+
   border-radius: 7px;
+
   cursor: pointer;
+
   font-size: 14px;
   color: #374151;
 }
@@ -186,9 +205,13 @@
 .nx-checkbox-row input[type="checkbox"] {
   width: 16px;
   height: 16px;
+
   margin: 0;
+
   flex-shrink: 0;
+
   cursor: pointer;
+
   accent-color: #2563eb;
 }
 
@@ -199,7 +222,9 @@
 
 .nx-checkbox-row small {
   min-width: 24px;
+
   text-align: right;
+
   color: #6b7280;
   font-size: 12px;
 }
@@ -215,17 +240,23 @@
 
 .nx-price-slider {
   width: 100%;
+
   margin: 7px 0;
+
   cursor: pointer;
+
   accent-color: #2563eb;
 }
 
 .nx-price-values {
   display: flex;
   justify-content: space-between;
+
   gap: 10px;
+
   font-size: 12px;
   color: #6b7280;
+
   margin-top: 4px;
 }
 
@@ -245,15 +276,20 @@
 .nx-sort-dropdown {
   width: 100%;
   height: 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 4px;
+
   border: none;
   background: transparent;
+
   color: #111827;
   font-size: 14px;
   font-weight: 700;
+
   cursor: pointer;
   text-align: left;
 }
@@ -266,20 +302,28 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+
   margin-top: 3px;
   padding-top: 4px;
+
   border-top: 1px solid #eef0f3;
 }
 
 .nx-sort-options button {
   width: 100%;
+
   padding: 7px 4px;
+
   border: none;
   background: transparent;
+
   color: #374151;
   font-size: 13px;
+
   text-align: left;
+
   border-radius: 5px;
+
   cursor: pointer;
 }
 
@@ -294,15 +338,21 @@
 
 .nx-reset-filters {
   width: 100%;
+
   margin-top: 18px;
   padding: 9px 12px;
+
   border: 1px solid #dbe2ea;
   border-radius: 7px;
+
   background: #ffffff;
   color: #374151;
+
   font-size: 13px;
   font-weight: 600;
+
   cursor: pointer;
+
   transition: 0.15s ease;
 }
 
@@ -326,32 +376,45 @@
 
 .nx-search {
   position: relative;
+
   width: 100%;
   max-width: 520px;
+
   display: flex;
   align-items: center;
 }
 
 .nx-search > .material-symbols-outlined {
   position: absolute;
+
   left: 12px;
+
   z-index: 2;
+
   color: #64748b;
   font-size: 20px;
+
   pointer-events: none;
 }
 
 .nx-search input {
   width: 100%;
   height: 42px;
+
   padding: 0 42px 0 40px;
+
   border: 1px solid #dbe2ea;
   border-radius: 8px;
+
   outline: none;
+
   background: #ffffff;
   color: #0f172a;
+
   font-size: 13px;
+
   box-sizing: border-box;
+
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
@@ -363,6 +426,7 @@
 
 .nx-search input:focus {
   border-color: #93c5fd;
+
   box-shadow:
     0 0 0 3px rgba(37, 99, 235, 0.08);
 }
@@ -373,19 +437,27 @@
 
 .nx-search-clear {
   position: absolute;
+
   top: 50%;
   right: 9px;
+
   width: 27px;
   height: 27px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 0;
+
   border: none;
   border-radius: 50%;
+
   background: transparent;
   color: #64748b;
+
   cursor: pointer;
+
   transform: translateY(-50%);
 }
 
@@ -406,8 +478,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 16px;
+
   margin: 0 0 16px;
+
   color: #64748b;
   font-size: 13px;
 }
@@ -419,10 +494,13 @@
 
 .nx-filtered-label {
   padding: 4px 9px;
+
   border: 1px solid #dbeafe;
   border-radius: 5px;
+
   background: #eff6ff;
   color: #2563eb;
+
   font-size: 11px;
   font-weight: 600;
 }
@@ -432,14 +510,740 @@
    ========================================================= */
 
 .nx-product-grid {
+  width: 100%;
+  min-width: 0;
+
   display: grid;
-  grid-template-columns: repeat(
-    4,
-    minmax(0, 1fr)
-  );
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
   gap: 1.25rem;
+
+  align-items: stretch;
 }
 
+/* =========================================================
+   SHARED PRODUCT CARD
+   ========================================================= */
+
+.nx-node-card {
+  /*
+   These fallback values are important because ProductCard
+   is also used outside .nx-catalog-page.
+  */
+
+  --nx-card-surface: #ffffff;
+  --nx-card-ink: #0f172a;
+  --nx-card-ink-secondary: #334155;
+  --nx-card-ink-muted: #64748b;
+  --nx-card-accent: #0284c7;
+  --nx-card-accent-hover: #0369a1;
+  --nx-card-border: #e2e8f0;
+  --nx-card-border-strong: #cbd5e1;
+  --nx-card-border-hover: #94a3b8;
+
+  --nx-card-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.03);
+
+  --nx-card-shadow-hover:
+    0 4px 12px -2px rgba(15, 23, 42, 0.05),
+    0 1px 3px rgba(15, 23, 42, 0.04);
+
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--nx-card-surface);
+
+  border: 1px solid var(--nx-card-border);
+  border-radius: 8px;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  box-shadow: var(--nx-card-shadow);
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.nx-node-card:hover {
+  transform: translateY(-3px);
+
+  border-color: var(--nx-card-border-hover);
+
+  box-shadow: var(--nx-card-shadow-hover);
+}
+
+/* =========================================================
+   PRODUCT VISUAL
+   ========================================================= */
+
+.nx-node-visual {
+  position: relative;
+
+  width: 100%;
+
+  height: 190px;
+  min-height: 190px;
+  max-height: 190px;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #e8f3fb 0%,
+      #f9fcff 60%,
+      #dbeafe 100%
+    );
+
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   DECORATIVE TECHNICAL GRID
+   ========================================================= */
+
+.nx-node-visual::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 49%,
+      rgba(2, 132, 199, 0.07) 50%,
+      transparent 51%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 49%,
+      rgba(2, 132, 199, 0.07) 50%,
+      transparent 51%
+    );
+
+  background-size: 20px 20px;
+}
+
+/* =========================================================
+   PRODUCT IMAGE LINK
+   ========================================================= */
+
+.nx-device-glyph {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  text-decoration: none;
+}
+
+/* =========================================================
+   PRODUCT IMAGE
+   ========================================================= */
+
+.nx-device-glyph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.nx-device-glyph img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  max-width: 100%;
+  max-height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  object-fit: contain;
+  object-position: center;
+
+  box-sizing: border-box;
+}
+
+.nx-device-glyph .material-symbols-outlined {
+  font-size: 40px;
+}
+
+/* =========================================================
+   DECORATIVE DEVICE LINES
+   ========================================================= */
+
+.nx-device-lines {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+
+  pointer-events: none;
+}
+
+.nx-device-lines i {
+  position: absolute;
+
+  display: block;
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   PRODUCT STATUS
+   ========================================================= */
+
+.nx-node-status {
+  position: absolute;
+
+  z-index: 4;
+
+  top: 0.65rem;
+  left: 0.65rem;
+
+  font:
+    600 0.57rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
+
+  color: #065f46;
+
+  background: #ecfdf5;
+
+  border: 1px solid #a7f3d0;
+
+  padding: 0.26rem 0.4rem;
+
+  border-radius: 2px;
+}
+
+/* =========================================================
+   SAVE / HEART BUTTON
+   ========================================================= */
+
+.nx-node-save {
+  position: absolute;
+
+  z-index: 6;
+
+  top: 12px;
+  right: 12px;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  margin: 0;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  color: #64748b;
+
+  cursor: pointer;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateY(-4px);
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.nx-node-card:hover .nx-node-save,
+.nx-node-save.liked {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translateY(0);
+}
+
+.nx-node-save:hover {
+  color: #ef4444;
+
+  background: #ffffff;
+
+  border-color: #fecaca;
+
+  transform: translateY(0) scale(1.05);
+}
+
+.nx-node-save.liked {
+  color: #ef4444;
+}
+
+.nx-node-save .bi {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* =========================================================
+   OLD HEART ICON SUPPORT
+   ========================================================= */
+
+.nx-heart-icon {
+  font-size: 32px;
+  line-height: 1;
+
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+}
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
+
+.nx-node-body {
+  min-width: 0;
+
+  flex: 1 1 auto;
+
+  padding:
+    0.9rem
+    0.95rem
+    0.7rem;
+
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   CARD META
+   ========================================================= */
+
+.nx-node-meta {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 0.4rem;
+
+  color: #0369a1;
+
+  font:
+    0.57rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
+
+  letter-spacing: 0.05em;
+
+  text-transform: uppercase;
+}
+
+.nx-node-meta b {
+  color: #7dd3fc;
+}
+
+/* =========================================================
+   RATING
+   ========================================================= */
+
+.nx-rating {
+  min-width: 0;
+
+  color: var(--nx-card-ink);
+
+  font-size: 0.66rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.nx-rating .material-symbols-outlined {
+  color: #d97706;
+
+  font-size: 13px;
+
+  font-variation-settings:
+    "FILL" 1;
+}
+
+/* ProductCard uses Bootstrap icon/star */
+
+.nx-rating .nx-star {
+  display: inline-block;
+
+  margin-left: 3px;
+
+  color: #f59e0b;
+
+  font-size: 0.7rem;
+
+  line-height: 1;
+}
+
+.nx-rating small {
+  color: var(--nx-card-ink-muted);
+
+  font-size: 0.57rem;
+}
+
+/* =========================================================
+   CATEGORY TAG
+   ========================================================= */
+
+.nx-category-tag {
+  min-width: 0;
+
+  max-width: 55%;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  color: var(--nx-card-accent);
+
+  text-decoration: none;
+
+  font-size: 0.57rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.04em;
+}
+
+.nx-category-tag:hover {
+  color: var(--nx-card-accent-hover);
+
+  text-decoration: underline;
+}
+
+/* =========================================================
+   PRODUCT TITLE
+   ========================================================= */
+
+.nx-node-body h2 {
+  min-width: 0;
+
+  margin:
+    0.55rem
+    0
+    0;
+
+  color: var(--nx-card-ink);
+
+  font-size: 0.98rem;
+
+  line-height: 1.3;
+
+  font-weight: 700;
+
+  font-family:
+    "Geist",
+    system-ui,
+    sans-serif;
+
+  overflow: hidden;
+}
+
+.nx-node-body h2 a {
+  display: -webkit-box;
+
+  color: inherit;
+  text-decoration: none;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+
+  overflow: hidden;
+}
+
+.nx-node-body h2 a:hover {
+  color: var(--nx-card-accent-hover);
+}
+
+/* =========================================================
+   SPECIFICATION
+   ========================================================= */
+
+.nx-spec-line {
+  display: flex;
+  align-items: center;
+
+  gap: 0.35rem;
+
+  margin:
+    0.65rem
+    0
+    0;
+
+  padding: 0.45rem;
+
+  background: var(--nx-recessed);
+
+  color: var(--nx-ink-muted);
+
+  border: 1px solid #e9eef5;
+
+  border-radius: 3px;
+
+  font:
+    0.62rem/1.35 "JetBrains Mono",
+    ui-monospace,
+    monospace;
+
+  overflow: hidden;
+}
+
+.nx-spec-line span {
+  color: var(--nx-accent);
+
+  font-size: 15px;
+
+  flex: 0 0 auto;
+}
+
+/* =========================================================
+   PRICE
+   ========================================================= */
+
+.nx-node-bottom {
+  min-width: 0;
+
+  padding:
+    0
+    0.95rem
+    0.95rem;
+
+  box-sizing: border-box;
+}
+
+.nx-node-price {
+  min-width: 0;
+
+  padding-top: 0.65rem;
+
+  border-top:
+    1px solid
+    var(--nx-card-border);
+
+  display: flex;
+  align-items: baseline;
+
+  gap: 0.35rem;
+}
+
+.nx-node-price strong {
+  min-width: 0;
+
+  font:
+    700 1.05rem "Geist",
+    system-ui,
+    sans-serif;
+
+  color: var(--nx-card-ink);
+
+  white-space: nowrap;
+}
+
+.nx-node-price del {
+  min-width: 0;
+
+  font:
+    0.62rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
+
+  color: var(--nx-card-ink-muted);
+
+  white-space: nowrap;
+}
+
+.nx-node-price span {
+  margin-left: auto;
+
+  color: #047857;
+
+  background: #ecfdf5;
+
+  padding:
+    0.24rem
+    0.3rem;
+
+  border-radius: 2px;
+
+  font:
+    700 0.52rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.nx-node-actions {
+  min-width: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(0, 0.95fr);
+
+  gap: 0.35rem;
+
+  margin-top: 0.7rem;
+}
+
+.nx-node-actions button,
+.nx-node-actions a {
+  min-width: 0;
+
+  min-height: 33px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.25rem;
+
+  padding:
+    0.35rem
+    0.4rem;
+
+  border-radius: 3px;
+
+  font:
+    600 0.62rem "JetBrains Mono",
+    ui-monospace,
+    monospace;
+
+  text-decoration: none;
+
+  box-sizing: border-box;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+/* =========================================================
+   ADD TO CART
+   ========================================================= */
+
+.nx-add-button {
+  width: 100%;
+
+  border:
+    1px solid
+    var(--nx-card-ink);
+
+  background: var(--nx-card-ink);
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  opacity: 1;
+
+  visibility: visible;
+}
+
+.nx-add-button:hover:not(:disabled) {
+  background: #1e293b;
+
+  border-color: #1e293b;
+}
+
+.nx-add-button:disabled,
+.nx-add-button.out-of-stock {
+  background: #f1f5f9;
+
+  border-color: #e2e8f0;
+
+  color: #94a3b8;
+
+  cursor: not-allowed;
+}
+
+.nx-add-button span {
+  font-size: 15px;
+}
+
+/* =========================================================
+   VIEW DETAILS
+   ========================================================= */
+
+.nx-node-actions a {
+  border:
+    1px solid
+    var(--nx-card-border-strong);
+
+  color: var(--nx-card-ink-secondary);
+
+  background: #ffffff;
+}
+
+.nx-node-actions a:hover {
+  border-color: var(--nx-card-ink);
+
+  color: var(--nx-card-ink);
+
+  background: #f8fafc;
+}
 
 /* =========================================================
    CART NOTICE
@@ -447,17 +1251,29 @@
 
 .nx-cart-notice {
   position: fixed;
+
   z-index: 1100;
+
   right: 20px;
   bottom: 20px;
+
   display: flex;
   align-items: center;
+
   gap: 0.45rem;
-  padding: 0.75rem 1rem;
+
+  padding:
+    0.75rem
+    1rem;
+
   background: var(--nx-ink);
-  color: #fff;
+
+  color: #ffffff;
+
   font-size: 0.8rem;
+
   box-shadow: var(--nx-shadow-3);
+
   border-radius: 4px;
 }
 
@@ -471,7 +1287,9 @@
 
 .nx-empty-catalog {
   text-align: center;
+
   padding: 5rem 1rem;
+
   color: var(--nx-ink-muted);
 }
 
@@ -481,6 +1299,7 @@
 
 .nx-empty-catalog h2 {
   font-size: 1.3rem;
+
   margin-top: 0.5rem;
 }
 
@@ -490,11 +1309,19 @@
 
 .nx-empty-catalog button {
   border: 0;
+
   background: var(--nx-ink);
+
   color: #fff;
+
   border-radius: 3px;
-  padding: 0.55rem 0.8rem;
+
+  padding:
+    0.55rem
+    0.8rem;
+
   font-size: 0.8rem;
+
   cursor: pointer;
 }
 
@@ -510,7 +1337,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 8px;
+
   margin-top: 32px;
   margin-bottom: 24px;
 }
@@ -518,23 +1347,34 @@
 .nx-pagination-pages {
   display: flex;
   align-items: center;
+
   gap: 5px;
 }
 
 .nx-pagination button {
   min-width: 36px;
   height: 36px;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   padding: 0 10px;
+
   border: 1px solid #dbe2ea;
+
   border-radius: 6px;
+
   background: #ffffff;
+
   color: #374151;
+
   font-size: 13px;
+
   font-weight: 600;
+
   cursor: pointer;
+
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
@@ -544,27 +1384,38 @@
 
 .nx-pagination button:hover:not(:disabled) {
   border-color: #2563eb;
+
   color: #2563eb;
+
   background: #f8fbff;
 }
 
 .nx-pagination button.active {
   background: #2563eb;
+
   border-color: #2563eb;
+
   color: #ffffff;
+
   box-shadow:
     0 2px 5px rgba(37, 99, 235, 0.2);
 }
 
 .nx-pagination button:disabled {
   opacity: 0.45;
+
   cursor: not-allowed;
+
   background: #f8fafc;
 }
 
 .nx-pagination-nav {
   gap: 7px;
-  padding: 0 13px !important;
+
+  padding:
+    0
+    13px !important;
+
   color: #475569 !important;
 }
 
@@ -579,36 +1430,93 @@
 .nx-pagination-ellipsis {
   min-width: 25px;
   height: 36px;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   color: #94a3b8;
+
   font-size: 14px;
+
   font-weight: 600;
+
   user-select: none;
 }
 
 /* =========================================================
-   RESPONSIVE
+   RESPONSIVE — 1200
    ========================================================= */
 
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
+  .nx-product-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — 1100
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .nx-product-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — 900
+   ========================================================= */
+
+@media (max-width: 900px) {
   .nx-catalog-content {
     grid-template-columns: 1fr;
   }
 
   .nx-filter-sidebar {
     width: 100%;
+
     position: static;
   }
 
   .nx-product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
   }
 }
 
+/* =========================================================
+   RESPONSIVE — 768
+   ========================================================= */
+
 @media (max-width: 768px) {
+  .nx-product-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 0.8rem;
+  }
+
+  .nx-node-body,
+  .nx-node-bottom {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+
+  .nx-node-visual {
+    height: 170px;
+
+    min-height: 170px;
+
+    max-height: 170px;
+  }
+
+  .nx-device-glyph {
+    padding: 14px;
+  }
+
   .nx-result-summary {
     font-size: 12px;
   }
@@ -623,13 +1531,20 @@
 
   .nx-pagination button {
     min-width: 32px;
+
     height: 32px;
-    padding: 0 7px;
+
+    padding:
+      0
+      7px;
+
     font-size: 12px;
   }
 
   .nx-pagination-nav {
-    padding: 0 9px !important;
+    padding:
+      0
+      9px !important;
   }
 
   .nx-pagination-nav span {
@@ -638,19 +1553,37 @@
 
   .nx-pagination-ellipsis {
     min-width: 20px;
+
     height: 32px;
   }
 }
 
-@media (max-width: 576px) {
+/* =========================================================
+   RESPONSIVE — 560
+   ========================================================= */
+
+@media (max-width: 560px) {
   .nx-product-grid {
     grid-template-columns: 1fr;
-    gap: 0.85rem;
+  }
+
+  .nx-node-visual {
+    height: 180px;
+
+    min-height: 180px;
+
+    max-height: 180px;
+  }
+
+  .nx-device-glyph {
+    padding: 16px;
   }
 
   .nx-result-summary {
     align-items: flex-start;
+
     flex-direction: column;
+
     gap: 7px;
   }
 
@@ -664,18 +1597,42 @@
 
   .nx-pagination button {
     min-width: 30px;
+
     height: 30px;
-    padding: 0 5px;
+
+    padding:
+      0
+      5px;
+
     font-size: 11px;
   }
 
   .nx-pagination-nav {
     min-width: 30px !important;
-    padding: 0 7px !important;  
+
+    padding:
+      0
+      7px !important;
   }
 
   .nx-pagination-ellipsis {
     min-width: 16px;
+
     height: 30px;
   }
+}
+/* =========================================================
+   FINAL SAFETY
+   ========================================================= */
+
+.nx-product-area,
+.nx-product-grid,
+.nx-node-card,
+.nx-node-visual,
+.nx-node-body,
+.nx-node-bottom,
+.nx-node-actions {
+  min-width: 0;
+
+  box-sizing: border-box;
 }
