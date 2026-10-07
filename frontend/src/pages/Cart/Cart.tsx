@@ -1,9 +1,10 @@
 import { useContext, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { CartContext } from "../../context/CartContext";
 import type { Product } from "../../types/product";
 import { resolveProductImage, handleImageError } from "../../utils/productImage";
+import { validateCurrentSession } from "../../utils/auth";
 
 import "./Cart.css";
 
@@ -13,6 +14,12 @@ type GroupedCartItem = {
 };
 
 export default function Cart() {
+  const { isAuthenticated } = validateCurrentSession();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login?returnUrl=/cart" replace />;
+  }
+
   const navigate = useNavigate();
 
   const { cart, addToCart, decreaseQuantity, removeFromCart, clearCart } =

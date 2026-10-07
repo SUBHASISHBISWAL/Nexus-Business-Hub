@@ -160,13 +160,17 @@ function AddProduct() {
       return;
     }
 
-    if (!formData.price || Number(formData.price) < 0) {
-      setImageError("Please enter a valid price.");
+    const rawPrice = String(formData.price ?? "").replace(/[^\d.]/g, "");
+    const parsedPrice = parseFloat(rawPrice);
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      setImageError("Please enter a valid price (greater than or equal to 0).");
       return;
     }
 
-    if (!formData.stock || Number(formData.stock) < 0) {
-      setImageError("Please enter a valid stock quantity.");
+    const rawStock = String(formData.stock ?? "").replace(/[^\d]/g, "");
+    const parsedStock = parseInt(rawStock, 10);
+    if (isNaN(parsedStock) || parsedStock < 0) {
+      setImageError("Please enter a valid integer for stock quantity (0 or greater).");
       return;
     }
 
@@ -187,16 +191,13 @@ function AddProduct() {
         }));
 
     const allImages = [...urlProductImages, ...uploadedProductImages];
+    const fallbackImage =
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
     const primaryImageUrl =
       urlProductImages[0]?.src ||
       uploadedProductImages[0]?.src ||
       formData.image.trim() ||
-      "";
-
-    if (!primaryImageUrl && allImages.length === 0) {
-      setImageError("Please provide at least 1 image URL or photo.");
-      return;
-    }
+      fallbackImage;
 
     setImageError("");
 
@@ -204,15 +205,25 @@ function AddProduct() {
       setIsSubmitting(true);
       const allImageUrls = allImages.map((img) => img.src).filter(Boolean);
 
+      const categoryMap: Record<string, number> = {
+        Electronics: 1,
+        Hardware: 2,
+        Software: 3,
+        Accessories: 4,
+      };
+      const categoryId = categoryMap[formData.category] || undefined;
+
       await createProduct({
         name: formData.name.trim(),
+        sku: formData.sku.trim() || undefined,
         description:
           formData.description.trim() ||
           formData.shortDescription.trim() ||
           `${formData.name.trim()} from ${formData.category} category.`,
-        price: Number(formData.price),
+        price: parsedPrice,
         category: formData.category,
-        stockQuantity: Number(formData.stock),
+        categoryId: categoryId,
+        stockQuantity: parsedStock,
         rating: 5.0,
         imageUrl: primaryImageUrl || allImageUrls[0] || "",
         isActive: formData.status === "Active",
@@ -240,10 +251,27 @@ function AddProduct() {
       navigate("/admin/products", { replace: true, state: { productAdded: true } });
     } catch (err: any) {
       console.error("Unable to create product:", err);
-      setImageError(
-        err.response?.data?.message ||
-          "Failed to create product in database. Please check your inputs and try again."
-      );
+      let errorText = "Unable to create product. Please check your inputs and try again.";
+      if (err?.response?.data) {
+        const data = err.response.data;
+        if (typeof data === "string") {
+          errorText = data;
+        } else if (data.message) {
+          errorText = data.message;
+        } else if (data.errors && typeof data.errors === "object") {
+          const fieldErrors = Object.entries(data.errors)
+            .map(([field, msgs]) => Array.isArray(msgs) ? `${field}: ${msgs.join(", ")}` : `${field}: ${msgs}`)
+            .filter(Boolean);
+          if (fieldErrors.length > 0) {
+            errorText = fieldErrors.join(" | ");
+          }
+        } else if (data.title) {
+          errorText = data.title;
+        }
+      } else if (err?.message) {
+        errorText = err.message;
+      }
+      setImageError(errorText);
     } finally {
       setIsSubmitting(false);
     }
@@ -271,6 +299,13 @@ function AddProduct() {
           </p>
         </div>
       </div>
+
+      {imageError && (
+        <div className="nx-admin-error-message" style={{ margin: "1rem 0" }}>
+          <i className="bi bi-exclamation-triangle-fill" style={{ marginRight: "0.5rem" }} />
+          {imageError}
+        </div>
+      )}
 
       {saved && (
         <div className="nx-success-message">
@@ -321,7 +356,7 @@ function AddProduct() {
                 <div className="col-md-6">
                   <div className="nx-field">
                     <label htmlFor="sku">
-                      SKU <span>*</span>
+                      SKU
                     </label>
 
                     <input
@@ -330,8 +365,7 @@ function AddProduct() {
                       type="text"
                       value={formData.sku}
                       onChange={handleChange}
-                      placeholder="e.g. NX-GW-001"
-                      required
+                      placeholder="e.g. NX-GW-001 (auto-generated if empty)"
                     />
                   </div>
                 </div>

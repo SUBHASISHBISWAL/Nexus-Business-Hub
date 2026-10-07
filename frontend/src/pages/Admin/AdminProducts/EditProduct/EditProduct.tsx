@@ -95,7 +95,7 @@ function EditProduct() {
 
         setFormData({
           name: product.name || "",
-          sku: `NEX-${product.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(product.id).padStart(3, "0")}`,
+          sku: product.sku || `NEX-${product.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(product.id).padStart(3, "0")}`,
           category: product.category || "Electronics",
           price: product.price !== undefined ? String(product.price) : "",
           stock: product.stockQuantity !== undefined ? String(product.stockQuantity) : "",
@@ -269,17 +269,21 @@ function EditProduct() {
     }
 
     if (!formData.category) {
-      alert("Please select a Category.");
+      setErrorMessage("Please select a Category.");
       return;
     }
 
-    if (!formData.price || Number(formData.price) < 0) {
-      alert("Please enter a valid price.");
+    const rawPrice = String(formData.price ?? "").replace(/[^\d.]/g, "");
+    const parsedPrice = parseFloat(rawPrice);
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      setErrorMessage("Please enter a valid price (greater than or equal to 0).");
       return;
     }
 
-    if (!formData.stock || Number(formData.stock) < 0) {
-      alert("Please enter a valid stock quantity.");
+    const rawStock = String(formData.stock ?? "").replace(/[^\d]/g, "");
+    const parsedStock = parseInt(rawStock, 10);
+    if (isNaN(parsedStock) || parsedStock < 0) {
+      setErrorMessage("Please enter a valid integer for stock quantity (0 or greater).");
       return;
     }
 
@@ -293,15 +297,25 @@ function EditProduct() {
       setIsSubmitting(true);
       setErrorMessage("");
 
+      const categoryMap: Record<string, number> = {
+        Electronics: 1,
+        Hardware: 2,
+        Software: 3,
+        Accessories: 4,
+      };
+      const categoryId = categoryMap[formData.category] || undefined;
+
       await updateProduct(Number(id), {
         name: formData.name.trim(),
+        sku: formData.sku.trim() || undefined,
         description:
           formData.description.trim() ||
           formData.shortDescription.trim() ||
           `${formData.name.trim()} from ${formData.category} category.`,
-        price: Number(formData.price),
+        price: parsedPrice,
         category: formData.category,
-        stockQuantity: Number(formData.stock),
+        categoryId: categoryId,
+        stockQuantity: parsedStock,
         imageUrl: primaryImageUrl,
         isActive: formData.status === "Active",
         images: validImages.length > 0 ? validImages : undefined,
@@ -314,10 +328,27 @@ function EditProduct() {
       }, 800);
     } catch (error: any) {
       console.error("Unable to update product:", error);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Something went wrong while updating the product. Please try again."
-      );
+      let errorText = "Unable to update product. Please check your inputs and try again.";
+      if (error?.response?.data) {
+        const data = error.response.data;
+        if (typeof data === "string") {
+          errorText = data;
+        } else if (data.message) {
+          errorText = data.message;
+        } else if (data.errors && typeof data.errors === "object") {
+          const fieldErrors = Object.entries(data.errors)
+            .map(([field, msgs]) => Array.isArray(msgs) ? `${field}: ${msgs.join(", ")}` : `${field}: ${msgs}`)
+            .filter(Boolean);
+          if (fieldErrors.length > 0) {
+            errorText = fieldErrors.join(" | ");
+          }
+        } else if (data.title) {
+          errorText = data.title;
+        }
+      } else if (error?.message) {
+        errorText = error.message;
+      }
+      setErrorMessage(errorText);
     } finally {
       setIsSubmitting(false);
     }

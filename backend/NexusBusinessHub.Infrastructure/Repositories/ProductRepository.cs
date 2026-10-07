@@ -131,6 +131,7 @@ public class ProductRepository : IProductRepository
             var term = parameters.Search.Trim();
 
             query = query.Where(p =>
+                p.Sku.Contains(term) ||
                 p.Name.Contains(term) ||
                 p.Category.Name.Contains(term) ||
                 p.Description.Contains(term) ||
@@ -260,6 +261,7 @@ public class ProductRepository : IProductRepository
                 {
                     Id = p.Id,
                     Name = p.Name,
+                    Sku = !string.IsNullOrWhiteSpace(p.Sku) ? p.Sku : string.Empty,
                     Description = p.Description,
                     Price = p.Price,
                     Image = p.ImageUrl,
@@ -289,7 +291,9 @@ public class ProductRepository : IProductRepository
             .Select(c => new
             {
                 c.Name,
-                Count = c.Products.Count(p => p.IsActive)
+                Count = parameters.IncludeInactive == true
+                    ? c.Products.Count()
+                    : c.Products.Count(p => p.IsActive)
             })
             .ToDictionaryAsync(
                 x => x.Name,
@@ -299,6 +303,7 @@ public class ProductRepository : IProductRepository
         // ADMIN COUNTS
         // =========================================================
 
+        int? totalCount = null;
         int? activeCount = null;
         int? outOfStockCount = null;
         int? draftCount = null;
@@ -307,21 +312,23 @@ public class ProductRepository : IProductRepository
         {
             var counts = await _context.Products
                 .AsNoTracking()
-                .Where(p => p.IsActive)
                 .GroupBy(_ => 1)
                 .Select(g => new
                 {
+                    Total = g.Count(),
                     Active = g.Count(p =>
-                        p.StockQuantity > 0),
-
+                        p.IsActive && p.StockQuantity > 0),
                     OutOfStock = g.Count(p =>
-                        p.StockQuantity == 0)
+                        p.IsActive && p.StockQuantity == 0),
+                    Draft = g.Count(p =>
+                        !p.IsActive)
                 })
                 .FirstOrDefaultAsync();
 
+            totalCount = counts?.Total ?? 0;
             activeCount = counts?.Active ?? 0;
             outOfStockCount = counts?.OutOfStock ?? 0;
-            draftCount = 0;
+            draftCount = counts?.Draft ?? 0;
         }
 
         // =========================================================
@@ -336,6 +343,7 @@ public class ProductRepository : IProductRepository
             TotalItems = totalItems,
             TotalPages = totalPages,
             CategoryCounts = categoryCounts,
+            TotalCount = totalCount,
             ActiveCount = activeCount,
             OutOfStockCount = outOfStockCount,
             DraftCount = draftCount
@@ -364,6 +372,7 @@ public class ProductRepository : IProductRepository
             {
                 Id = p.Id,
                 Name = p.Name,
+                Sku = !string.IsNullOrWhiteSpace(p.Sku) ? p.Sku : string.Empty,
                 Description = p.Description,
                 Price = p.Price,
                 Image = p.ImageUrl,
@@ -459,12 +468,64 @@ public class ProductRepository : IProductRepository
             return false;
         }
 
-        product.IsActive = false;
-        product.UpdatedAt = DateTime.UtcNow;
+        // Check if existing orders reference this product - preserve historical order info
+        var hasOrders = await _context.OrderItems
+            .AnyAsync(oi => oi.ProductId == id);
+
+        if (hasOrders)
+        {
+            throw new InvalidOperationException("Cannot delete product because it is associated with existing orders. Please deactivate the product instead.");
+        }
+
+        // Safely clean up dependent records before removing product
+        var cartItems = await _context.CartItems.Where(ci => ci.ProductId == id).ToListAsync();
+        if (cartItems.Count > 0) _context.CartItems.RemoveRange(cartItems);
+
+        var wishlistItems = await _context.WishlistItems.Where(wi => wi.ProductId == id).ToListAsync();
+        if (wishlistItems.Count > 0) _context.WishlistItems.RemoveRange(wishlistItems);
+
+        var productReviews = await _context.ProductReviews.Where(pr => pr.ProductId == id).ToListAsync();
+        if (productReviews.Count > 0) _context.ProductReviews.RemoveRange(productReviews);
+
+        var productFeatures = await _context.ProductFeatures.Where(pf => pf.ProductId == id).ToListAsync();
+        if (productFeatures.Count > 0) _context.ProductFeatures.RemoveRange(productFeatures);
+
+        var productSpecs = await _context.ProductSpecifications.Where(ps => ps.ProductId == id).ToListAsync();
+        if (productSpecs.Count > 0) _context.ProductSpecifications.RemoveRange(productSpecs);
+
+        var productImages = await _context.ProductImages.Where(pi => pi.ProductId == id).ToListAsync();
+        if (productImages.Count > 0) _context.ProductImages.RemoveRange(productImages);
+
+        // Perform hard SQL delete
+        _context.Products.Remove(product);
 
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    // =============================================================
+    // UPDATE PRODUCT STATUS (ACTIVE / INACTIVE)
+    // =============================================================
+
+    public async Task<Product?> UpdateStatusAsync(int id, bool isActive)
+    {
+        var product = await _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Images)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+        {
+            return null;
+        }
+
+        product.IsActive = isActive;
+        product.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return product;
     }
 
     // =============================================================

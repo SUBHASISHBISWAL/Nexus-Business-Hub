@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createDemoAdminJwt } from "../../../utils/auth";
 import "./AdminOTP.css";
 
 export default function AdminOTP() {
@@ -43,15 +44,14 @@ export default function AdminOTP() {
     setIsLoading(true);
 
     setTimeout(() => {
+      const adminToken = createDemoAdminJwt();
       localStorage.removeItem("nexus_admin_pending_otp");
 
       localStorage.setItem("isAdmin", "true");
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userRole", "Admin");
-      localStorage.setItem(
-        "authToken",
-        "local-admin-demo-token"
-      );
+      localStorage.setItem("authToken", adminToken);
+      localStorage.setItem("token", adminToken);
 
       localStorage.setItem(
         "user",
@@ -69,7 +69,11 @@ export default function AdminOTP() {
 
       setIsLoading(false);
 
-      navigate("/admin/dashboard");
+      const adminReturnUrl =
+        localStorage.getItem("nexus_admin_return_url") || "/admin/dashboard";
+      localStorage.removeItem("nexus_admin_return_url");
+
+      navigate(adminReturnUrl);
     }, 700);
   };
 

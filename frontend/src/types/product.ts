@@ -3,6 +3,8 @@ export interface Product {
 
   name: string;
 
+  sku?: string;
+
   category:
     | "Electronics"
     | "Hardware"

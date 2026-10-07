@@ -8,6 +8,7 @@ import { ProductCardSkeletonGrid } from "../../components/skeleton/ProductCardSk
 import { useInitialLoading } from "../../context/InitialLoadingContext";
 import type { Product } from "../../types/product";
 import { resolveProductImage, handleImageError } from "../../utils/productImage";
+import { isAuthenticated } from "../../utils/auth";
 
 import "./Wishlist.css";
 
@@ -92,6 +93,10 @@ export default function Wishlist() {
 
   // Add individual product to cart
   const handleAddToCart = (product: Product) => {
+    if (!isAuthenticated()) {
+      navigate("/login?returnUrl=/wishlist");
+      return;
+    }
     if ((product.stockQuantity ?? 0) <= 0) {
       showNotification(`"${product.name}" is currently out of stock.`);
       return;
@@ -102,6 +107,10 @@ export default function Wishlist() {
 
   // Add all saved products to cart
   const handleAddAllToCart = () => {
+    if (!isAuthenticated()) {
+      navigate("/login?returnUrl=/wishlist");
+      return;
+    }
     const inStockItems = savedProducts.filter(
       (product) => (product.stockQuantity ?? 1) > 0
     );

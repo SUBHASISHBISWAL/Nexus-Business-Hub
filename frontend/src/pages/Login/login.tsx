@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import {
   forgotPassword,
@@ -24,6 +24,7 @@ const phoneRegex = /^[0-9]{10}$/;
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [isRegisterMode, setIsRegisterMode] = useState(false);
 
@@ -137,6 +138,11 @@ const Login: React.FC = () => {
           "true"
         );
 
+        const rawReturnUrl = searchParams.get("returnUrl");
+        if (rawReturnUrl) {
+          localStorage.setItem("nexus_admin_return_url", rawReturnUrl);
+        }
+
         navigate("/admin/verify-otp");
         return;
       }
@@ -169,6 +175,8 @@ const Login: React.FC = () => {
       // =========================================================
 
       localStorage.setItem("authToken", response.token);
+      localStorage.setItem("token", response.token);
+      localStorage.removeItem("isAdmin");
 
       localStorage.setItem(
         "userId",
@@ -226,7 +234,12 @@ const Login: React.FC = () => {
       // Navbar listens for this event.
       window.dispatchEvent(new Event("userUpdated"));
 
-      navigate("/");
+      const rawReturnUrl = searchParams.get("returnUrl");
+      const returnUrl =
+        rawReturnUrl && rawReturnUrl !== "/login" && rawReturnUrl !== "/register"
+          ? rawReturnUrl
+          : "/";
+      navigate(returnUrl);
     } catch (error: any) {
       const message =
         error?.response?.data?.message ||

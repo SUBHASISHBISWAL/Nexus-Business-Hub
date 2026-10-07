@@ -5,9 +5,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import type { Product } from "../types/product";
 import { normalizeProductForCart } from "../utils/productImage";
+import { isAuthenticated } from "../utils/auth";
 
 export type CartItem = Product & {
   quantity: number;
@@ -86,6 +88,9 @@ function parseSavedCart(raw: string | null): CartItem[] {
 }
 
 export function CartProvider({ children }: CartProviderProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [cart, setCart] = useState<CartItem[]>(() => {
     return parseSavedCart(localStorage.getItem(CART_STORAGE_KEY));
   });
@@ -106,6 +111,7 @@ export function CartProvider({ children }: CartProviderProps) {
 
   /**
    * Add a product to cart.
+   * - Requires customer authentication (redirects to /login)
    * - Prevents adding inactive products
    * - Prevents adding out-of-stock products
    * - Respects stockQuantity limit
@@ -113,6 +119,17 @@ export function CartProvider({ children }: CartProviderProps) {
    */
   const addToCart = (product: Product, quantityToAdd: number = 1) => {
     if (!product || typeof product.id !== "number") return;
+
+    // Check login: unauthenticated users must be redirected to /login
+    if (!isAuthenticated()) {
+      const currentPath = location.pathname + (location.search || "");
+      const returnUrl =
+        currentPath.includes("?") || currentPath.includes("&")
+          ? encodeURIComponent(currentPath)
+          : currentPath;
+      navigate(`/login?returnUrl=${returnUrl}`);
+      return;
+    }
 
     // Prevent adding inactive or zero-stock products
     if (product.isActive === false) {

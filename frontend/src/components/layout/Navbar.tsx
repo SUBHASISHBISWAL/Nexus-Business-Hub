@@ -15,17 +15,14 @@ import {
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { useTheme } from "../../context/ThemeContext";
+import {
+  type AuthState,
+  clearAuthSession,
+  validateCurrentSession,
+  type StoredUser,
+} from "../../utils/auth";
 
 import "./Navbar.css";
-
-interface StoredUser {
-  userId?: number;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phoneNumber?: string;
-  role?: string;
-}
 
 interface NotificationItem {
   id: string;
@@ -114,27 +111,17 @@ export default function Navbar() {
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
-  const getStoredUser = (): StoredUser | null => {
-    try {
-      const raw = localStorage.getItem("user");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  };
-
-  const [currentUser, setCurrentUser] = useState<StoredUser | null>(
-    getStoredUser
-  );
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
-    () => localStorage.getItem("isLoggedIn") === "true"
-  );
+  const [authState, setAuthState] = useState<AuthState>("checking");
+  const [currentUser, setCurrentUser] = useState<StoredUser | null>(null);
 
   useEffect(() => {
     const syncUser = () => {
-      setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-      setCurrentUser(getStoredUser());
+      const { isAuthenticated, user } = validateCurrentSession();
+      setCurrentUser(user);
+      setAuthState(isAuthenticated ? "authenticated" : "unauthenticated");
     };
+
+    syncUser();
 
     window.addEventListener("userUpdated", syncUser);
     window.addEventListener("storage", syncUser);
@@ -144,6 +131,8 @@ export default function Navbar() {
       window.removeEventListener("storage", syncUser);
     };
   }, []);
+
+  const isLoggedIn = authState === "authenticated";
 
   const userFullName =
     [currentUser?.firstName, currentUser?.lastName]
@@ -246,8 +235,13 @@ export default function Navbar() {
      PROTECTED NAVIGATION
      ========================================================= */
   const handleProtectedNavigation = (path: string) => {
-    if (!isLoggedIn) {
-      navigate("/login");
+    const { isAuthenticated } = validateCurrentSession();
+    if (!isAuthenticated) {
+      const returnUrlParam =
+        path.includes("?") || path.includes("&")
+          ? encodeURIComponent(path)
+          : path;
+      navigate(`/login?returnUrl=${returnUrlParam}`);
       return;
     }
     navigate(path);
@@ -257,12 +251,7 @@ export default function Navbar() {
      LOGOUT
      ========================================================= */
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("user");
-
-    window.dispatchEvent(new Event("userUpdated"));
+    clearAuthSession();
 
     setLogoutConfirm(false);
     setProfileOpen(false);
@@ -415,7 +404,7 @@ export default function Navbar() {
             className="nav-icon-btn notification-icon"
             type="button"
             aria-label={`Shopping Cart, ${totalCount} items`}
-            onClick={() => navigate("/cart")}
+            onClick={() => handleProtectedNavigation("/cart")}
             title="Shopping Cart"
           >
             <i className="bi bi-bag" aria-hidden="true"></i>

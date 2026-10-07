@@ -14,6 +14,8 @@ public class PagedResult<T>
 
     public Dictionary<string, int>? CategoryCounts { get; set; }
  
+    public int? TotalCount { get; set; }
+
     public int? ActiveCount { get; set; }
 
     public int? OutOfStockCount { get; set; }

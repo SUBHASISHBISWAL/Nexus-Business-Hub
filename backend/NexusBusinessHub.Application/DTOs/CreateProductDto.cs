@@ -8,6 +8,8 @@ public class CreateProductDto
     [StringLength(200, MinimumLength = 1, ErrorMessage = "Product name must be between 1 and 200 characters.")]
     public string Name { get; set; } = string.Empty;
 
+    public string? Sku { get; set; }
+
     public string Description { get; set; } = string.Empty;
 
     [Range(0, 100000000, ErrorMessage = "Price must be a non-negative value.")]

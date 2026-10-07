@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { AdminTableSkeleton } from "../../../components/skeleton/AdminTableSkeleton";
 import { ErrorState } from "../../../components/common/ErrorState";
@@ -7,6 +7,7 @@ import {
   deleteProduct as apiDeleteProduct,
   getCategories,
   getProducts,
+  updateProductStatus,
 } from "../../../services/productService";
 import { useInitialLoading } from "../../../context/InitialLoadingContext";
 
@@ -43,21 +44,48 @@ type Product = {
 function AdminProducts() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { markAppReady } = useInitialLoading();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [productAddedSuccess, setProductAddedSuccess] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All Categories");
   const [statusFilter, setStatusFilter] = useState("All Status");
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const pageFromUrl = Math.max(1, Number(searchParams.get("page")) || 1);
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setCurrentPage(page);
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        if (page === 1) {
+          next.delete("page");
+        } else {
+          next.set("page", String(page));
+        }
+        return next;
+      });
+    },
+    [setSearchParams]
+  );
+
+  // Sync state when URL searchParams page changes externally
+  useEffect(() => {
+    const page = Math.max(1, Number(searchParams.get("page")) || 1);
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
+  }, [searchParams]);
 
   const [summary, setSummary] = useState({
     total: 0,
@@ -155,7 +183,7 @@ function AdminProducts() {
           return {
             id: product.id,
             name: product.name,
-            sku: `NEX-${product.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(product.id).padStart(3, "0")}`,
+            sku: product.sku || `NEX-${product.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(product.id).padStart(3, "0")}`,
             category: product.category || "Electronics",
             price: Number(product.price) || 0,
             stock: product.stockQuantity ?? 0,
@@ -184,19 +212,15 @@ function AdminProducts() {
         if (apiData?.categoryCounts) {
           const keys = Object.keys(apiData.categoryCounts);
           if (keys.length > 0) {
-            setCategories((prev) => (prev.length > 0 ? prev : keys));
+            setCategories((prev) => Array.from(new Set([...prev, ...keys])));
           }
         }
 
         setSummary({
-          total: total,
-          active:
-            apiData?.activeCount ??
-            (statusVal === "Active" ? total : 0),
+          total: apiData?.totalCount ?? total,
+          active: apiData?.activeCount ?? 0,
           draft: apiData?.draftCount ?? 0,
-          outOfStock:
-            apiData?.outOfStockCount ??
-            (statusVal === "Out of Stock" ? total : 0),
+          outOfStock: apiData?.outOfStockCount ?? 0,
         });
 
         return {
@@ -220,7 +244,7 @@ function AdminProducts() {
   useEffect(() => {
     if (location.state?.productAdded) {
       setProductAddedSuccess(true);
-      setCurrentPage(1);
+      handlePageChange(1);
       loadProducts(1);
       window.history.replaceState({}, document.title);
       window.setTimeout(() => {
@@ -229,7 +253,18 @@ function AdminProducts() {
     } else {
       loadProducts(currentPage);
     }
-  }, [currentPage, debouncedSearch, categoryFilter, statusFilter, location.key, location.state, loadProducts]);
+  }, [currentPage, debouncedSearch, categoryFilter, statusFilter, location.key, location.state, loadProducts, handlePageChange]);
+
+  useEffect(() => {
+    const handleProductsUpdated = () => {
+      loadProducts(currentPage);
+    };
+
+    window.addEventListener("productsUpdated", handleProductsUpdated);
+    return () => {
+      window.removeEventListener("productsUpdated", handleProductsUpdated);
+    };
+  }, [currentPage, loadProducts]);
 
   /*
    * COMPACT PAGINATION PAGES
@@ -278,22 +313,26 @@ function AdminProducts() {
   const outOfStockProducts = summary.outOfStock;
   const draftProducts = summary.draft;
 
+  const resultStart =
+    totalItems === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const resultEnd = Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
+
   /*
    * HANDLERS
    */
   const handleSearchChange = (value: string) => {
     setSearch(value);
-    setCurrentPage(1);
+    handlePageChange(1);
   };
 
   const handleCategoryChange = (value: string) => {
     setCategoryFilter(value);
-    setCurrentPage(1);
+    handlePageChange(1);
   };
 
   const handleStatusChange = (value: string) => {
     setStatusFilter(value);
-    setCurrentPage(1);
+    handlePageChange(1);
   };
 
   const handleClearFilters = () => {
@@ -301,7 +340,7 @@ function AdminProducts() {
     setDebouncedSearch("");
     setCategoryFilter("All Categories");
     setStatusFilter("All Status");
-    setCurrentPage(1);
+    handlePageChange(1);
   };
 
   const handleViewProduct = (productId: string | number) => {
@@ -314,38 +353,84 @@ function AdminProducts() {
 
   const handleDeleteClick = (product: Product) => {
     setDeleteProduct(product);
+    setDeleteError("");
   };
 
   const handleDeleteCancel = () => {
     setDeleteProduct(null);
+    setDeleteError("");
   };
 
   const handleDeleteConfirm = async () => {
-    if (!deleteProduct) {
+    if (!deleteProduct || deleteLoading) {
       return;
     }
 
+    const targetProduct = deleteProduct;
+
     try {
       setDeleteLoading(true);
-      await apiDeleteProduct(Number(deleteProduct.id));
+      setDeleteError("");
+
+      await apiDeleteProduct(Number(targetProduct.id));
+
+      // 1. Immediately remove it from Admin UI list
+      setProducts((prev) => prev.filter((p) => p.id !== targetProduct.id));
       setDeleteProduct(null);
       setDeleteSuccess(true);
 
-      // Re-fetch current page
-      const result = await loadProducts(currentPage);
-      // If current page becomes empty and currentPage > 1, move to previous page
-      if (result && result.items.length === 0 && currentPage > 1) {
-        setCurrentPage((previous) => previous - 1);
+      // 2. Compute updated total items and pages to handle pagination
+      const newTotalItems = Math.max(0, totalItems - 1);
+      const newTotalPages = Math.max(1, Math.ceil(newTotalItems / ITEMS_PER_PAGE));
+      const targetPage = currentPage > newTotalPages ? newTotalPages : currentPage;
+
+      // 3. Move to previous page if current page became invalid/empty, else reload current page
+      if (targetPage !== currentPage) {
+        handlePageChange(targetPage);
+        await loadProducts(targetPage);
+      } else {
+        await loadProducts(currentPage);
       }
 
       window.setTimeout(() => {
         setDeleteSuccess(false);
       }, 2500);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to delete product:", err);
-      alert("Failed to delete product. Please try again.");
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data ||
+        "Unable to delete product.";
+      setDeleteError(typeof msg === "string" ? msg : "Unable to delete product.");
     } finally {
       setDeleteLoading(false);
+    }
+  };
+
+  const handleToggleStatus = async (product: Product) => {
+    const nextIsActive = product.status !== "Active";
+    const nextStatus: ProductStatus = nextIsActive ? "Active" : "Inactive";
+
+    // Optimistically update product status in table
+    setProducts((prev) =>
+      prev.map((p) => (p.id === product.id ? { ...p, status: nextStatus } : p))
+    );
+    setSummary((prev) => ({
+      ...prev,
+      active: nextIsActive ? prev.active + 1 : Math.max(0, prev.active - 1),
+    }));
+
+    try {
+      await updateProductStatus(Number(product.id), nextIsActive);
+      await loadProducts(currentPage);
+    } catch (err: any) {
+      console.error("Failed to update status:", err);
+      // Revert on failure
+      setProducts((prev) =>
+        prev.map((p) => (p.id === product.id ? { ...p, status: product.status } : p))
+      );
+      await loadProducts(currentPage);
+      alert(err.response?.data?.message || "Failed to update product status.");
     }
   };
 
@@ -406,6 +491,15 @@ function AdminProducts() {
           <i className="bi bi-check-circle-fill" />
           <span>
             Product deleted successfully.
+          </span>
+        </div>
+      )}
+
+      {deleteError && (
+        <div className="nx-admin-error-message" role="alert">
+          <i className="bi bi-exclamation-triangle-fill" />
+          <span>
+            {deleteError}
           </span>
         </div>
       )}
@@ -583,18 +677,7 @@ function AdminProducts() {
         {/* RESULT INFO */}
         <div className="nx-admin-result-info">
           <span>
-            Showing{" "}
-            {totalItems === 0
-              ? 0
-              : (currentPage - 1) * ITEMS_PER_PAGE + 1}
-            -
-            {Math.min(
-              currentPage * ITEMS_PER_PAGE,
-              totalItems
-            )}{" "}
-            of{" "}
-            {totalItems}{" "}
-            products
+            Showing {resultStart}-{resultEnd} of {totalItems} products
           </span>
         </div>
 
@@ -714,14 +797,18 @@ function AdminProducts() {
                       </td>
 
                       <td>
-                        <span
-                          className={`nx-admin-status ${getStatusClass(
+                        <button
+                          type="button"
+                          className={`nx-admin-status nx-admin-status-toggle ${getStatusClass(
                             product.status
                           )}`}
+                          onClick={() => handleToggleStatus(product)}
+                          title={`Click to set ${product.status === "Active" ? "Inactive" : "Active"}`}
+                          aria-label={`Toggle status for ${product.name}, currently ${product.status}`}
                         >
                           <span className="nx-admin-status-dot" />
                           {product.status}
-                        </span>
+                        </button>
                       </td>
 
                       <td>
@@ -832,8 +919,8 @@ function AdminProducts() {
                 className="nx-admin-pagination-button"
                 disabled={currentPage <= 1}
                 onClick={() =>
-                  setCurrentPage((previous) =>
-                    Math.max(1, previous - 1)
+                  handlePageChange(
+                    Math.max(1, currentPage - 1)
                   )
                 }
                 aria-label="Previous page"
@@ -863,7 +950,7 @@ function AdminProducts() {
                       className={`nx-admin-page-number ${
                         currentPage === page ? "active" : ""
                       }`}
-                      onClick={() => setCurrentPage(page)}
+                      onClick={() => handlePageChange(page)}
                     >
                       {page}
                     </button>
@@ -876,8 +963,8 @@ function AdminProducts() {
                 className="nx-admin-pagination-button"
                 disabled={currentPage >= totalPages}
                 onClick={() =>
-                  setCurrentPage((previous) =>
-                    Math.min(totalPages, previous + 1)
+                  handlePageChange(
+                    Math.min(totalPages, currentPage + 1)
                   )
                 }
                 aria-label="Next page"
@@ -910,13 +997,30 @@ function AdminProducts() {
             </h2>
 
             <p>
-              Are you sure you want to delete{" "}
-              <strong>
-                {deleteProduct.name}
-              </strong>
-              ? This action cannot be
-              undone.
+              Are you sure you want to permanently delete this product? This action cannot be undone.
             </p>
+
+            {deleteError && (
+              <div
+                className="nx-admin-modal-error"
+                style={{
+                  color: "#dc2626",
+                  background: "#fef2f2",
+                  border: "1px solid #fecaca",
+                  padding: "0.5rem 0.75rem",
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                  margin: "0.75rem 0",
+                  textAlign: "left",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <i className="bi bi-exclamation-triangle-fill" />
+                <span>{deleteError}</span>
+              </div>
+            )}
 
             <div className="nx-admin-delete-actions">
               <button

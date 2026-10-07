@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { Product } from "../types/product";
+import { getStoredToken } from "../utils/auth";
 
 const API_URL = "http://localhost:5133/api/Products";
 
@@ -25,6 +26,7 @@ export interface PagedProductResult {
   totalItems: number;
   totalPages: number;
   categoryCounts?: Record<string, number>;
+  totalCount?: number;
   activeCount?: number;
   outOfStockCount?: number;
   draftCount?: number;
@@ -32,6 +34,7 @@ export interface PagedProductResult {
 
 export interface CreateProductInput {
   name: string;
+  sku?: string;
   description?: string;
   price: number;
   category: string;
@@ -45,6 +48,7 @@ export interface CreateProductInput {
 
 export interface UpdateProductInput {
   name: string;
+  sku?: string;
   description?: string;
   price: number;
   category: string;
@@ -65,6 +69,20 @@ export interface CategoryDto {
 
 const inFlightProducts = new Map<string, Promise<PagedProductResult>>();
 let inFlightCategories: Promise<CategoryDto[]> | null = null;
+
+export const clearProductCache = (): void => {
+  inFlightProducts.clear();
+  inFlightCategories = null;
+};
+
+const getAuthHeaders = (): Record<string, string> => {
+  const token = getStoredToken();
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+};
 
 function serializeParams(params?: ProductQueryParams): string {
   if (!params) return "";
@@ -142,7 +160,16 @@ export const getProductById = async (
 export const createProduct = async (
   data: CreateProductInput
 ): Promise<Product> => {
-  const response = await axios.post<Product>(API_URL, data);
+  clearProductCache();
+  const response = await axios.post<Product>(API_URL, data, {
+    headers: getAuthHeaders(),
+  });
+  clearProductCache();
+  window.dispatchEvent(
+    new CustomEvent("productsUpdated", {
+      detail: { action: "create", product: response.data },
+    })
+  );
   return response.data;
 };
 
@@ -150,12 +177,51 @@ export const updateProduct = async (
   id: number,
   data: UpdateProductInput
 ): Promise<Product> => {
-  const response = await axios.put<Product>(`${API_URL}/${id}`, data);
+  clearProductCache();
+  const response = await axios.put<Product>(`${API_URL}/${id}`, data, {
+    headers: getAuthHeaders(),
+  });
+  clearProductCache();
+  window.dispatchEvent(
+    new CustomEvent("productsUpdated", {
+      detail: { action: "update", product: response.data },
+    })
+  );
   return response.data;
 };
 
 export const deleteProduct = async (id: number): Promise<void> => {
-  await axios.delete(`${API_URL}/${id}`);
+  clearProductCache();
+  await axios.delete(`${API_URL}/${id}`, {
+    headers: getAuthHeaders(),
+  });
+  clearProductCache();
+  window.dispatchEvent(
+    new CustomEvent("productsUpdated", {
+      detail: { action: "delete", id },
+    })
+  );
+};
+
+export const updateProductStatus = async (
+  id: number,
+  isActive: boolean
+): Promise<Product> => {
+  clearProductCache();
+  const response = await axios.patch<Product>(
+    `${API_URL}/${id}/status`,
+    { isActive },
+    {
+      headers: getAuthHeaders(),
+    }
+  );
+  clearProductCache();
+  window.dispatchEvent(
+    new CustomEvent("productsUpdated", {
+      detail: { action: "status", product: response.data },
+    })
+  );
+  return response.data;
 };
 
 export const getCategories = (signal?: AbortSignal): Promise<CategoryDto[]> => {

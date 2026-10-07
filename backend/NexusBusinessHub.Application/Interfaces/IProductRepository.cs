@@ -19,6 +19,8 @@ public interface IProductRepository
 
     Task<bool> DeleteAsync(int id);
 
+    Task<Product?> UpdateStatusAsync(int id, bool isActive);
+
     Task<Category?> GetCategoryByNameOrIdAsync(string? name, int? id);
 
     Task<Category> EnsureCategoryAsync(string name);

@@ -1,11 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { isAuthenticated, validateCurrentSession } from "../../utils/auth";
 import "./Profile.css";
 
 const PROFILE_PHOTO_KEY = "customerProfilePhoto";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate("/login?returnUrl=/profile");
+    }
+  }, [navigate]);
 
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -13,14 +21,13 @@ const Profile = () => {
 
   const loadUserFromStorage = () => {
     try {
-      const raw = localStorage.getItem("user");
-      if (raw) {
-        const u = JSON.parse(raw);
-        const name = [u.firstName, u.lastName].filter(Boolean).join(" ").trim();
+      const { isAuthenticated, user } = validateCurrentSession();
+      if (isAuthenticated && user) {
+        const name = [user.firstName, user.lastName].filter(Boolean).join(" ").trim();
         return {
           fullName: name || "Customer User",
-          email: u.email || "",
-          mobile: u.phoneNumber || "",
+          email: user.email || "",
+          mobile: user.phoneNumber || "",
         };
       }
     } catch {

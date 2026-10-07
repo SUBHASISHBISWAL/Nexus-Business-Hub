@@ -67,11 +67,17 @@ public class ProductService : IProductService
             imageUrl = dto.Images.FirstOrDefault(url => !string.IsNullOrWhiteSpace(url))?.Trim() ?? string.Empty;
         }
 
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            imageUrl = "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=60";
+        }
+
         var now = DateTime.UtcNow;
 
         var product = new Product
         {
             Name = dto.Name.Trim(),
+            Sku = dto.Sku?.Trim() ?? string.Empty,
             Description = dto.Description?.Trim() ?? string.Empty,
             Price = dto.Price,
             ImageUrl = imageUrl,
@@ -114,6 +120,12 @@ public class ProductService : IProductService
         }
 
         var created = await _repository.CreateAsync(product);
+        if (string.IsNullOrWhiteSpace(created.Sku))
+        {
+            var catName = category.Name.Length >= 3 ? category.Name.Substring(0, 3) : category.Name;
+            created.Sku = $"NEX-{catName.ToUpperInvariant()}-{created.Id:D3}";
+            await _repository.UpdateAsync(created);
+        }
         created.Category = category;
         return created.ToDto();
     }
@@ -173,9 +185,17 @@ public class ProductService : IProductService
         }
 
         var newImageUrl = dto.ImageUrl?.Trim();
-        if (newImageUrl != null)
+        if (!string.IsNullOrWhiteSpace(newImageUrl))
         {
             product.ImageUrl = newImageUrl;
+        }
+        else if (dto.Images != null && dto.Images.Count > 0)
+        {
+            var firstImg = dto.Images.FirstOrDefault(u => !string.IsNullOrWhiteSpace(u))?.Trim();
+            if (!string.IsNullOrWhiteSpace(firstImg))
+            {
+                product.ImageUrl = firstImg;
+            }
         }
 
         var now = DateTime.UtcNow;
@@ -222,6 +242,11 @@ public class ProductService : IProductService
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(dto.Sku))
+        {
+            product.Sku = dto.Sku.Trim();
+        }
+
         var updated = await _repository.UpdateAsync(product);
         return updated.ToDto();
     }
@@ -229,6 +254,12 @@ public class ProductService : IProductService
     public async Task<bool> DeleteAsync(int id)
     {
         return await _repository.DeleteAsync(id);
+    }
+
+    public async Task<ProductDto?> UpdateStatusAsync(int id, bool isActive)
+    {
+        var product = await _repository.UpdateStatusAsync(id, isActive);
+        return product?.ToDto();
     }
 
     public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()

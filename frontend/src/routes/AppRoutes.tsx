@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 // Admin Protection (eagerly loaded route guard)
 import AdminProtectedRoute from "./AdminProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
 // Login / Register
 const Login = lazy(() => import("../pages/Login/login"));
@@ -181,12 +182,20 @@ function AppRoutes() {
 
         <Route
           path="/profile"
-          element={<Profile />}
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/settings"
-          element={<Settings />}
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
         />
 
 
@@ -196,12 +205,20 @@ function AppRoutes() {
 
         <Route
           path="/cart"
-          element={<Cart />}
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/wishlist"
-          element={<Wishlist />}
+          element={
+            <ProtectedRoute>
+              <Wishlist />
+            </ProtectedRoute>
+          }
         />
 
 
@@ -211,12 +228,20 @@ function AppRoutes() {
 
         <Route
           path="/checkout"
-          element={<Checkout />}
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/payment"
-          element={<Payment />}
+          element={
+            <ProtectedRoute>
+              <Payment />
+            </ProtectedRoute>
+          }
         />
 
 
@@ -226,22 +251,38 @@ function AppRoutes() {
 
         <Route
           path="/orders"
-          element={<Orders />}
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/orders/:id"
-          element={<CustomerOrderDetails />}
+          element={
+            <ProtectedRoute>
+              <CustomerOrderDetails />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/orders/:id/tracking"
-          element={<OrderTracking />}
+          element={
+            <ProtectedRoute>
+              <OrderTracking />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/order-history"
-          element={<OrderHistory />}
+          element={
+            <ProtectedRoute>
+              <OrderHistory />
+            </ProtectedRoute>
+          }
         />
 
 

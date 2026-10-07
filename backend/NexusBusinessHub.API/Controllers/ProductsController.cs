@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NexusBusinessHub.Application.DTOs;
 using NexusBusinessHub.Application.Interfaces;
@@ -56,12 +57,26 @@ public class ProductsController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto dto)
     {
+        if (IsCustomerUser())
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Access denied. Only administrators can create products." });
+        }
+
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            var errorMessages = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => !string.IsNullOrWhiteSpace(e.ErrorMessage) ? e.ErrorMessage : e.Exception?.Message)
+                .Where(m => !string.IsNullOrWhiteSpace(m))
+                .ToList();
+            var combinedMessage = errorMessages.Count > 0
+                ? string.Join("; ", errorMessages)
+                : "One or more validation errors occurred.";
+            return BadRequest(new { message = combinedMessage, errors = ModelState });
         }
 
         try
@@ -76,16 +91,30 @@ public class ProductsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while creating product.");
-            return StatusCode(500, new { message = "An error occurred while creating the product." });
+            return StatusCode(500, new { message = ex.Message ?? "An error occurred while creating the product." });
         }
     }
 
+    [Authorize]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductDto dto)
     {
+        if (IsCustomerUser())
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Access denied. Only administrators can update products." });
+        }
+
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            var errorMessages = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => !string.IsNullOrWhiteSpace(e.ErrorMessage) ? e.ErrorMessage : e.Exception?.Message)
+                .Where(m => !string.IsNullOrWhiteSpace(m))
+                .ToList();
+            var combinedMessage = errorMessages.Count > 0
+                ? string.Join("; ", errorMessages)
+                : "One or more validation errors occurred.";
+            return BadRequest(new { message = combinedMessage, errors = ModelState });
         }
 
         try
@@ -109,9 +138,43 @@ public class ProductsController : ControllerBase
         }
     }
 
+    [Authorize]
+    [HttpPatch("{id:int}/status")]
+    public async Task<IActionResult> UpdateProductStatus(int id, [FromBody] UpdateProductStatusDto dto)
+    {
+        if (IsCustomerUser())
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Access denied. Only administrators can update product status." });
+        }
+
+        bool isActive = dto.IsActive ?? (dto.Status?.Equals("Active", StringComparison.OrdinalIgnoreCase) == true);
+
+        try
+        {
+            var product = await _productService.UpdateStatusAsync(id, isActive);
+            if (product is null)
+            {
+                return NotFound(new { message = "Product not found" });
+            }
+
+            return Ok(product);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating status for product with id {ProductId}.", id);
+            return StatusCode(500, new { message = "An error occurred while updating the product status." });
+        }
+    }
+
+    [Authorize]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
+        if (IsCustomerUser())
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Access denied. Only administrators can delete products." });
+        }
+
         try
         {
             var deleted = await _productService.DeleteAsync(id);
@@ -120,13 +183,26 @@ public class ProductsController : ControllerBase
                 return NotFound(new { message = "Product not found" });
             }
 
-            return Ok(new { message = "Product deactivated successfully" });
+            return Ok(new { message = "Product deleted successfully" });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { message = ex.Message });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while deleting product with id {ProductId}.", id);
             return StatusCode(500, new { message = "An error occurred while deleting the product." });
         }
+    }
+
+    private bool IsCustomerUser()
+    {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return User.IsInRole("Customer") && !User.IsInRole("Admin") && !User.IsInRole("Manager");
+        }
+        return false;
     }
 
     [HttpGet("categories")]

@@ -2,6 +2,7 @@ import type { MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import type { Product } from "../types/product";
 import { handleImageError, resolveProductImage } from "../utils/productImage";
+import "./ProductCard.css";
 
 type ProductCardProps = {
   product: Product;
@@ -38,10 +39,8 @@ function ProductCard({
 
   return (
     <article className="nx-node-card">
-
       {/* Product Visual Area */}
       <div className="nx-node-visual">
-
         {/* Wishlist Heart */}
         <button
           className={`nx-node-save ${isLiked ? "liked" : ""}`}
@@ -148,7 +147,6 @@ function ProductCard({
           </Link>
         </div>
       </div>
-
     </article>
   );
 }

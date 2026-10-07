@@ -2,9 +2,29 @@ namespace NexusBusinessHub.Application.DTOs;
 
 public class ProductDto
 {
+    private string? _sku;
+
     public int Id { get; set; }
 
     public string Name { get; set; } = string.Empty;
+
+    public string Sku
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(_sku))
+            {
+                return _sku;
+            }
+
+            var cat = string.IsNullOrWhiteSpace(Category)
+                ? "GEN"
+                : (Category.Length >= 3 ? Category.Substring(0, 3) : Category).ToUpperInvariant();
+
+            return $"NEX-{cat}-{Id:D3}";
+        }
+        set => _sku = value;
+    }
 
     public string Description { get; set; } = string.Empty;
 

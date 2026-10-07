@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import ProductCard from "../../components/ProductCard";
@@ -9,11 +9,14 @@ import { productCategories } from "../../data/products";
 import type { Product } from "../../types/product";
 import { getProducts } from "../../services/productService";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
+import { isAuthenticated } from "../../utils/auth";
 import heroImg from "../../assets/hero.png";
 import "../ProductList.css";
 import "./Home.css";
 
 function Home() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
   const { markAppReady } = useInitialLoading();
@@ -52,10 +55,41 @@ function Home() {
 
   useEffect(() => {
     loadFeatured();
-  }, []);
+
+    const handleProductsUpdated = () => {
+      loadFeatured();
+    };
+
+    window.addEventListener("productsUpdated", handleProductsUpdated);
+    return () => {
+      window.removeEventListener("productsUpdated", handleProductsUpdated);
+    };
+  }, [location.key]);
 
   const handleAddToCart = (product: Product) => {
+    if (!isAuthenticated()) {
+      const currentPath = location.pathname + (location.search || "");
+      const returnUrl =
+        currentPath.includes("?") || currentPath.includes("&")
+          ? encodeURIComponent(currentPath)
+          : currentPath;
+      navigate(`/login?returnUrl=${returnUrl}`);
+      return;
+    }
     addToCart(product);
+  };
+
+  const handleToggleWishlist = (product: Product) => {
+    if (!isAuthenticated()) {
+      const currentPath = location.pathname + (location.search || "");
+      const returnUrl =
+        currentPath.includes("?") || currentPath.includes("&")
+          ? encodeURIComponent(currentPath)
+          : currentPath;
+      navigate(`/login?returnUrl=${returnUrl}`);
+      return;
+    }
+    toggleWishlist(product);
   };
 
   return (
@@ -381,7 +415,7 @@ function Home() {
                   product={product}
                   onAddToCart={handleAddToCart}
                   isLiked={wishlist.includes(product.id)}
-                  onToggleWishlist={() => toggleWishlist(product)}
+                  onToggleWishlist={() => handleToggleWishlist(product)}
                 />
               ))}
             </div>

@@ -30,6 +30,7 @@ public static class ProductMapping
         {
             Id = product.Id,
             Name = product.Name,
+            Sku = !string.IsNullOrWhiteSpace(product.Sku) ? product.Sku : string.Empty,
             Description = product.Description,
             Price = product.Price,
             Image = primaryImage,

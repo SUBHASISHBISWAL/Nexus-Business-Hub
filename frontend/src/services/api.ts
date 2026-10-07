@@ -4,49 +4,58 @@
  * Currently serves typed mock data with asynchronous contracts.
  */
 
-import { products, productCategories } from "../data/products";
+import {
+  getProducts as fetchProducts,
+  getProductById as fetchProductById,
+  getCategories as fetchCategories,
+} from "./productService";
 import type { Product, ProductCategory } from "../types/product";
-
-// Simulated network delay for development realism (can be toggled to 0)
-const SIMULATED_DELAY_MS = 0;
-
-function simulateDelay<T>(data: T): Promise<T> {
-  if (SIMULATED_DELAY_MS === 0) return Promise.resolve(data);
-  return new Promise((resolve) => setTimeout(() => resolve(data), SIMULATED_DELAY_MS));
-}
+import { productCategories } from "../data/products";
 
 export const apiService = {
   /**
-   * Fetch all enterprise products
-   * Future backend endpoint: GET /api/products
+   * Fetch all enterprise products from real backend API
    */
   async getProducts(): Promise<Product[]> {
-    return simulateDelay([...products]);
+    const res = await fetchProducts({ all: true });
+    return res.items;
   },
 
   /**
-   * Fetch a single product by ID
-   * Future backend endpoint: GET /api/products/{id}
+   * Fetch a single product by ID from real backend API
    */
   async getProductById(id: number): Promise<Product | undefined> {
-    const product = products.find((p) => p.id === id);
-    return simulateDelay(product);
+    try {
+      return await fetchProductById(id);
+    } catch {
+      return undefined;
+    }
   },
 
   /**
-   * Fetch featured products for the Home page
-   * Future backend endpoint: GET /api/products/featured
+   * Fetch featured products for the Home page from real backend API
    */
   async getFeaturedProducts(limit = 4): Promise<Product[]> {
-    const featured = products.slice(0, limit);
-    return simulateDelay(featured);
+    const res = await fetchProducts({ page: 1, pageSize: limit, sortBy: "newest" });
+    return res.items;
   },
 
   /**
-   * Fetch all product categories
-   * Future backend endpoint: GET /api/categories
+   * Fetch all product categories from real backend API
    */
   async getCategories(): Promise<ProductCategory[]> {
-    return simulateDelay([...productCategories]);
+    try {
+      const cats = await fetchCategories();
+      return cats.map((c) => ({
+        id: c.name.toLowerCase(),
+        name: c.name,
+        count: c.productCount ?? 0,
+        description: c.description || `${c.name} products`,
+        icon: "bi-tag",
+        path: `/products?category=${encodeURIComponent(c.name)}`,
+      }));
+    } catch {
+      return productCategories;
+    }
   },
 };

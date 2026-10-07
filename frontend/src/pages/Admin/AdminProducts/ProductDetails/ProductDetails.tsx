@@ -82,7 +82,7 @@ function ProductDetails() {
         setProduct({
           id: apiProduct.id,
           name: apiProduct.name,
-          sku: `NEX-${apiProduct.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(apiProduct.id).padStart(3, "0")}`,
+          sku: apiProduct.sku || `NEX-${apiProduct.category?.substring(0, 3).toUpperCase() || "GEN"}-${String(apiProduct.id).padStart(3, "0")}`,
           category: apiProduct.category || "Electronics",
           price: apiProduct.price,
           stock: apiProduct.stockQuantity ?? 0,

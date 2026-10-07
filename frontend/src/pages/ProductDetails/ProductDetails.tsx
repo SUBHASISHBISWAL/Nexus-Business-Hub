@@ -7,6 +7,7 @@ import {
 
 import {
   Link,
+  useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
@@ -16,6 +17,7 @@ import { useWishlist } from "../../context/WishlistContext";
 import { getProductById } from "../../services/productService";
 import { ProductDetailsSkeleton } from "../../components/skeleton/ProductDetailsSkeleton";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
+import { isAuthenticated } from "../../utils/auth";
 import type { Product } from "../../types/product";
 import {
   handleImageError,
@@ -27,6 +29,7 @@ import "./ProductDetails.css";
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { addToCart } = useContext(CartContext);
   const { wishlist, toggleWishlist } = useWishlist();
@@ -78,6 +81,16 @@ function ProductDetails() {
 
   useEffect(() => {
     loadProduct();
+
+    const handleProductsUpdated = () => {
+      loadProduct();
+    };
+
+    window.addEventListener("productsUpdated", handleProductsUpdated);
+
+    return () => {
+      window.removeEventListener("productsUpdated", handleProductsUpdated);
+    };
   }, [id]);
 
   const productImages: string[] = useMemo(
@@ -162,13 +175,45 @@ function ProductDetails() {
 
   const handleAddToCart = () => {
     if (!product || !isInStock) return;
+    if (!isAuthenticated()) {
+      const currentPath = location.pathname + (location.search || "");
+      const returnUrl =
+        currentPath.includes("?") || currentPath.includes("&")
+          ? encodeURIComponent(currentPath)
+          : currentPath;
+      navigate(`/login?returnUrl=${returnUrl}`);
+      return;
+    }
     addToCart(product, quantity);
   };
 
   const handleBuyNow = () => {
     if (!product || !isInStock) return;
+    if (!isAuthenticated()) {
+      const currentPath = location.pathname + (location.search || "");
+      const returnUrl =
+        currentPath.includes("?") || currentPath.includes("&")
+          ? encodeURIComponent(currentPath)
+          : currentPath;
+      navigate(`/login?returnUrl=${returnUrl}`);
+      return;
+    }
     addToCart(product, quantity);
     navigate("/cart");
+  };
+
+  const handleToggleWishlist = () => {
+    if (!product) return;
+    if (!isAuthenticated()) {
+      const currentPath = location.pathname + (location.search || "");
+      const returnUrl =
+        currentPath.includes("?") || currentPath.includes("&")
+          ? encodeURIComponent(currentPath)
+          : currentPath;
+      navigate(`/login?returnUrl=${returnUrl}`);
+      return;
+    }
+    toggleWishlist(product);
   };
 
   if (loading) {
@@ -403,9 +448,7 @@ function ProductDetails() {
                 className={`nx-details-wishlist ${
                   isLiked ? "liked" : ""
                 }`}
-                onClick={() =>
-                  toggleWishlist(product)
-                }
+                onClick={handleToggleWishlist}
                 aria-label={
                   isLiked
                     ? `Remove ${product.name} from favorites`

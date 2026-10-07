@@ -4,6 +4,7 @@ import { getOrders } from "../../services/orderService";
 import { OrdersSkeleton } from "../../components/skeleton/OrdersSkeleton";
 import { ErrorState } from "../../components/common/ErrorState";
 import { useInitialLoading } from "../../context/InitialLoadingContext";
+import { isAuthenticated } from "../../utils/auth";
 import "./Orders.css";
 
 type Order = {
@@ -50,8 +51,12 @@ function Orders() {
   };
 
   useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate("/login?returnUrl=/orders");
+      return;
+    }
     loadOrders();
-  }, []);
+  }, [navigate]);
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-IN", {

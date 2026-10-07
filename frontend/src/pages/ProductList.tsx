@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { CartContext } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -19,8 +19,11 @@ import { categoryLabels } from "../data/products";
 import type { Product } from "../types/product";
 import { getCategories, getProducts } from "../services/productService";
 import { useInitialLoading } from "../context/InitialLoadingContext";
+import { isAuthenticated } from "../utils/auth";
 
 function ProductList() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { addToCart } = useContext(CartContext);
@@ -240,8 +243,15 @@ function ProductList() {
 
     loadProducts(controller.signal);
 
+    const handleProductsUpdated = () => {
+      loadProducts();
+    };
+
+    window.addEventListener("productsUpdated", handleProductsUpdated);
+
     return () => {
       controller.abort();
+      window.removeEventListener("productsUpdated", handleProductsUpdated);
     };
   }, [loadProducts]);
 
@@ -333,6 +343,16 @@ function ProductList() {
   const handleAddToCart = (
     product: Product
   ) => {
+    if (!isAuthenticated()) {
+      const currentPath = location.pathname + (location.search || "");
+      const returnUrl =
+        currentPath.includes("?") || currentPath.includes("&")
+          ? encodeURIComponent(currentPath)
+          : currentPath;
+      navigate(`/login?returnUrl=${returnUrl}`);
+      return;
+    }
+
     if (
       (product.stockQuantity ?? 0) <= 0
     ) {
@@ -356,6 +376,19 @@ function ProductList() {
     window.setTimeout(() => {
       setNotice("");
     }, 2600);
+  };
+
+  const handleToggleWishlist = (product: Product) => {
+    if (!isAuthenticated()) {
+      const currentPath = location.pathname + (location.search || "");
+      const returnUrl =
+        currentPath.includes("?") || currentPath.includes("&")
+          ? encodeURIComponent(currentPath)
+          : currentPath;
+      navigate(`/login?returnUrl=${returnUrl}`);
+      return;
+    }
+    toggleWishlist(product);
   };
 
   // =========================
@@ -990,7 +1023,7 @@ function ProductList() {
                           product.id
                         )}
                         onToggleWishlist={() =>
-                          toggleWishlist(
+                          handleToggleWishlist(
                             product
                           )
                         }

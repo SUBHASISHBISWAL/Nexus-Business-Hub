@@ -6,6 +6,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import "./index.css";
+import "./components/ProductCard.css";
 import "./styles/skeleton.css";
 import "./styles/theme.css";
 

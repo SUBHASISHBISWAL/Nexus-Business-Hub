@@ -16,5 +16,7 @@ public interface IProductService
 
     Task<bool> DeleteAsync(int id);
 
+    Task<ProductDto?> UpdateStatusAsync(int id, bool isActive);
+
     Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
 }
