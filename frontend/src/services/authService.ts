@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5133/api/Auth";
+const API_BASE_URL = "http://192.168.3.37:5133/api/Auth";
 
 export interface LoginRequest {
   email: string;
@@ -72,4 +72,5 @@ export const resetPassword = async (resetToken: string, newPassword: string): Pr
   const response = await axios.post<{ message: string }>(`${API_BASE_URL}/reset-password`, { resetToken, newPassword });
   return response.data;
 };
+
 

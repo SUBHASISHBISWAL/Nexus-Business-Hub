@@ -2,7 +2,7 @@ import axios from "axios";
 import type { Product } from "../types/product";
 import { getStoredToken } from "../utils/auth";
 
-const API_URL = "http://localhost:5133/api/Products";
+const API_URL = "http://192.168.3.37:5133/api/Products";
 
 export interface ProductQueryParams {
   page?: number;
